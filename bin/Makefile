@@ -66,7 +66,7 @@ L_QGLViewer=	-L$(P_QGLViewer) -lQGLViewer $(L_Qt4)
 
 EXE=			r3d b8 lut
 SRC=      QLutEditor.cc
-OBJ=			
+OBJ=      $(SRC:%.cc=%.o)
 ALL=			make.depend $(EXE)
 
 all:			$(ALL)
