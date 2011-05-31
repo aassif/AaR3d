@@ -1,3 +1,4 @@
 git-push.sh
 tools
 bin/.qglviewer.xml
+bin/*.glsl

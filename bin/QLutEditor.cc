@@ -492,5 +492,5 @@ namespace Aa
   }
 }
 
-#include "QLutEditor.moc"
+//#include "QLutEditor.moc"
 

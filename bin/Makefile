@@ -64,9 +64,15 @@ L_QGLViewer=	-L$(P_QGLViewer) -lQGLViewer $(L_Qt4)
 # Règles #######################################################################
 ################################################################################
 
-EXE=			r3d b8 lut
-SRC=      QLutEditor.cc
-OBJ=      $(SRC:%.cc=%.o)
+EXE=			r3d lut
+HDR=      QLutEditor.h \
+					QImageRenderer.h \
+					QR3d.h
+SRC=      QLutEditor.cc \
+					QImageRenderer.cc \
+					QR3d.cc
+OBJ=      $(HDR:%.h=%.moc.o) \
+					$(SRC:%.cc=%.o)
 ALL=			make.depend $(EXE)
 
 all:			$(ALL)
@@ -74,19 +80,19 @@ all:			$(ALL)
 #lolo:		lolo.o $(OBJ)
 #			$(GCC) $(OBJ) $< $(L_QGLViewer) $(L_AaR3d) $(L_AaToolkit) $(L_AaFFmpeg) $(L_AaGL) -o $@
 
-r3d:		r3d.o QLutEditor.o ../lib/libAaR3d.so
-			$(GCC) $< QLutEditor.o $(L_QGLViewer) $(L_AaR3d) $(L_AaFFmpeg) -o $@
+r3d:		r3d.o $(OBJ) ../lib/libAaR3d.so
+			$(GCC) $< $(OBJ) $(L_QGLViewer) $(L_AaR3d) $(L_AaFFmpeg) -o $@
 
-b8:		b8.o ../lib/libAaR3d.so
-			$(GCC) $< $(L_QGLViewer) $(L_AaR3d) $(L_AaFFmpeg) -o $@
+#b8:		b8.o ../lib/libAaR3d.so
+#			$(GCC) $< $(L_QGLViewer) $(L_AaR3d) $(L_AaFFmpeg) -o $@
 
-lut:		lut.o QLutEditor.o ../lib/libAaR3d.so
-			$(GCC) $< QLutEditor.o $(L_QGLViewer) $(L_AaR3d) $(L_AaFFmpeg) -o $@
+lut:		lut.o QLutEditor.o QLutEditor.moc.o ../lib/libAaR3d.so
+			$(GCC) $< QLutEditor.o QLutEditor.moc.o $(L_QGLViewer) $(L_AaR3d) $(L_AaFFmpeg) -o $@
 
 %.o:			%.cc
-			$(GCC) -c $(I_QGLViewer) $(I_AaR3d) $(I_AaFFmpeg) -I. -Ioutputs $< -o $@
+			$(GCC) -c $(I_QGLViewer) $(I_AaR3d) $(I_AaFFmpeg) $< -o $@
 
-%.moc:			%.h
+%.moc.cc:			%.h
 			$(MOC) $< -o $@
 
 ################################################################################
@@ -94,7 +100,7 @@ lut:		lut.o QLutEditor.o ../lib/libAaR3d.so
 ################################################################################
 
 clean:
-			rm -f $(EXE:%=%.o) $(OBJ) $(ALL)
+			rm -f $(EXE:%=%.o) $(HDR:%.h=%.moc.cc) $(OBJ) $(ALL)
 			rm -f core *~ gmon.* a.out
 
 ################################################################################
@@ -102,10 +108,10 @@ clean:
 ################################################################################
 
 dep:
-			g++ -MM $(I_QGLViewer) $(I_AaR3d) $(I_AaFFmpeg) -I. -Ioutputs $(SRC) $(EXE:%=%.cc) >make.depend
+			g++ -MM $(I_QGLViewer) $(I_AaR3d) $(I_AaFFmpeg) $(SRC) $(EXE:%=%.cc) >make.depend
 
 make.depend:		$(SRC) $(EXE:%=%.cc) Makefile
-			g++ -MM $(I_QGLViewer) $(I_AaR3d) $(I_AaFFmpeg) -I. -Ioutputs $(SRC) $(EXE:%=%.cc) >make.depend
+			g++ -MM $(I_QGLViewer) $(I_AaR3d) $(I_AaFFmpeg) $(SRC) $(EXE:%=%.cc) >make.depend
 
 include make.depend
 

@@ -46,10 +46,9 @@ lib/libAaR3d.so:	$(OBJ)
 # Ménage #
 
 clean:
-			rm -f $(ALL)
-			rm -f src/*.o
+			rm -f $(OBJ) $(ALL)
 			make -C bin clean
-			find . -name "*~" -exec rm -f {} \;
+#			find . -name "*~" -exec rm -f {} \;
 
 archive:                clean
 			tar zcvf ~/tgz/$(V_AaR3d).tgz *
@@ -63,3 +62,4 @@ make.depend:            $(HDR) $(SRC)
 			g++ -MM $(I_AaR3d) $(I_AaGL) $(I_AaToolkit) $(SRC) >make.depend
 
 include make.depend
+
