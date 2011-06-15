@@ -38,7 +38,7 @@ P_GLEW=			$(HOME)/3rdPartyLibs/glew-1.5.8
 I_GLEW=			-I$(P_GLEW)/include
 L_GLEW=			-L$(P_GLEW)/lib -lGLEW -lpthread $(L_GLU)
 
-P_AaGL=			$(HOME)/wrk/opengl-2.0
+P_AaGL=			$(HOME)/wrk/opengl
 I_AaGL=			-I$(P_AaGL)/include    $(I_GLEW) $(I_AaToolkit)
 L_AaGL=			-L$(P_AaGL)/lib -lAaGL $(L_GLEW) $(L_AaToolkit)
 
