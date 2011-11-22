@@ -27,15 +27,18 @@ namespace Aa
       Q_OBJECT
 
       private:
+        bool                       m_fast;
         const R3d::Image         * m_image;
         const R3d::Lut           * m_lut;
         R3d::ImageRenderer3dGLSL * m_renderer;
+        QTimer                     m_timer;
 
       public:
         QImageRenderer (const R3d::Image *, const R3d::Lut *, QWidget * parent = NULL);
         virtual ~QImageRenderer ();
 
       public slots:
+        void setFast (bool);
         void setImage (const R3d::Image *);
         void setLut (const R3d::Lut *);
 

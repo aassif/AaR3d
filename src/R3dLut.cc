@@ -6,9 +6,9 @@
 using namespace std;
 
 #ifdef DEBUG
-#define ASSERT(x) assert (x)
+  #define ASSERT(x) assert (x)
 #else
-#define ASSERT(x)
+  #define ASSERT(x)
 #endif
 
 namespace Aa

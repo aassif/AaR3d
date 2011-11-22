@@ -130,8 +130,10 @@ namespace Aa
       }
 
       m_lut = lut;
+      m_renderer->setFast (true);
       m_renderer->setLut (m_lut);
       m_renderer->updateGL ();
+      m_renderer->setFast (false);
     }
 
     void QR3d::setLut (const QVector<QColor> & table)

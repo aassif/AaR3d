@@ -31,10 +31,15 @@ namespace Aa
                                     const R3d::Lut   * lut,
                                     QWidget          * parent) :
       QGLViewer (parent),
+      m_fast (false),
       m_image (image),
       m_lut (lut),
-      m_renderer (NULL)
+      m_renderer (NULL),
+      m_timer (this)
     {
+      m_timer.setInterval (250);
+      m_timer.setSingleShot (true);
+      connect (&m_timer, SIGNAL (timeout ()), this, SLOT (updateGL ()));
     }
 
     QImageRenderer::~QImageRenderer ()
@@ -45,6 +50,11 @@ namespace Aa
         delete m_renderer;
 
       //cout << "<<< " << __PRETTY_FUNCTION__ << endl;
+    }
+
+    void QImageRenderer::setFast (bool f)
+    {
+      m_fast = f;
     }
 
     void QImageRenderer::setImage (const R3d::Image * image)
@@ -93,13 +103,22 @@ namespace Aa
     void QImageRenderer::draw ()
     {
       if (m_renderer != NULL)
-        m_renderer->glDraw (false);
+      {
+        if (m_fast || m_timer.isActive ())
+          this->fastDraw ();
+        else
+          m_renderer->glDraw (false);
+      }
     }
 
     void QImageRenderer::fastDraw ()
     {
       if (m_renderer != NULL)
+      {
+        m_timer.stop ();
         m_renderer->glDraw (true);
+        m_timer.start ();
+      }
     }
 
     void QImageRenderer::keyPressEvent (QKeyEvent * e)

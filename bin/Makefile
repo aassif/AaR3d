@@ -83,8 +83,8 @@ all:			$(ALL)
 r3d:		r3d.o $(OBJ) ../lib/libAaR3d.so
 			$(GCC) $< $(OBJ) $(L_QGLViewer) $(L_AaR3d) $(L_AaFFmpeg) -o $@
 
-#b8:		b8.o ../lib/libAaR3d.so
-#			$(GCC) $< $(L_QGLViewer) $(L_AaR3d) $(L_AaFFmpeg) -o $@
+b8:		b8.o ../lib/libAaR3d.so
+			$(GCC) $< $(L_QGLViewer) $(L_AaR3d) $(L_AaFFmpeg) -o $@
 
 lut:		lut.o QLutEditor.o QLutEditor.moc.o ../lib/libAaR3d.so
 			$(GCC) $< QLutEditor.o QLutEditor.moc.o $(L_QGLViewer) $(L_AaR3d) $(L_AaFFmpeg) -o $@

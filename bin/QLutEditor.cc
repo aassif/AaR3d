@@ -352,7 +352,7 @@ namespace Aa
         os << "  <knob "
            <<     "x=\"" << k->x () << "\" "
            <<     "y=\"" << k->y () << "\" "
-           <<     "color=\"" << c.name ().toStdString () << "\" />\n";
+           <<     "color=\"" << qPrintable (c.name ()) << "\" />\n";
       }
       os << "</knobs>\n";
     }
