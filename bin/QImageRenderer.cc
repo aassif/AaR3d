@@ -8,7 +8,7 @@
 //#include <QMenuBar>
 //#include <QDockWidget>
 #include <QApplication>
-//#include <QKeyEvent>
+#include <QKeyEvent>
 //#include <QFileDialog>
 //#include <QGLViewer/qglviewer.h>
 //#include "QLutEditor.h"
@@ -35,9 +35,10 @@ namespace Aa
       m_image (image),
       m_lut (lut),
       m_renderer (NULL),
+      m_fbo (NULL),
       m_timer (this)
     {
-      m_timer.setInterval (250);
+      m_timer.setInterval (40);
       m_timer.setSingleShot (true);
       connect (&m_timer, SIGNAL (timeout ()), this, SLOT (updateGL ()));
     }
@@ -49,6 +50,8 @@ namespace Aa
       if (m_renderer != NULL)
         delete m_renderer;
 
+      if (m_fbo != NULL)
+        delete m_fbo;
       //cout << "<<< " << __PRETTY_FUNCTION__ << endl;
     }
 
@@ -96,18 +99,50 @@ namespace Aa
       glClearColor (1.0, 1.0, 1.0, 0.0);
       glEnable (GL_CULL_FACE);
 
+      cout << glGetString (GL_VENDOR) << endl;
+      cout << glGetString (GL_RENDERER) << endl;
+      cout << glGetString (GL_VERSION) << endl;
+      cout << glGetString (GL_EXTENSIONS) << endl;
+
       // Renderer.
       m_renderer = new R3d::ImageRenderer3dGLSL (m_image, m_lut);
     }
 
+    void QImageRenderer::resizeGL (int w, int h)
+    {
+      //cout << "QImageRenderer::resizeGL (" << w << ", " << h << ")\n";
+
+      if (m_fbo != NULL)
+      {
+        delete m_fbo;
+        m_fbo = NULL;
+      }
+
+      m_fbo = new QGLFramebufferObject (w, h, QGLFramebufferObject::Depth, GL_TEXTURE_2D, GL_RGBA32F);
+
+      QGLViewer::resizeGL (w, h);
+    }
+
     void QImageRenderer::draw ()
     {
-      if (m_renderer != NULL)
+      if (m_renderer != NULL && m_fbo != NULL)
       {
+        m_fbo->bind ();
+        glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
         if (m_fast || m_timer.isActive ())
           this->fastDraw ();
         else
+        {
+          GLenum e1 = glGetError ();
           m_renderer->glDraw (false);
+          GLenum e2 = glGetError ();
+          cerr << gluErrorString (e1) << ':' << gluErrorString (e2) << endl;
+        }
+
+        m_fbo->release ();
+        QRect r = QRect (QPoint (0, 0), m_fbo->size ());
+        QGLFramebufferObject::blitFramebuffer (0, r, m_fbo, r);
       }
     }
 
@@ -116,7 +151,10 @@ namespace Aa
       if (m_renderer != NULL)
       {
         m_timer.stop ();
+        GLenum e1 = glGetError ();
         m_renderer->glDraw (true);
+        GLenum e2 = glGetError ();
+        cerr << gluErrorString (e1) << ':' << gluErrorString (e2) << endl;
         m_timer.start ();
       }
     }
@@ -133,6 +171,7 @@ namespace Aa
         case Qt::Key_1: m_renderer->setMode (0); updateGL (); break;
         case Qt::Key_2: m_renderer->setMode (1); updateGL (); break;
         case Qt::Key_3: m_renderer->setMode (2); updateGL (); break;
+        case Qt::Key_4: m_renderer->setMode (3); updateGL (); break;
 
         case Qt::Key_Escape:
           qApp->exit ();

@@ -4,7 +4,9 @@ GCC_DEBUG=		$(GCC_DEFAULT) -ggdb3 -O0# -DDEBUG
 GCC_FINAL=		$(GCC_DEFAULT) -O3
 GCC_GPROF=		$(GCC_FINAL) -pg
 GCC=			$(GCC_DEBUG)
-MOC=			moc-qt4
+
+QT4=/opt/QtSDK/Desktop/Qt/473/gcc
+MOC=			$(QT4)/bin/moc
 
 ################################################################################
 # Chemins ######################################################################
@@ -50,11 +52,12 @@ L_AaR3d=			-L$(P_AaR3d)/lib -lAaR3d $(L_AaGL)
 
 ################################################################################
 
-I_Qt4=		-I/usr/include/QtCore\
-					-I/usr/include/QtXml\
-					-I/usr/include/QtGui\
-					-I/usr/include/QtOpenGL
-L_Qt4=		-lQtCore -lQtOpenGL -lQtXml
+I_Qt4=		-I$(QT4)/include\
+					-I$(QT4)/include/QtCore\
+					-I$(QT4)/include/QtXml\
+					-I$(QT4)/include/QtGui\
+					-I$(QT4)/include/QtOpenGL
+L_Qt4=		-L$(QT4)/lib -lQtCore -lQtOpenGL -lQtXml
 
 P_QGLViewer=	$(HOME)/3rdPartyLibs/libQGLViewer-2.3.9/QGLViewer
 I_QGLViewer=	-I$(P_QGLViewer)             $(I_Qt4)

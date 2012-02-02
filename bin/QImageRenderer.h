@@ -11,7 +11,8 @@
 //#include <QDockWidget>
 //#include <QApplication>
 #include <GL/glew.h>
-#include <QKeyEvent>
+//#include <QKeyEvent>
+#include <QGLFramebufferObject>
 //#include <QFileDialog>
 #include <QGLViewer/qglviewer.h>
 //#include "QLutEditor.h"
@@ -31,11 +32,15 @@ namespace Aa
         const R3d::Image         * m_image;
         const R3d::Lut           * m_lut;
         R3d::ImageRenderer3dGLSL * m_renderer;
+        QGLFramebufferObject     * m_fbo;
         QTimer                     m_timer;
 
       public:
         QImageRenderer (const R3d::Image *, const R3d::Lut *, QWidget * parent = NULL);
         virtual ~QImageRenderer ();
+
+      protected:
+        virtual void resizeGL (int w, int h);
 
       public slots:
         void setFast (bool);

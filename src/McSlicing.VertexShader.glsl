@@ -1,8 +1,10 @@
-#version 120
+#version 130
 #extension GL_EXT_gpu_shader4 : enable
 
 uniform float mc_slicing_z;
 uniform vec2  mc_slicing_edge_depths [12];
+
+out     vec4  mc_slicing_coords;
 
 vec4 mc_slicing_vertex (int k)
 {
@@ -33,7 +35,8 @@ void main ()
 {
   int edge = int (gl_Vertex [0]);
   vec4 vertex = mc_slicing_vertex (edge);
-  gl_TexCoord[0] = gl_TextureMatrix[0]          * vertex;
+  mc_slicing_coords = vertex;
+  //gl_TexCoord[0] = gl_TextureMatrix[0]          * vertex;
   gl_Position    = gl_ModelViewProjectionMatrix * vertex;
 }
 

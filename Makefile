@@ -6,18 +6,18 @@ GCC=                    $(GCC_DEBUG)
 
 # Chemins #
 
-L_GLU=                  -lGL -lGLU -lglut
+#L_GLU=                  -lGL -lGLU -lglut
 
 P_AaToolkit=		$(HOME)/wrk/toolkit
 I_AaToolkit=		-I$(P_AaToolkit)/include
 
 P_GLEW=         $(HOME)/3rdPartyLibs/glew-1.5.8
 I_GLEW=         -I$(P_GLEW)/include
-L_GLEW=         -L$(P_GLEW)/lib -lglew
+#L_GLEW=         $(L_GLU) -L$(P_GLEW)/lib -lglew
 
 P_AaGL=		$(HOME)/wrk/opengl
 I_AaGL=		-I$(P_AaGL)/include    $(I_GLEW)
-L_AaGL=		-L$(P_AaGL)/lib -lAaGL $(L_GLEW)
+#L_AaGL=		-L$(P_AaGL)/lib -lAaGL $(L_GLEW)
 
 V_AaR3d=			0.0.2
 S_AaR3d=			src

@@ -94,10 +94,7 @@ namespace Aa
       {
         m_image = image;
         const Math::vR3 & d = m_image->box ().dim ();
-        float dx = scale.x * d.x;
-        float dy = scale.y * d.y;
-        float dz = scale.z * d.z;
-        m_image->setBox (Math::Box (Math::pR3 (-0.5 * dx, -0.5 * dy, -0.5 * dz), Math::vR3 (dx, dy, dz)));
+        m_image->setBox (Math::Box::Center (scale.x * d.x, scale.y * d.y, scale.z * d.z));
       }
 
       m_renderer->setImage (m_image);

@@ -52,22 +52,10 @@ vec4 pre_integration (vec3 p, float step)
   return texture (lut2d, vec2 (v0, v1));
 }
 
-vec4 lookup (vec3 p)
-{
-  switch (mode)
-  {
-    default:
-    case 0: return texture (image3d, p);
-    case 1: return post_classification (p);
-    case 2: return pre_integration (p, mc_slicing_step);
-    //case 3: return rainbow (p);
-  }
-}
-
 // Gradient.
 float gradient_aux (vec3 p)
 {
-  return lookup (p) [3];
+  return post_classification (p) [3];
 }
 
 vec3 gradient (vec3 p)
@@ -78,11 +66,6 @@ vec3 gradient (vec3 p)
   return vec3 (x1 - x0, y1 - y0, z1 - z0) / sqrt (3.0);
 }
 
-vec3 boost (vec3 v, float k)
-{
-  return 1.0 - (1.0 - k) * (1.0 - v);
-}
-
 vec3 colorize (vec3 v)
 {
   return (0.5 * v) + 0.25;
@@ -91,8 +74,25 @@ vec3 colorize (vec3 v)
 vec4 rainbow (vec3 p)
 {
   vec3 G = gradient (p);
-  vec4 K = lookup (p);
+  vec4 K = post_classification (p);
   return K.a * vec4 (colorize (G), 1.0);
+}
+
+vec4 lookup (vec3 p)
+{
+  switch (mode)
+  {
+    default:
+    case 0: return texture (image3d, p);
+    case 1: return post_classification (p);
+    case 2: return pre_integration (p, mc_slicing_step);
+    case 3: return rainbow (p);
+  }
+}
+
+vec3 boost (vec3 v, float k)
+{
+  return 1.0 - (1.0 - k) * (1.0 - v);
 }
 
 vec4 post_classification_blinn (vec3 p)
