@@ -1,8 +1,8 @@
 #include <fstream>
 #include <cmath>
 //#include <GL/glew.h>
-#include <AaText>
-#include <AaGL>
+//#include <AaText>
+//#include <AaGL>
 #include "R3dImageRenderer2d.h"
 
 using namespace std;

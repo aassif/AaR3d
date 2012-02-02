@@ -1,8 +1,8 @@
 #include <fstream>
 #include <cmath>
 #include <vector> // ImageRenderer3d::glSlice_ViewAligned_Naive
-#include <GL/glew.h>
-#include <AaText>
+//#include <GL/glew.h>
+//#include <AaText>
 #include <AaPrimitives>
 #include "R3dImageRenderer3d.h"
 
@@ -1345,7 +1345,9 @@ namespace Aa
         GLfloat backup_glLineWidth;
         glGetFloatv (GL_LINE_WIDTH, &backup_glLineWidth);
         glLineWidth (4.0);
-        GL::Lighting::Color (m_box_color);
+        glDisable (GL_LIGHTING);
+        glColor4fv (m_box_color);
+        //GL::Lighting::Color (m_box_color);
         GL::Primitives::Box (m_box);
         glLineWidth (backup_glLineWidth);
       }
