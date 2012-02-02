@@ -64,7 +64,7 @@ namespace Aa
       m_dz = max ((unsigned short) 1, dz);
       m_dxdy = m_dx * m_dy;
       m_dxdydz = m_dxdy * m_dz;
-      m_box = Math::Box (0.0, 0.0, 0.0, m_dx, m_dy, m_dz);
+      m_box = Math::Box::Center (m_dx, m_dy, m_dz);
       m_data = new unsigned char [m_dxdydz];
       //cout << "<-- Image::resize (" << dx << ", "<< dy << ", " << dz << ");" << endl;
     }

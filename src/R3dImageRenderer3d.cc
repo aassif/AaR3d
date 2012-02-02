@@ -1175,6 +1175,7 @@ namespace Aa
         glDisable (GL_TEXTURE_3D);
         glDisable (GL_BLEND);
         glDepthMask (GL_TRUE);
+
 #ifdef MODE_MIP
         glBlendEquation (GL_FUNC_ADD);
 #else
@@ -1184,10 +1185,12 @@ namespace Aa
         else
           glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 #endif
+
 #ifdef POST_CLASSIFICATION
         glActiveTexture (GL_TEXTURE0);
         glDisable (GL_TEXTURE_SHADER_NV);
 #endif
+
         glMatrixMode (GL_TEXTURE);
         glPopMatrix ();
         glMatrixMode (GL_MODELVIEW);
@@ -1306,6 +1309,7 @@ namespace Aa
                                GL_ONE,       GL_ONE_MINUS_SRC_ALPHA);
         else
           glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
         glMatrixMode (GL_TEXTURE);
         glPopMatrix ();
         glMatrixMode (GL_MODELVIEW);

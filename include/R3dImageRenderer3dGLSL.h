@@ -8,7 +8,7 @@ namespace Aa
 {
   namespace R3d
   {
-    class ImageRenderer3dGLSL : public ImageRenderer3d
+    class AA_R3D_API ImageRenderer3dGLSL : public ImageRenderer3d
     {
       protected:
         int m_mode;

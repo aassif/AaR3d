@@ -1,14 +1,10 @@
-#include <fstream>
 #include <cmath>
 #include <AaGLSL>
-#include <AaText>
 #include "R3dImageRenderer3dGLSL.h"
-
-#include <sstream> // glGetUniformLocation
-#include <cstdlib> // GLSL
 
 //#define R3D_GLSL_VERTEX
 #define R3D_GLSL_GEOMETRY
+
 #define R3D_GLSL_FRAGMENT
 
 #define R3D_GLSL (defined (R3D_GLSL_GEOMETRY) || defined (R3D_GLSL_VERTEX) || defined (R3D_GLSL_FRAGMENT))
@@ -41,13 +37,14 @@ namespace Aa
       m_program.attach (GL_VERTEX_SHADER,       "PassThru.VertexShader.glsl");
       m_program.attach (GL_GEOMETRY_SHADER_ARB, "McSlicing.GeometryShader.glsl");
 
-      //GLint max;
-      //glGetIntegerv (GL_MAX_GEOMETRY_OUTPUT_VERTICES_EXT, &max);
-      //cout << "max = " << max << endl;
+      GLint max;
+      glGetIntegerv (GL_MAX_GEOMETRY_OUTPUT_VERTICES_EXT, &max);
+      cout << "max = " << max << endl;
+
       GLuint id = m_program.id ();
-      glProgramParameteriEXT (id, GL_GEOMETRY_INPUT_TYPE_EXT,   GL_POINTS);
-      glProgramParameteriEXT (id, GL_GEOMETRY_OUTPUT_TYPE_EXT,  GL_TRIANGLE_STRIP);
-      glProgramParameteriEXT (id, GL_GEOMETRY_VERTICES_OUT_EXT, 6); // FIXME
+      glProgramParameteriARB (id, GL_GEOMETRY_INPUT_TYPE_ARB,   GL_POINTS);
+      glProgramParameteriARB (id, GL_GEOMETRY_OUTPUT_TYPE_ARB,  GL_TRIANGLE_STRIP);
+      glProgramParameteriARB (id, GL_GEOMETRY_VERTICES_OUT_ARB, 6); // FIXME
 
       glGenTextures (1, &m_table);
       glBindTexture (GL_TEXTURE_2D, m_table);
@@ -205,7 +202,6 @@ namespace Aa
     void ImageRenderer3dGLSL::glPreDraw (bool motion) const
     {
 #if R3D_GLSL
-      // Enable GLSL program.
       m_program.use ();
 #endif
 
@@ -230,6 +226,7 @@ namespace Aa
 #if R3D_GLSL
       glUseProgram (0);
 #endif
+
       //glDisable (GL_TEXTURE_1D);
       //glDisable (GL_TEXTURE_2D);
       //glDisable (GL_TEXTURE_3D);

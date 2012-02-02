@@ -7,7 +7,7 @@ namespace Aa
 {
   namespace R3d
   {
-    class ImageRenderer3d : public ImageRenderer
+    class AA_R3D_API ImageRenderer3d : public ImageRenderer
     {
       public:
         enum Slice

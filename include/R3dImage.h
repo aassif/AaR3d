@@ -4,6 +4,7 @@
 #include <string>
 #include <AaMath>
 #include <AaException>
+#include "AaR3d.h"
 
 // Image.
 
@@ -11,7 +12,7 @@ namespace Aa
 {
   namespace R3d
   {
-    class Image
+    class AA_R3D_API Image
     {
      protected:
       unsigned short m_dx, m_dy, m_dz;
@@ -51,22 +52,22 @@ namespace Aa
     };
 
     // Loading.
-    void ImageLoadB8 (Image *, const std::string &)
+    AA_R3D_API void ImageLoadB8 (Image *, const std::string &)
       throw (Aa::FileNotFound, Aa::ParseError);
 
-    Image * ImageLoadB8 (const std::string &)
+    AA_R3D_API Image * ImageLoadB8 (const std::string &)
       throw (Aa::FileNotFound, Aa::ParseError);
 
-    void ImageLoadPIC (Image *, const std::string &)
+    AA_R3D_API void ImageLoadPIC (Image *, const std::string &)
       throw (Aa::FileNotFound, Aa::ParseError);
 
-    Image * ImageLoadPIC (const std::string &)
+    AA_R3D_API Image * ImageLoadPIC (const std::string &)
       throw (Aa::FileNotFound, Aa::ParseError);
 
-    void ImageLoadDICOM (Image *, const std::string &)
+    AA_R3D_API void ImageLoadDICOM (Image *, const std::string &)
       throw (Aa::FileNotFound, Aa::ParseError);
 
-    Image * ImageLoadDICOM (const std::string &)
+    AA_R3D_API Image * ImageLoadDICOM (const std::string &)
       throw (Aa::FileNotFound, Aa::ParseError);
 
   } // namespace R3d

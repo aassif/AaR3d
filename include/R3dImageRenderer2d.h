@@ -9,7 +9,7 @@ namespace Aa
   {
     // ImageRenderer2d
 
-    class ImageRenderer2d : public ImageRenderer
+    class AA_R3D_API ImageRenderer2d : public ImageRenderer
     {
       protected:
         unsigned short m_dz;
@@ -28,5 +28,5 @@ namespace Aa
   } // namespace R3d
 } // namespace Aa
 
-#endif // __AA_R3D_IMAGE_RENDERERi_2D__
+#endif // __AA_R3D_IMAGE_RENDERER_2D__
 

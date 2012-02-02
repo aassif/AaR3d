@@ -3,12 +3,13 @@
 
 #include <GL/gl.h>
 #include <AaException>
+#include "AaR3d.h"
 
 namespace Aa
 {
   namespace R3d
   {
-    class Lut
+    class AA_R3D_API Lut
     {
       private:
         GLubyte m_data [256][4];
