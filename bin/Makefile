@@ -67,7 +67,7 @@ L_QGLViewer=	-L$(P_QGLViewer) -lQGLViewer $(L_Qt4)
 # Règles #######################################################################
 ################################################################################
 
-EXE=			r3d lut
+EXE=			r3d lut b8
 HDR=      QLutEditor.h \
 					QImageRenderer.h \
 					QR3d.h
