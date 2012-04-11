@@ -23,7 +23,7 @@ namespace Aa
 
     QR3d::QR3d (const std::string & image,
                 const std::string & lut,
-                const Math::vR3 & scale) :
+                const dvec3 & scale) :
       m_renderer (NULL),
       m_editor (NULL),
       m_editor_dock (NULL),
@@ -82,7 +82,7 @@ namespace Aa
       if (! path.isEmpty ()) setImage (path);
     }
 
-    void QR3d::setImage (R3d::Image * image, const Math::vR3 & scale)
+    void QR3d::setImage (R3d::Image * image, const dvec3 & scale)
     {
       if (m_image != NULL)
       {
@@ -93,21 +93,21 @@ namespace Aa
       if (image != NULL)
       {
         m_image = image;
-        const Math::vR3 & d = m_image->box ().dim ();
-        m_image->setBox (Math::Box::Center (scale.x * d.x, scale.y * d.y, scale.z * d.z));
+        const dvec3 & d = m_image->box ().dim ();
+        m_image->setBox (dbox3::Center (scale * d));
       }
 
       m_renderer->setImage (m_image);
       m_renderer->updateGL ();
     }
 
-    void QR3d::setImage (const std::string & path, const Math::vR3 & scale)
+    void QR3d::setImage (const std::string & path, const dvec3 & scale)
     {
       R3d::Image * image = R3d::ImageLoadB8 (path);
       setImage (image, scale);
     }
 
-    void QR3d::setImage (const QString & path, const Math::vR3 & scale)
+    void QR3d::setImage (const QString & path, const dvec3 & scale)
     {
       setImage (path.toStdString (), scale);
     }

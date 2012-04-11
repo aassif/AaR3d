@@ -26,9 +26,10 @@ namespace Aa
       ImageRenderer3d (img, lut),
       m_mode (2),
       m_program (),
+      m_table_tex2d (0),
       m_blinn (false),
       m_shininess (8.0),
-      m_delta (0.01, 0.01, 0.01)
+      m_delta (vec (0.01f, 0.01f, 0.01f))
     {
       cout << "ImageRenderer3dGLSL (Powered by GLSL!)\n";
 
@@ -46,8 +47,8 @@ namespace Aa
       glProgramParameteriARB (id, GL_GEOMETRY_OUTPUT_TYPE_ARB,  GL_TRIANGLE_STRIP);
       glProgramParameteriARB (id, GL_GEOMETRY_VERTICES_OUT_ARB, 6); // FIXME
 
-      glGenTextures (1, &m_table);
-      glBindTexture (GL_TEXTURE_2D, m_table);
+      glGenTextures (1, &m_table_tex2d);
+      glBindTexture (GL_TEXTURE_2D, m_table_tex2d);
       glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
       glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
       glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -104,7 +105,7 @@ namespace Aa
       };
 
       // Bounding box depth per edge.
-      GLfloat edge_depths [12][2];
+      vec2 edge_depths [12];
       for (int i = 0; i < 12; ++i)
       {
         edge_depths [i][0] = vertex_depths [EDGES [i][0]];
@@ -112,10 +113,10 @@ namespace Aa
       }
 
       glActiveTexture (GL_TEXTURE3);
-      glBindTexture (GL_TEXTURE_2D, m_table);
+      glBindTexture (GL_TEXTURE_2D, m_table_tex2d);
       m_program.set<GLint>      ("mc_slicing_table",         3);
-      m_program.set<GLfloat, 1> ("mc_slicing_vertex_depths", 8, (const GLfloat *) vertex_depths);
-      m_program.set<GLfloat, 2> ("mc_slicing_edge_depths",  12, (const GLfloat *) edge_depths);
+      m_program.set<GLfloat>    ("mc_slicing_vertex_depths", 8, vertex_depths);
+      m_program.set<GLfloat, 2> ("mc_slicing_edge_depths",  12, edge_depths);
 
       // Back-to-Front.
       glBegin (GL_POINTS);
@@ -213,7 +214,7 @@ namespace Aa
       m_program.set<GLfloat> ("mc_slicing_step", m_steps [motion ? 1 : 0]);
       m_program.set<GLint>   ("blinn",           !motion && m_blinn);
       m_program.set<GLfloat> ("shininess",       m_shininess);
-      m_program.set<GLfloat> ("delta",           m_delta.x, m_delta.y, m_delta.z);
+      m_program.set<GLfloat> ("delta",           m_delta);
 #else
       glActiveTexture (GL_TEXTURE0);
       glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);

@@ -36,17 +36,17 @@ namespace Aa
         static const char * StrSlice (Slice);
 
       protected:
-        GLuint    m_image_tex3d;
-        GLfloat   m_image_scales [3];
-        GLfloat   m_steps [2];
-        GLuint    m_lut_tex1d [2];
-        GLuint    m_lut_tex2d [2];
-        Math::Box m_box;
-        float     m_box_color [4];
-        Slice     m_slice;
-        bool      m_textured:1;
-        bool      m_outlined:1;
-        bool      m_boxed:1;
+        GLuint  m_image_tex3d;
+        GLfloat m_image_scales [3];
+        GLfloat m_steps [2];
+        GLuint  m_lut_tex1d [2];
+        GLuint  m_lut_tex2d [2];
+        dbox3   m_box;
+        float   m_box_color [4];
+        Slice   m_slice;
+        bool    m_textured:1;
+        bool    m_outlined:1;
+        bool    m_boxed:1;
 
       protected:
         virtual void glSlice_ObjectAligned_X   (bool) const;

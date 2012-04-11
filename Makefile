@@ -1,35 +1,35 @@
-GCC_DEFAULT=            g++ -fPIC -W -Wall -pedantic
-GCC_DEBUG=              $(GCC_DEFAULT) -ggdb3 -O0# -DDEBUG# -DCHECK 
-GCC_FINAL=              $(GCC_DEFAULT) -O3
-GCC_GPROF=              $(GCC_FINAL) -pg
-GCC=                    $(GCC_DEBUG)
+GCC_DEFAULT=      g++ -fPIC -W -Wall -pedantic
+GCC_DEBUG=        $(GCC_DEFAULT) -O0 -ggdb3 -pg
+GCC_RELEASE=      $(GCC_DEFAULT) -O3 -ggdb3
+#GCC=              $(GCC_DEBUG)
+GCC=              $(GCC_RELEASE)
 
 # Chemins #
 
-#L_GLU=                  -lGL -lGLU -lglut
+#L_GLU=            -lGL -lGLU -lglut
 
-P_AaToolkit=		$(HOME)/wrk/toolkit
-I_AaToolkit=		-I$(P_AaToolkit)/include
+P_AaToolkit=      $(HOME)/wrk/toolkit
+I_AaToolkit=      -I$(P_AaToolkit)/include
 
-P_GLEW=         $(HOME)/3rdPartyLibs/glew-1.5.8
-I_GLEW=         -I$(P_GLEW)/include
-#L_GLEW=         $(L_GLU) -L$(P_GLEW)/lib -lglew
+P_GLEW=           $(HOME)/3rdPartyLibs/glew-1.7.0
+I_GLEW=           -I$(P_GLEW)/include
+#L_GLEW=           $(L_GLU) -L$(P_GLEW)/lib -lglew
 
-P_AaGL=		$(HOME)/wrk/opengl
-I_AaGL=		-I$(P_AaGL)/include    $(I_GLEW)
-#L_AaGL=		-L$(P_AaGL)/lib -lAaGL $(L_GLEW)
+P_AaGL=           $(HOME)/wrk/opengl
+I_AaGL=           -I$(P_AaGL)/include    $(I_GLEW)
+#L_AaGL=           -L$(P_AaGL)/lib -lAaGL $(L_GLEW)
 
-V_AaR3d=			0.0.2
-S_AaR3d=			src
-H_AaR3d=			include
-I_AaR3d=			-I$(H_AaR3d)
+V_AaR3d=          AaR3d-0.0.2
+S_AaR3d=          src
+H_AaR3d=          include
+I_AaR3d=          -I$(H_AaR3d)
 
 # Règles #
 
-HDR=                    $(wildcard $(H_AaR3d)/*.h $(H_AaR3d)/*.hh)
-SRC=                    $(wildcard $(S_AaR3d)/*.cc)
-OBJ=                    $(SRC:%.cc=%.o)
-ALL=                    make.depend lib/libAaR3d.a lib/libAaR3d.so
+HDR=              $(wildcard $(H_AaR3d)/*.h $(H_AaR3d)/*.hh)
+SRC=              $(wildcard $(S_AaR3d)/*.cc)
+OBJ=              $(SRC:%.cc=%.o)
+ALL=              make.depend lib/libAaR3d.a lib/libAaR3d.so
 
 all:                    $(ALL)
 			make -i -C bin

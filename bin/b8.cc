@@ -105,7 +105,7 @@ void b8_data_16le (istream & is, ostream & os, unsigned int n)
   int min = 255, max = 0;
   for (unsigned int i = 0; i < n; ++i)
   {
-    unsigned char v1 = is.get ();
+    /****************/ is.get ();
     unsigned char v2 = is.get ();
     if (v2 < min) min = v2;
     if (v2 > max) max = v2;
@@ -121,7 +121,7 @@ void b8_data_16be (istream & is, ostream & os, unsigned int n)
   for (unsigned int i = 0; i < n; ++i)
   {
     unsigned char v1 = is.get ();
-    unsigned char v2 = is.get ();
+    /****************/ is.get ();
     if (v1 < min) min = v1;
     if (v1 > max) max = v1;
     os.put (v1);

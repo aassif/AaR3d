@@ -114,8 +114,8 @@ namespace Aa
     ImageRenderer2d::ImageRenderer2d (const Image * img, const Lut * lut) :
       ImageRenderer (),
       m_dz (0),
-      m_imgTextures (NULL),
-      m_lutData ()
+      m_img_textures (NULL),
+      m_lut ()
     {
       this->setImg (img);
       this->setLut (lut);
@@ -129,35 +129,34 @@ namespace Aa
 
     void ImageRenderer2d::setImg (const Image * image)
     {
-      if (m_imgTextures != NULL)
+      if (m_img_textures != NULL)
       {
         m_dz = 0;
-        glDeleteTextures (m_dz, m_imgTextures);
-        delete[] m_imgTextures; m_imgTextures = NULL;
+        glDeleteTextures (m_dz, m_img_textures);
+        delete[] m_img_textures; m_img_textures = NULL;
       }
 
       if (image != NULL)
       {
-        const unsigned short d1x = image->dx ();
-        const unsigned short d1y = image->dy ();
-        const unsigned short d1z = image->dz ();
-        const unsigned long d1xy = image->dxdy ();
+        const unsigned int d1x = image->dx ();
+        const unsigned int d1y = image->dy ();
+        const unsigned int d1z = image->dz ();
 
-        unsigned short d2x = (1 << (unsigned short) ceil (log2 (d1x)));
-        unsigned short d2y = (1 << (unsigned short) ceil (log2 (d1y)));
+        unsigned int d2x = (1 << (unsigned int) ceil (log2 (d1x)));
+        unsigned int d2y = (1 << (unsigned int) ceil (log2 (d1y)));
 
         m_dz = d1z;
-        m_imgTextures = new GLuint [d1z];
-        glGenTextures (d1z, m_imgTextures);
-        m_imgScales [0] = (double) d1x / d2x;
-        m_imgScales [1] = (double) d1y / d2y;
+        m_img_textures = new GLuint [d1z];
+        glGenTextures (d1z, m_img_textures);
+        m_img_scales [0] = (double) d1x / d2x;
+        m_img_scales [1] = (double) d1y / d2y;
         m_box = image->box ();
 
         glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
-        const unsigned char * b = image->begin ();
-        for (unsigned short z = 0; z < d1z; ++z, b += d1xy)
+        const unsigned char * b = (const unsigned char *) image->begin ();
+        for (unsigned int z = 0; z < d1z; ++z, b += d1x * d1y)
         {
-          glBindTexture (GL_TEXTURE_2D, m_imgTextures [z]);
+          glBindTexture (GL_TEXTURE_2D, m_img_textures [z]);
           glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
           glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
           glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -176,7 +175,7 @@ namespace Aa
     {
       if (lut == NULL) return;
       const unsigned char * l1 = lut->data ();
-      unsigned char * l2 = m_lutData;
+      unsigned char * l2 = m_lut;
       for (unsigned short k = 256; k--; l1 += 4)
       {
 #ifdef MODE_MIP
@@ -208,8 +207,8 @@ namespace Aa
       glMatrixMode (GL_TEXTURE);
       glPushMatrix ();
       glLoadIdentity ();
-      glBindTexture (GL_TEXTURE_2D, m_imgTextures [0]);
-      glScaled (m_imgScales [0], m_imgScales [1], 1.0);
+      glBindTexture (GL_TEXTURE_2D, m_img_textures [0]);
+      glScaled (m_img_scales [0], m_img_scales [1], 1.0);
 
       // Then we switch back to the previous matrix mode.
       glMatrixMode (GL_MODELVIEW); // matrixMode
@@ -240,7 +239,7 @@ namespace Aa
 
       // Transfer function.
       glEnable (GL_SHARED_TEXTURE_PALETTE_EXT);
-      glColorTableEXT (GL_SHARED_TEXTURE_PALETTE_EXT, GL_RGBA, 256, GL_RGBA, GL_UNSIGNED_BYTE, m_lutData);
+      glColorTableEXT (GL_SHARED_TEXTURE_PALETTE_EXT, GL_RGBA, 256, GL_RGBA, GL_UNSIGNED_BYTE, m_lut);
 
 #ifdef MODE_MIP
       // Bounding box vertices.
@@ -292,7 +291,7 @@ namespace Aa
           inter [0][2] = k; inter [1][2] = k;
           inter [2][2] = k; inter [3][2] = k;
           // Texture binding.
-          glBindTexture (GL_TEXTURE_2D, m_imgTextures [z]);
+          glBindTexture (GL_TEXTURE_2D, m_img_textures [z]);
           // glQuad.
           glBegin (GL_QUADS);
           glTexCoord2dv (inter [0]); glVertex3dv (inter [0]);
@@ -307,7 +306,7 @@ namespace Aa
           inter [0][2] = k; inter [1][2] = k;
           inter [2][2] = k; inter [3][2] = k;
           // Texture binding.
-          glBindTexture (GL_TEXTURE_2D, m_imgTextures [z]);
+          glBindTexture (GL_TEXTURE_2D, m_img_textures [z]);
           // The transfer function is up to date.
           // glQuad.
           glBegin (GL_QUADS);

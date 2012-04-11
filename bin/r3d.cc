@@ -14,8 +14,8 @@ int main (int argc, char ** argv)
   //glutCreateWindow ("R3d!");
 
   string lut = "default.lut";
-  float box [3] = {1.0, 1.0, 1.0};
-  float ref [3] = {1.0, 1.0, 1.0};
+  double box [3] = {1.0, 1.0, 1.0};
+  //double ref [3] = {1.0, 1.0, 1.0};
   CmdLine::Parser p ("AaR3d 1.0", 1, 1);
   try
   {
@@ -26,7 +26,7 @@ int main (int argc, char ** argv)
     //my_init (arguments.front (), lut, box, ref);
     
     QApplication application (argc, argv);
-    R3d::QR3d r3d (arguments.front (), lut, Math::vR3 (box [0], box [1], box [2]));
+    R3d::QR3d r3d (arguments.front (), lut, vec (box [0], box [1], box [2]));
     r3d.setWindowTitle ("R3d!");
     r3d.show ();
     return application.exec ();

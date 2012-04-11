@@ -66,11 +66,11 @@ namespace Aa
       if (image != NULL)
       {
         // Camera.
-        const Box & box = image->box ();
-        const pR3 & pos = box.pos ();
-        const vR3 & dim = box.dim ();
-        setSceneBoundingBox (qglviewer::Vec (pos.x,         pos.y,         pos.z),
-                             qglviewer::Vec (pos.x + dim.x, pos.y + dim.y, pos.z + dim.z));
+        const dbox3 & box = image->box ();
+        const dvec3 & pos = box.pos ();
+        const dvec3 & dim = box.dim ();
+        setSceneBoundingBox (qglviewer::Vec (pos[0],          pos[1],          pos[2]),
+                             qglviewer::Vec (pos[0] + dim[0], pos[1] + dim[1], pos[2] + dim[2]));
 
         showEntireScene ();
       }
@@ -133,12 +133,7 @@ namespace Aa
         if (m_fast || m_timer.isActive ())
           this->fastDraw ();
         else
-        {
-          GLenum e1 = glGetError ();
           m_renderer->glDraw (false);
-          GLenum e2 = glGetError ();
-          cerr << gluErrorString (e1) << ':' << gluErrorString (e2) << endl;
-        }
 
         m_fbo->release ();
         QRect r = QRect (QPoint (0, 0), m_fbo->size ());
@@ -151,10 +146,7 @@ namespace Aa
       if (m_renderer != NULL)
       {
         m_timer.stop ();
-        GLenum e1 = glGetError ();
         m_renderer->glDraw (true);
-        GLenum e2 = glGetError ();
-        cerr << gluErrorString (e1) << ':' << gluErrorString (e2) << endl;
         m_timer.start ();
       }
     }

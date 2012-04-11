@@ -314,10 +314,10 @@ namespace Aa
 #if 0
       // The 2 loops (fill with zeros).
       unsigned short vy = dy - sy;
-      fill (dst, dst + dxdydz, 0);
+      std::fill (dst, dst + dxdydz, 0);
       unsigned long dxvy = dx * vy;
       for (unsigned short z = sz; z--; d += dxvy)
-        for (unsigned short y = sy; y--; d += dx) copy (s, s += sx, d);
+        for (unsigned short y = sy; y--; d += dx) std::copy (s, s += sx, d);
 #else
       // The 2 loops (copy border).
       unsigned short vx = dx - sx;
@@ -327,15 +327,15 @@ namespace Aa
       {
         for (unsigned short y = sy; y--;)
         {
-          d = copy (s, s + sx, d); s += sx;
+          d = std::copy (s, s + sx, d); s += sx;
           unsigned char c = d [-1]; // crash if sx < 1
-          fill (d, d + vx, c); d += vx;
+          std::fill (d, d + vx, c); d += vx;
         }
         for (unsigned short y = vy; y--;)
-          d = copy (d - dx, d, d); // crash if sy < 1
+          d = std::copy (d - dx, d, d); // crash if sy < 1
       }
       for (unsigned short z = vz; z--;)
-        d = copy (d - dxdy, d, d); // crash if sz < 1
+        d = std::copy (d - dxdy, d, d); // crash if sz < 1
 #endif
       return dst;
     }
@@ -361,20 +361,20 @@ namespace Aa
       unsigned char * d = dst;
 #if 0
       // The loop (fill with zeros).
-      fill (dst, dst + sxdydz, 0);
-      for (unsigned short z = sz; z--; d += sxdy) copy (s, s += sxsy, d);
+      std::fill (dst, dst + sxdydz, 0);
+      for (unsigned short z = sz; z--; d += sxdy) std::copy (s, s += sxsy, d);
 #else
       unsigned short vy = dy - sy;
       unsigned short vz = dz - sz;
       // The loop (copy border).
       for (unsigned short z = sz; z--;)
       {
-        d = copy (s, s + sxsy, d); s += sxsy;
+        d = std::copy (s, s + sxsy, d); s += sxsy;
         for (unsigned short y = vy; y--;)
-          d = copy (d - sx, d, d); // crash if sy < 1
+          d = std::copy (d - sx, d, d); // crash if sy < 1
       }
       for (unsigned short z = vz; z--;)
-        d = copy (d - sxdy, d, d); // crash if sz < 1
+        d = std::copy (d - sxdy, d, d); // crash if sz < 1
 #endif
       return dst;
     }
@@ -396,15 +396,15 @@ namespace Aa
       unsigned char * dst = new unsigned char [sxsydz];
 #if 0
       // Simple copy.
-      fill (dst, dst + sxsydz, 0);
-      copy (src, src + sxsy * sz, dst);
+      std::fill (dst, dst + sxsydz, 0);
+      std::copy (src, src + sxsy * sz, dst);
 #else
       // Simple copy.
       unsigned char * d = dst;
       unsigned short vz = dz - sz;
-      d = copy (src, src + sxsy * sz, d);
+      d = std::copy (src, src + sxsy * sz, d);
       for (unsigned short z = vz; z--;)
-        d = copy (d - sxsy, d, d); // crash if sz < 1
+        d = std::copy (d - sxsy, d, d); // crash if sz < 1
 #endif
       return dst;
     }
@@ -419,7 +419,7 @@ namespace Aa
 #endif
       unsigned long sxsysz = sx * sy * sz;
       unsigned char * dst = new unsigned char [sxsysz];
-      copy (src, src + sxsysz, dst);
+      std::copy (src, src + sxsysz, dst);
       return dst;
     }
 
@@ -450,7 +450,7 @@ namespace Aa
     {
       m_steps [0] = 1.0;
       m_steps [1] = 8.0;
-      copy (DEFAULT_BOX_COLOR, DEFAULT_BOX_COLOR + 4, m_box_color);
+      std::copy (DEFAULT_BOX_COLOR, DEFAULT_BOX_COLOR + 4, m_box_color);
       this->setImg (img);
       this->setLut (lut);
     }
@@ -494,37 +494,18 @@ namespace Aa
         glTexParameteri (GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri (GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         glTexParameteri (GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-#ifdef GL_SGIS_generate_mipmap
-        /*if (Extensions::supports ("GL_SGIS_generate_mipmap"))
-          {
-            cout << "SGIS_generate_mipmap : on\n";
-            glTexParameteri (GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            glTexParameteri (GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-            glTexParameteri (GL_TEXTURE_3D, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
-            //cout << "glTexParameter (GL_GENERATE_MIPMAP_SGIS) : " << gluErrorString (glGetError ()) << endl;
-          }
-        else*/
-#endif
-          {
-            //cout << "SGIS_generate_mipmap : off\n";
-            //GLint interpolation = m_interpolation ? GL_LINEAR : GL_NEAREST;
-            glTexParameteri (GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            glTexParameteri (GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-          }
-        //const Lut & lut = m_r8->lut ();
-        //glColorTable (GL_TEXTURE_3D, GL_RGBA, 256, GL_RGBA, GL_UNSIGNED_BYTE, lut.data ());
-        //cout << "glColorTable : " << gluErrorString (glGetError ()) << endl;
-        const unsigned char * b2 = padImage3d (d1x, d1y, d1z, img->begin (), d2x, d2y, d2z);
+        glTexParameteri (GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri (GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+        const unsigned char * b1 = (const unsigned char *) img->begin ();
+        const unsigned char * b2 = padImage3d (d1x, d1y, d1z, b1, d2x, d2y, d2z);
         glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
-#ifdef PRE_CLASSIFICATION
-        glTexImage3D (GL_TEXTURE_3D, 0,
-                      GL_COLOR_INDEX8_EXT, d2x, d2y, d2z, 0,
-                      GL_COLOR_INDEX, GL_UNSIGNED_BYTE, b2);
-#else
         glTexImage3D (GL_TEXTURE_3D, 0,
                       GL_LUMINANCE8_EXT, d2x, d2y, d2z, 0,
                       GL_LUMINANCE, GL_UNSIGNED_BYTE, b2);
-#endif
+
+        glGenerateMipmap (GL_TEXTURE_3D);
+
         //cout << "glTexImage3D : " << gluErrorString (glGetError ()) << endl;
         delete[] b2;
       }
@@ -626,8 +607,8 @@ namespace Aa
 
     void ImageRenderer3d::glSlice_ObjectAligned_X (bool motion) const
     {
-      const vR3 & dim = m_box.dim ();
-      double step = m_steps [motion ? 1 : 0] / dim.x;
+      const dvec3 & dim = m_box.dim ();
+      double step = m_steps [motion ? 1 : 0] / dim[0];
       for (double x1 = 0.5 * fmod (1.0, step), x2 = 1.0 - x1; x2 >= 0.0; x1 += step, x2 -= step)
       {
         glBegin (GL_QUADS);
@@ -639,8 +620,8 @@ namespace Aa
 
     void ImageRenderer3d::glSlice_ObjectAligned_Y (bool motion) const
     {
-      const vR3 & dim = m_box.dim ();
-      double step = m_steps [motion ? 1 : 0] / dim.y;
+      const dvec3 & dim = m_box.dim ();
+      double step = m_steps [motion ? 1 : 0] / dim[1];
       for (double y1 = 0.5 * fmod (1.0, step), y2 = 1.0 - y1; y2 >= 0.0; y1 += step, y2 -= step)
       {
         glBegin (GL_QUADS);
@@ -652,8 +633,8 @@ namespace Aa
 
     void ImageRenderer3d::glSlice_ObjectAligned_Z (bool motion) const
     {
-      const vR3 & dim = m_box.dim ();
-      double step = m_steps [motion ? 1 : 0] / dim.z;
+      const dvec3 & dim = m_box.dim ();
+      double step = m_steps [motion ? 1 : 0] / dim[2];
       for (double z1 = 0.5 * fmod (1.0, step), z2 = 1.0 - z1; z2 >= 0.0; z1 += step, z2 -= step)
       {
         glBegin (GL_QUADS);
@@ -756,17 +737,16 @@ namespace Aa
         }
     }
 
-    void __glSlice_ViewAligned_Tetra_aux2 (const pR3 & v0, const pR3 & v1, GLfloat z0, GLfloat z1, GLfloat z)
+    void __glSlice_ViewAligned_Tetra_aux2 (const vec3 & v0, const vec3 & v1, GLfloat z0, GLfloat z1, GLfloat z)
     {
       GLfloat k = (z - z0) / (z1 - z0);
-      //pR3 v (v0 + k * (v1 - v0));
-      //glVertex3d (v.x, v.y, v.z);
-      glVertex3f (v0.x + k * (v1.x - v0.x),
-                  v0.y + k * (v1.y - v0.y),
-                  v0.z + k * (v1.z - v0.z));
+      GL::Vertex (dvec3 (v0 + k * (v1 - v0)));
+      //glVertex3f (v0.x + k * (v1.x - v0.x),
+      //            v0.y + k * (v1.y - v0.y),
+      //            v0.z + k * (v1.z - v0.z));
     }
 
-    void __glSlice_ViewAligned_Tetra_aux1 (const pR3 V [8], const GLfloat Z [8], GLfloat z, int i0, int i1, int i2, int i3)
+    void __glSlice_ViewAligned_Tetra_aux1 (const vec3 V [8], const GLfloat Z [8], GLfloat z, int i0, int i1, int i2, int i3)
     {
       int flags = 0x00;
       if (Z [i0] < z) flags |= 1;
@@ -863,19 +843,20 @@ namespace Aa
 
     void ImageRenderer3d::glSlice_ViewAligned_Tetra (bool motion) const
     {
-      GLdouble m3d [16];
-      glGetDoublev (GL_MODELVIEW_MATRIX, m3d);
+      GLfloat m3d [16];
+      glGetFloatv (GL_MODELVIEW_MATRIX, m3d);
 
       // Cube vertices.
-      static const pR3 V [8] = {
-        pR3 (0.0, 0.0, 0.0),
-        pR3 (1.0, 0.0, 0.0),
-        pR3 (0.0, 1.0, 0.0),
-        pR3 (1.0, 1.0, 0.0),
-        pR3 (0.0, 0.0, 1.0),
-        pR3 (1.0, 0.0, 1.0),
-        pR3 (0.0, 1.0, 1.0),
-        pR3 (1.0, 1.0, 1.0)
+      static const vec3 V [8] =
+      {
+        vec (0.0f, 0.0f, 0.0f),
+        vec (1.0f, 0.0f, 0.0f),
+        vec (0.0f, 1.0f, 0.0f),
+        vec (1.0f, 1.0f, 0.0f),
+        vec (0.0f, 0.0f, 1.0f),
+        vec (1.0f, 0.0f, 1.0f),
+        vec (0.0f, 1.0f, 1.0f),
+        vec (1.0f, 1.0f, 1.0f)
       };
 
       // Projected cube vertices.
@@ -907,21 +888,21 @@ namespace Aa
 
     void ImageRenderer3d::glSlice_ViewAligned_Naive (bool motion) const
     {
-      GLdouble m3d [16];
-      glGetDoublev (GL_MODELVIEW_MATRIX, m3d);
+      GLfloat m3d [16];
+      glGetFloatv (GL_MODELVIEW_MATRIX, m3d);
 
       // Projected cube vertices.
-      pR3 projVertices [8];
+      vec3 projVertices [8];
       for (int i = 0; i < 8; ++i)
-        projVertices [i] = pR3 ((i & 1 ? m3d [0] : 0) + (i & 2 ? m3d [4] : 0) + (i & 4 ? m3d [ 8] : 0) + m3d [12],
+        projVertices [i] = vec ((i & 1 ? m3d [0] : 0) + (i & 2 ? m3d [4] : 0) + (i & 4 ? m3d [ 8] : 0) + m3d [12],
                                 (i & 1 ? m3d [1] : 0) + (i & 2 ? m3d [5] : 0) + (i & 4 ? m3d [ 9] : 0) + m3d [13],
                                 (i & 1 ? m3d [2] : 0) + (i & 2 ? m3d [6] : 0) + (i & 4 ? m3d [10] : 0) + m3d [14]);
 
       // Maximum and minimum depths.
-      GLfloat zMin = projVertices [0].z, zMax = zMin;
+      GLfloat zMin = projVertices [0][2], zMax = zMin;
       for (int i = 1; i < 8; ++i)
         {
-          GLfloat z = projVertices [i].z;
+          GLfloat z = projVertices [i][2];
           if (z < zMin) zMin = z;
           if (z > zMax) zMax = z;
         }
@@ -934,7 +915,7 @@ namespace Aa
       };
 
       // Bounding box depth per edge.
-      pR3 projEdgeVertices [12][2];
+      vec3 projEdgeVertices [12][2];
       for (int i = 0; i < 12; ++i)
       {
         projEdgeVertices [i][0] = projVertices [EDGE_VERTICES [i][0]];
@@ -955,7 +936,7 @@ namespace Aa
         {1.0, 0.0, NAN},  // 10
         {1.0, 1.0, NAN}}; // 11
 
-      pR3 projEdgeIntersections [12];
+      vec3 projEdgeIntersections [12];
 
       // Back-to-Front.
       GLfloat step = m_steps [motion ? 1 : 0];
@@ -964,10 +945,10 @@ namespace Aa
           vector<EdgeIndex> realIntersections;
           for (int i = 0; i < 12; ++i)
           {
-            GLfloat dz = projEdgeVertices [i][0].z - projEdgeVertices [i][1].z;
+            GLfloat dz = projEdgeVertices [i][0][2] - projEdgeVertices [i][1][2];
             if (dz != 0.0)
             {
-              GLfloat k = (projEdgeVertices [i][0].z - z) / dz;
+              GLfloat k = (projEdgeVertices [i][0][2] - z) / dz;
               if (k >= 0.0 && k <= 1.0)
               {
                 edgeIntersections [i][i >> 2] = k;
@@ -980,28 +961,24 @@ namespace Aa
           // B.M.E. Moret & H.D. Shapiro "P to NP" pp. 453
           int n = realIntersections.size ();
 
-          pR3 center (0.0, 0.0, 0.0);
+          vec2 center;
           for (int j = 0; j < n; ++j)
-          {
-            center.x += projEdgeIntersections [j].x;
-            center.y += projEdgeIntersections [j].y;
-          }
-          center.x /= n;
-          center.y /= n;
+            center += projEdgeIntersections [j];
+          center /= n;
 
           for (int j = 0; j < n; ++j){
             double theta = -10;
             int next = j;
             for (int k = j; k < n; ++k){
-              vR3 d = projEdgeIntersections [realIntersections [k]] - center;
-              if ((d.x == 0) && (d.y == 0)) {
+              vec2 d = projEdgeIntersections [realIntersections [k]] - center;
+              if ((d[0] == 0) && (d[1] == 0)) {
                 next = k;
                 cout << "What the--" << endl;
                 break;
               }
-              double tt = d.y / (fabs (d.x) + fabs (d.y));
-              if (d.x < 0.0) tt = 2.0 - tt;
-              else if (d.y < 0.0) tt = 4.0 + tt;
+              double tt = d[1] / (fabs (d[0]) + fabs (d[1]));
+              if (d[0] < 0.0) tt = 2.0 - tt;
+              else if (d[1] < 0.0) tt = 4.0 + tt;
               if (theta <= tt) {
                 next = k;
                 theta = tt;
@@ -1049,191 +1026,6 @@ namespace Aa
       glDisable (GL_TEXTURE_GEN_R);
     }
 
-#if 0
-    void ImageRenderer3d::glDraw (bool motion)
-    {
-      //cout << "--> " << __PRETTY_FUNCTION__ << endl;
-
-      glPushMatrix ();
-      GL::Translate (m_box.pos ());
-      GL::Scale     (m_box.dim ());
-      //cout << "pos = " << pos << ", dim = " << dim << endl;
-
-      GLuint displayList = glGenLists (1);
-      glNewList (displayList, GL_COMPILE);
-      this->glSlice (motion);
-      glEndList ();
-
-      if (m_textured)
-      {
-        // Lighting OFF.
-        glDisable (GL_LIGHTING);
-        // Blending ON.
-        glEnable (GL_BLEND);
-        glDepthMask (GL_FALSE); //FIXME
-#ifdef MODE_MIP
-        // MIP blending equation.
-        glBlendEquation (GL_MIN); // GL_MAX
-#else
-        // Alpha test ON.
-        //glEnable (GL_ALPHA_TEST);
-        //glAlphaFunc (GL_GREATER, 0.0); //1.0 - pow (0.7, step));
-        glBlendEquation (GL_FUNC_ADD);
-        glBlendFunc (GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-#endif
-
-#ifdef MODE_MIP
-        // Bounding box faces.
-        static const unsigned char bbf [] = {
-          0, 1, 3, 2,  // Far
-          0, 2, 6, 4,  // Left
-          4, 6, 7, 5,  // Near
-          1, 5, 7, 3,  // Right
-          0, 4, 5, 1,  // Down
-          2, 3, 7, 6}; // Up
-
-        // Bounding box background (BBB).
-        glColor4f (1.0, 1.0, 1.0, 0.0); // FIXME: min
-        //glColor4f (0.0, 0.0, 0.0, 0.0); // FIXME: max
-        glEnableClientState (GL_VERTEX_ARRAY);
-        glVertexPointer (3, GL_DOUBLE, 0, bbv);
-        glDrawElements (GL_QUADS, 24, GL_UNSIGNED_BYTE, bbf);
-        glDisableClientState (GL_VERTEX_ARRAY);
-#endif
-
-#ifdef MODE_MIP
-        const Lut & lut = m_r8->lut ();
-        const unsigned char * l1 = lut.data ();
-        unsigned char newLut [1024], * l2 = newLut;
-        for (unsigned short k = 256; k--;)
-          {
-            l2 = copy (l1, l1 + 3, l2); l1 += 4;
-            *(l2++) = 255;
-          }
-        glColorTable (GL_TEXTURE_3D, GL_RGB, 256, GL_RGB, GL_UNSIGNED_BYTE, newLut);
-#else
-#ifdef PRE_CLASSIFICATION
-        const Lut & lut = m_r8->lut ();
-        const unsigned char * l1 = lut.data ();
-        unsigned char newLut [1024], * l2 = newLut;
-        for (unsigned short k = 256; k--; l1 += 4)
-        {
-          float alpha = (1.0 - pow (1.0 - ((float) l1 [3] / 255), step));
-          //cout << (unsigned int) l1 [3] << " --> " << alpha << endl;
-          *(l2++) = (unsigned char) rint (alpha * l1 [0]);
-          *(l2++) = (unsigned char) rint (alpha * l1 [1]);
-          *(l2++) = (unsigned char) rint (alpha * l1 [2]);
-          *(l2++) = (unsigned char) rint (alpha * 255);
-        }
-        glColorTable (GL_TEXTURE_3D, GL_RGBA, 256, GL_RGBA, GL_UNSIGNED_BYTE, newLut);
-        //cout << "glColorTable : " << gluErrorString (glGetError ()) << endl;
-#else
-#ifdef POST_CLASSIFICATION
-        glActiveTexture (GL_TEXTURE1);
-        glBindTexture (GL_TEXTURE_1D, m_lutTextures [motion ? 1 : 0]);
-        glEnable (GL_TEXTURE_SHADER_NV);
-        glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-        glTexEnvi (GL_TEXTURE_SHADER_NV, GL_PREVIOUS_TEXTURE_INPUT_NV, GL_TEXTURE0);
-        glTexEnvi (GL_TEXTURE_SHADER_NV, GL_SHADER_OPERATION_NV, GL_DEPENDENT_AR_TEXTURE_2D_NV);
-#endif
-#endif
-#endif
-
-        // Texture3d ON.
-#ifdef POST_CLASSIFICATION
-        glEnable (GL_TEXTURE_SHADER_NV);
-        glActiveTexture (GL_TEXTURE0);
-#else
-        glEnable (GL_TEXTURE_3D);
-#endif
-
-        glBindTexture (GL_TEXTURE_3D, m_image_tex3d);
-        glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-        //cout << "glBindTexture : " << gluErrorString (glGetError ()) << endl;
-
-#ifdef POST_CLASSIFICATION
-        glTexEnvi (GL_TEXTURE_SHADER_NV, GL_SHADER_OPERATION_NV, GL_TEXTURE_3D);
-#endif
-
-        // We use the texture matrix to deal with the 2**k padding.
-        glMatrixMode (GL_TEXTURE);
-        glPushMatrix ();
-        glLoadIdentity ();
-        glScaled (m_image_scales [0], m_image_scales [1], m_image_scales [2]);
-        glMatrixMode (GL_MODELVIEW);
-
-        if (m_outlined)
-        {
-          glEnable (GL_POLYGON_OFFSET_FILL);
-          glPolygonOffset (1.0, 1.0);
-          glCallList (displayList);
-          glDisable (GL_POLYGON_OFFSET_FILL);
-        }
-        else
-          glCallList (displayList);
-
-        glDisable (GL_TEXTURE_3D);
-        glDisable (GL_BLEND);
-        glDepthMask (GL_TRUE);
-
-#ifdef MODE_MIP
-        glBlendEquation (GL_FUNC_ADD);
-#else
-        if (GLEW_EXT_blend_func_separate)
-          glBlendFuncSeparate (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA,
-                               GL_ONE,       GL_ONE_MINUS_SRC_ALPHA);
-        else
-          glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-#endif
-
-#ifdef POST_CLASSIFICATION
-        glActiveTexture (GL_TEXTURE0);
-        glDisable (GL_TEXTURE_SHADER_NV);
-#endif
-
-        glMatrixMode (GL_TEXTURE);
-        glPopMatrix ();
-        glMatrixMode (GL_MODELVIEW);
-      }
-
-      if (m_outlined)
-      {
-        // Draw lines.
-        GLint backup_glPolygonMode [2];
-        glGetIntegerv (GL_POLYGON_MODE, backup_glPolygonMode);
-        glPolygonMode (GL_FRONT_AND_BACK, GL_LINE);
-        // Bold lines.
-        GLfloat backup_glLineWidth;
-        glGetFloatv (GL_LINE_WIDTH, &backup_glLineWidth);
-        glLineWidth (4.0);
-        // Bold black lines.
-        glColor4f (0.0, 0.0, 0.0, 1.0);
-        // Feed with geometry.
-        glCallList (displayList);
-        // Restore previous state.
-        glPolygonMode (GL_FRONT, backup_glPolygonMode [0]);
-        glPolygonMode (GL_BACK,  backup_glPolygonMode [1]);
-        glLineWidth (backup_glLineWidth);
-      }
-
-      glDeleteLists (displayList, 1);
-      glPopMatrix ();
-
-      //cout << "<-- " << __PRETTY_FUNCTION__ << endl;
-
-      if (m_boxed)
-      {
-        // Bounding box.
-        GLfloat backup_glLineWidth;
-        glGetFloatv (GL_LINE_WIDTH, &backup_glLineWidth);
-        glLineWidth (4.0);
-        Lighting::color (m_box_color);
-        Primitives::box (m_box);
-        glLineWidth (backup_glLineWidth);
-      }
-    }
-#endif
-
     void ImageRenderer3d::glDraw (bool motion)
     {
       //cout << "--> " << __PRETTY_FUNCTION__ << endl;
@@ -1258,11 +1050,13 @@ namespace Aa
         glDepthMask (GL_FALSE); //FIXME
         // Alpha test ON.
         //glBlendEquation (GL_FUNC_ADD);
+#if 0
         if (GLEW_EXT_blend_func_separate)
           //glBlendFuncSeparate (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA,
           glBlendFuncSeparate (GL_ONE,       GL_ONE_MINUS_SRC_ALPHA,
                                GL_ONE,       GL_ONE_MINUS_SRC_ALPHA);
         else
+#endif
           //glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
           glBlendFunc (GL_ONE,       GL_ONE_MINUS_SRC_ALPHA);
 
@@ -1273,6 +1067,7 @@ namespace Aa
         glPushMatrix ();
         glLoadIdentity ();
         glScaled (m_image_scales [0], m_image_scales [1], m_image_scales [2]);
+
         glMatrixMode (GL_MODELVIEW);
 
         // Bind 2nd texture (lut1d).
@@ -1310,8 +1105,10 @@ namespace Aa
         else
           glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+        glActiveTexture (GL_TEXTURE0);
         glMatrixMode (GL_TEXTURE);
         glPopMatrix ();
+
         glMatrixMode (GL_MODELVIEW);
       }
 

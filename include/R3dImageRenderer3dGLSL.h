@@ -13,10 +13,10 @@ namespace Aa
       protected:
         int m_mode;
         GL::Program m_program;
-        GLuint m_table;
+        GLuint m_table_tex2d;
         bool m_blinn;
         float m_shininess;
-        Math::vR3 m_delta;
+        vec3 m_delta;
         
       protected:
         virtual void glSlice_ViewAligned_Cube (bool) const;
@@ -28,6 +28,8 @@ namespace Aa
         void setMode (int m) {m_mode = m;}
         bool lighting () const {return m_blinn;}
         void setLighting (bool b) {m_blinn = b;}
+        float shininess () const {return m_shininess;}
+        void setShininess (float f) {m_shininess = f;}
         virtual void glPreDraw (bool = false) const;
         virtual void glPostDraw (bool = false) const;
     };

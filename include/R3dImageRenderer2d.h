@@ -12,11 +12,11 @@ namespace Aa
     class AA_R3D_API ImageRenderer2d : public ImageRenderer
     {
       protected:
-        unsigned short m_dz;
-        GLuint *       m_imgTextures;
-        GLdouble       m_imgScales [2];
-        GLubyte        m_lutData [1024];
-        Math::Box      m_box;
+        unsigned int m_dz;
+        GLuint *     m_img_textures;
+        GLdouble     m_img_scales [2];
+        GLubyte      m_lut [1024];
+        dbox3        m_box;
      
       public:
         ImageRenderer2d (const Image * = NULL, const Lut * = NULL);

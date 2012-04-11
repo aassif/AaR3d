@@ -35,14 +35,14 @@ namespace Aa
         R3d::Lut         * m_lut;
 
       public:
-        QR3d (const std::string & image, const std::string & lut, const Math::vR3 & scale = Math::vR3 (1, 1, 1));
+        QR3d (const std::string & image, const std::string & lut, const dvec3 & scale = dvec3 (1));
         virtual ~QR3d ();
 
       public slots:
         void openImage ();
-        void setImage (R3d::Image        *,      const Math::vR3 & scale = Math::vR3 (1, 1, 1));
-        void setImage (const std::string & path, const Math::vR3 & scale = Math::vR3 (1, 1, 1));
-        void setImage (const QString     & path, const Math::vR3 & scale = Math::vR3 (1, 1, 1));
+        void setImage (R3d::Image        *,      const dvec3 & scale = dvec3 (1));
+        void setImage (const std::string & path, const dvec3 & scale = dvec3 (1));
+        void setImage (const QString     & path, const dvec3 & scale = dvec3 (1));
 
         void openLut ();
         void setLut (R3d::Lut *);

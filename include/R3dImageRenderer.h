@@ -14,6 +14,22 @@ namespace Aa
     class ImageRenderer : public Aa::GL::Plugin
     {
       public:
+        class ClippingPlane
+        {
+          public:
+            bool  active;
+            dvec3 point;
+            dvec3 normal;
+
+          public:
+            ClippingPlane (const dvec3 & p, const dvec3 & n);
+            bool test (const dvec3 &) const;
+        };
+
+      public:
+        std::vector<ClippingPlane> planes;
+
+      public:
         ImageRenderer ();
         virtual ~ImageRenderer ();
         virtual void setImg (const Image *) = 0;

@@ -124,7 +124,7 @@ namespace Aa
       //e->accept ();
     }
 
-    void QLutKnob::mouseDoubleClickEvent (QGraphicsSceneMouseEvent * e)
+    void QLutKnob::mouseDoubleClickEvent (QGraphicsSceneMouseEvent *)
     {
       QColor c = QColorDialog::getColor (m_color);
       if (c.isValid ())
@@ -338,8 +338,9 @@ namespace Aa
       emit computed (m_table);
     }
 
-    void QLutEditor::read (istream & is)
+    void QLutEditor::read (istream &)
     {
+      // TODO
       compute ();
     }
 
