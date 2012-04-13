@@ -1,3 +1,14 @@
-tools
-bin/.qglviewer.xml
-bin/*.glsl
+bin
+lib
+Win32
+CMakeFiles
+*.dir
+CMakeCache.txt
+*.cmake
+ipch
+*vcx*
+*.opensdf
+*.sdf
+*.sln
+*.suo
+*~

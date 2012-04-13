@@ -1,7 +1,7 @@
 #ifndef __AA_R3D_LUT__
 #define __AA_R3D_LUT__
 
-#include <GL/gl.h>
+#include <GL/glew.h>
 #include <AaException>
 #include "AaR3d.h"
 
