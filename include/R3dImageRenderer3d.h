@@ -27,7 +27,6 @@ namespace Aa
         typedef GLbyte VertexIndex;
         typedef GLbyte EdgeIndex;
         static const EdgeIndex TABLE [256][8];
-        static const float DEFAULT_BOX_COLOR [4];
 
       public:
         // Next slice mode.
@@ -42,11 +41,9 @@ namespace Aa
         GLuint  m_lut_tex1d [2];
         GLuint  m_lut_tex2d [2];
         dbox3   m_box;
-        float   m_box_color [4];
         Slice   m_slice;
-        bool    m_textured:1;
-        bool    m_outlined:1;
-        bool    m_boxed:1;
+        bool    m_textured;
+        bool    m_outlined;
 
       protected:
         virtual void glSlice_ObjectAligned_X   (bool) const;
@@ -77,9 +74,6 @@ namespace Aa
         // Textured.
         bool isTextured () const;
         void setTextured (bool);
-        // Bounding box.
-        bool isBoxed () const;
-        void setBoxed (bool);
     };
   } // namespace R3d
 } // namespace Aa

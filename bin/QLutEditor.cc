@@ -7,7 +7,6 @@
 #include <AaXml>
 #include "QLutEditor.h"
 
-#include <sstream>     // debug
 #include <QMessageBox> // debug
 
 using namespace std;
@@ -157,8 +156,7 @@ namespace Aa
       m_background (0, 0, 256, 256),
       m_path (),
       m_magic (NULL),
-      m_table (256),
-      m_enabled (true)
+      m_table (256)
     {
       // Checker.
       QImage checker (16, 16, QImage::Format_ARGB32);
@@ -175,7 +173,6 @@ namespace Aa
       // Path.
       m_path.setZValue (1);
       m_path.setPen (QPen (Qt::black, 1.5));
-      //m_path.setAcceptHoverEvents (true);
 
       m_scene.addItem (&m_background);
       m_scene.addItem (&m_path);
@@ -187,6 +184,7 @@ namespace Aa
       setSceneRect (0, 0, 256, 256);
       setRenderHints (QPainter::Antialiasing);
       setCacheMode (QGraphicsView::CacheBackground);
+      setMouseTracking (true);
       setWindowTitle ("QLutEditor");
 
       compute ();
@@ -429,18 +427,6 @@ namespace Aa
       this->fitInView (-MARGIN, -MARGIN, 256 + MARGIN, 256 + MARGIN, Qt::KeepAspectRatio);
     }
 
-    void QLutEditor::mousePressEvent (QMouseEvent * e)
-    {
-      QGraphicsView::mousePressEvent (e);
-      m_enabled = ! e->isAccepted ();
-    }
-
-    void QLutEditor::mouseReleaseEvent (QMouseEvent * e)
-    {
-      QGraphicsView::mouseReleaseEvent (e);
-      m_enabled = true;
-    }
-
     void QLutEditor::mouseMoveEvent (QMouseEvent * e)
     {
       QGraphicsView::mouseMoveEvent (e);
@@ -452,7 +438,7 @@ namespace Aa
         m_magic = NULL;
       }
 
-      if (m_enabled)
+      if (e->buttons () == Qt::NoButton)
       {
         QLutKnob * p0 = NULL;
         QPointF q = this->mapToScene (e->pos ());

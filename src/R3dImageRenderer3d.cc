@@ -433,8 +433,6 @@ namespace Aa
       /*---------*/ return padImage3d___ (sx, sy, sz, src            );
     }
 
-    const float ImageRenderer3d::DEFAULT_BOX_COLOR [] = {0.0, 0.0, 1.0, 0.25};
-
     ImageRenderer3d::ImageRenderer3d (const Image * img, const Lut * lut) :
       ImageRenderer (),
       m_image_tex3d (0),
@@ -442,15 +440,12 @@ namespace Aa
       m_lut_tex1d (),
       m_lut_tex2d (),
       m_box (),
-      m_box_color (),
       m_slice (SLICE_VIEW_CUBE),
       m_textured (true),
-      m_outlined (false),
-      m_boxed (true)
+      m_outlined (false)
     {
       m_steps [0] = 1.0;
       m_steps [1] = 8.0;
-      std::copy (DEFAULT_BOX_COLOR, DEFAULT_BOX_COLOR + 4, m_box_color);
       this->setImg (img);
       this->setLut (lut);
     }
@@ -601,9 +596,6 @@ namespace Aa
 
     bool ImageRenderer3d::isTextured () const {return m_textured;}
     void ImageRenderer3d::setTextured (bool b) {m_textured = b;}
-
-    bool ImageRenderer3d::isBoxed () const {return m_boxed;}
-    void ImageRenderer3d::setBoxed (bool b) {m_boxed = b;}
 
     void ImageRenderer3d::glSlice_ObjectAligned_X (bool motion) const
     {
@@ -1135,19 +1127,6 @@ namespace Aa
 
       glDeleteLists (displayList, 1);
       glPopMatrix ();
-
-      if (m_boxed)
-      {
-        // Bounding box.
-        GLfloat backup_glLineWidth;
-        glGetFloatv (GL_LINE_WIDTH, &backup_glLineWidth);
-        glLineWidth (4.0);
-        glDisable (GL_LIGHTING);
-        glColor4fv (m_box_color);
-        //GL::Lighting::Color (m_box_color);
-        GL::Primitives::Box (m_box);
-        glLineWidth (backup_glLineWidth);
-      }
 
       //cout << "<-- " << __PRETTY_FUNCTION__ << endl;
     }

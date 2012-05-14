@@ -86,7 +86,6 @@ namespace Aa
         QGraphicsPathItem m_path;
         QLutKnob * m_magic;
         QVector<QColor> m_table;
-        bool m_enabled;
 
       protected:
         QLutKnob * project (QLutKnob *, QLutKnob *, const QPointF &);
@@ -119,8 +118,6 @@ namespace Aa
       protected:
         virtual void resizeEvent (QResizeEvent *);
         virtual void mouseMoveEvent    (QMouseEvent *);
-        virtual void mousePressEvent   (QMouseEvent *);
-        virtual void mouseReleaseEvent (QMouseEvent *);
         //virtual void keyPressEvent (QKeyEvent *);
     };
 
