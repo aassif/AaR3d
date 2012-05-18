@@ -67,7 +67,7 @@ namespace Aa
   #endif
 
       m_program.link ();
-      m_program.validate ();
+      //m_program.validate ();
 #endif
     }
 
