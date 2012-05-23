@@ -60,6 +60,61 @@ namespace Aa
       m_fast = f;
     }
 
+    void QImageRenderer::setRenderer (RendererType type)
+    {
+      if (m_renderer != NULL)
+      {
+        delete m_renderer;
+        m_renderer = NULL;
+      }
+
+      string vertex   = GL::Program::ReadSource ("shaders/PassThru.VertexShader.glsl");
+      string geometry = GL::Program::ReadSource ("shaders/McSlicing.GeometryShader.glsl");
+      string fragment;
+
+      switch (type)
+      {
+        case RENDERER_TEXTURE :
+          fragment = GL::Program::ReadSource ("shaders/Texture3d.FragmentShader.glsl");
+          m_renderer = new R3d::ImageRenderer3dGLSL (vertex, geometry, fragment);
+          break;
+
+        case RENDERER_POST_CLASSIFICATION:
+          fragment = GL::Program::ReadSource ("shaders/PostClassification.FragmentShader.glsl");
+          m_renderer = new R3d::PostClassification (vertex, geometry, fragment);
+          break;
+
+        case RENDERER_PRE_INTEGRATION:
+          fragment = GL::Program::ReadSource ("shaders/PreIntegration.FragmentShader.glsl");
+          m_renderer = new R3d::PreIntegration (vertex, geometry, fragment);
+          break;
+
+        case RENDERER_BLINN:
+          fragment = GL::Program::ReadSource ("shaders/Blinn.FragmentShader.glsl");
+          m_renderer = new R3d::Blinn (vertex, geometry, fragment);
+          break;
+
+        case RENDERER_RAINBOW:
+          fragment = GL::Program::ReadSource ("shaders/Rainbow.FragmentShader.glsl");
+          m_renderer = new R3d::Rainbow (vertex, geometry, fragment);
+          break;
+
+        case RENDERER_MIP:
+          fragment = GL::Program::ReadSource ("shaders/Texture3d.FragmentShader.glsl");
+          m_renderer = new R3d::MIP (vertex, geometry, fragment, GL_MAX);
+          break;
+
+        default:
+          break;
+      }
+
+      if (m_renderer != NULL)
+      {
+        m_renderer->setImg (m_image);
+        m_renderer->setLut (m_lut);
+      }
+    }
+
     void QImageRenderer::setImage (const R3d::Image * image)
     {
       m_image = image;
@@ -95,8 +150,8 @@ namespace Aa
     void QImageRenderer::init ()
     {
       glewInit ();
-      //glClearColor (0.0, 0.0, 0.0, 0.0);
-      glClearColor (1.0, 1.0, 1.0, 0.0);
+      glClearColor (0.0, 0.0, 0.0, 0.0);
+      //glClearColor (1.0, 1.0, 1.0, 0.0);
       glEnable (GL_CULL_FACE);
 
       cout << glGetString (GL_VENDOR) << endl;
@@ -105,7 +160,8 @@ namespace Aa
       cout << glGetString (GL_EXTENSIONS) << endl;
 
       // Renderer.
-      m_renderer = new R3d::ImageRenderer3dGLSL (m_image, m_lut);
+      this->setRenderer (RENDERER_PRE_INTEGRATION);
+      //this->setRenderer (RENDERER_BLINN);
     }
 
     void QImageRenderer::resizeGL (int w, int h)
@@ -155,15 +211,19 @@ namespace Aa
     {
       switch (e->key ())
       {
+#if 0
         case Qt::Key_Space:
           m_renderer->setLighting (! m_renderer->lighting ());
           updateGL ();
           break;
+#endif
 
-        case Qt::Key_1: m_renderer->setMode (0); updateGL (); break;
-        case Qt::Key_2: m_renderer->setMode (1); updateGL (); break;
-        case Qt::Key_3: m_renderer->setMode (2); updateGL (); break;
-        case Qt::Key_4: m_renderer->setMode (3); updateGL (); break;
+        case Qt::Key_0: this->setRenderer (RENDERER_TEXTURE);             updateGL (); break;
+        case Qt::Key_1: this->setRenderer (RENDERER_POST_CLASSIFICATION); updateGL (); break;
+        case Qt::Key_2: this->setRenderer (RENDERER_PRE_INTEGRATION);     updateGL (); break;
+        case Qt::Key_3: this->setRenderer (RENDERER_BLINN);               updateGL (); break;
+        case Qt::Key_4: this->setRenderer (RENDERER_MIP);                 updateGL (); break;
+        case Qt::Key_5: this->setRenderer (RENDERER_RAINBOW);             updateGL (); break;
 
         case Qt::Key_Escape:
           qApp->exit ();

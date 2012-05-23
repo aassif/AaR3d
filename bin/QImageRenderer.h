@@ -16,7 +16,11 @@
 //#include <QFileDialog>
 #include <QGLViewer/qglviewer.h>
 //#include "QLutEditor.h"
-#include "R3dImageRenderer3dGLSL.h"
+#include "R3dPostClassification.h"
+#include "R3dPreIntegration.h"
+#include "R3dBlinn.h"
+#include "R3dMIP.h"
+#include "R3dRainbow.h"
 
 namespace Aa
 {
@@ -26,6 +30,17 @@ namespace Aa
     class QImageRenderer : public QGLViewer
     {
       Q_OBJECT
+
+      public:
+        enum RendererType
+        {
+          RENDERER_TEXTURE,
+          RENDERER_POST_CLASSIFICATION,
+          RENDERER_PRE_INTEGRATION,
+          RENDERER_BLINN,
+          RENDERER_RAINBOW,
+          RENDERER_MIP
+        };
 
       private:
         bool                       m_fast;
@@ -44,6 +59,7 @@ namespace Aa
 
       public slots:
         void setFast (bool);
+        void setRenderer (RendererType);
         void setImage (const R3d::Image *);
         void setLut (const R3d::Lut *);
 

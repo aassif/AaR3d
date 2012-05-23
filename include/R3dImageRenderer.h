@@ -29,6 +29,10 @@ namespace Aa
       public:
         std::vector<ClippingPlane> planes;
 
+      protected:
+        virtual void glPreDraw (bool) = 0;
+        virtual void glPostDraw (bool) = 0;
+
       public:
         ImageRenderer ();
         virtual ~ImageRenderer ();
