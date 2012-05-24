@@ -44,25 +44,10 @@ include_directories(
 )
 
 # Include files.
-set(PROJECT_HDR
-  include/AaR3d.h
-  include/R3dImage.h
-  include/R3dImageRenderer.h
-  include/R3dImageRenderer2d.h
-  include/R3dImageRenderer3d.h
-  include/R3dImageRenderer3dGLSL.h
-  include/R3dLut.h
-)
+FILE(GLOB PROJECT_HDR "include/*.h" )
 
 # Source files.
-set(PROJECT_SRC
-  src/R3dImage.cc
-  src/R3dImageRenderer.cc
-  src/R3dImageRenderer2d.cc
-  src/R3dImageRenderer3d.cc
-  src/R3dImageRenderer3dGLSL.cc
-  src/R3dLut.cc
-)
+FILE(GLOB PROJECT_SRC "src/*.cc" )
 
 # Target generation.
 add_library(AaR3d
