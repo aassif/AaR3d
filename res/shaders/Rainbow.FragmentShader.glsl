@@ -1,7 +1,10 @@
 #version 130
 
 // Texture.
-uniform sampler3D image3d;
+uniform sampler3D image_tex3d;
+uniform mat4      image_scale;
+uniform float     image_min;
+uniform float     image_max;
 
 // Transfer function.
 uniform sampler1D lut1d;
@@ -11,15 +14,21 @@ uniform vec3 delta; // = vec3 (0.01, 0.01, 0.01);
 
 in vec4 mc_slicing_coords;
 
+// Window.
+float window (float x)
+{
+  return (x - image_min) / (image_max - image_min);
+}
+
 // Post-classification.
 vec4 post_classification (vec3 p0)
 {
   // Texture lookup.
-  vec4 t0 = gl_TextureMatrix[0] * vec4 (p0, 1);
-  float v0 = texture (image3d, t0.xyz) [0];
+  vec4 v = image_scale * vec4 (p0, 1);
+  float f = texture (image_tex3d, v.xyz) [0];
 
   // Lut lookup.
-  return texture (lut1d, v0);
+  return texture (lut1d, window (f));
 }
 
 // Gradient.

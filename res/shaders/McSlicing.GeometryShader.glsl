@@ -54,11 +54,8 @@ bool mc_slicing_vertex (float z, int k, int j)
   int e = mc_slicing_edge (k, j);
   if (e == -1) return false;
 
-  vec4 v = mc_slicing_vertex_aux (z, e);
-  mc_slicing_coords = v;
-  gl_Position    = gl_ModelViewProjectionMatrix * v;
-  //gl_TexCoord[0] = v;
-  //gl_FrontColor  = vec4 (0, 0, 0, 1);
+  mc_slicing_coords = mc_slicing_vertex_aux (z, e);
+  gl_Position = gl_ModelViewProjectionMatrix * mc_slicing_coords;
   EmitVertex ();
 
   return true;

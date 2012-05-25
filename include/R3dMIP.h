@@ -21,7 +21,7 @@ namespace Aa
         MIP (const std::string & vertex,
              const std::string & geometry,
              const std::string & fragment,
-             GLenum mode);
+             GLenum mode = GL_MAX);
         virtual ~MIP ();
     };
   } // namespace R3d

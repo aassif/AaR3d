@@ -11,7 +11,9 @@ namespace Aa
                                               const std::string & geometry,
                                               const std::string & fragment) :
       ImageRenderer3d (),
-      m_program ()
+      m_program (),
+      m_min (0.0f),
+      m_max (1.0f)
     {
       cout << "ImageRenderer3dGLSL (Powered by GLSL!)\n";
 
@@ -29,6 +31,12 @@ namespace Aa
     {
     }
 
+    void ImageRenderer3dGLSL::setWindow (GLfloat min, GLfloat max)
+    {
+      m_min = min;
+      m_max = max;
+    }
+
     void ImageRenderer3dGLSL::glPreDraw (bool motion)
     {
       //cout << "--> " << __PRETTY_FUNCTION__ << endl;
@@ -36,7 +44,10 @@ namespace Aa
       ImageRenderer3d::glPreDraw (motion);
 
       m_program.use ();
-      m_program.set<GLint> ("image3d", 0);
+      m_program.set<GLint>         ("image_tex3d", 0);
+      m_program.set<GLfloat, 4, 4> ("image_scale", Scale (m_image_scale));
+      m_program.set<GLfloat>       ("image_min",   m_min);
+      m_program.set<GLfloat>       ("image_max",   m_max);
 
       //cout << "<-- " << __PRETTY_FUNCTION__ << endl;
     }

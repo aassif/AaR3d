@@ -133,8 +133,8 @@ namespace Aa
       glBindTexture (GL_TEXTURE_3D, m_image_tex3d);
       glMatrixMode (GL_TEXTURE);
       glPushMatrix ();
-      glLoadIdentity ();
-      glScaled (m_image_scale [0], m_image_scale [1], m_image_scale [2]);
+      //glLoadIdentity ();
+      GL::Scale (m_image_scale);
 
       glMatrixMode (GL_MODELVIEW);
 

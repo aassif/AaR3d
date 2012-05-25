@@ -1,26 +1,32 @@
 #version 130
 
 // Texture.
-uniform sampler3D image3d;
+uniform sampler3D image_tex3d;
+uniform mat4      image_scale;
+uniform float     image_min;
+uniform float     image_max;
 
 // Transfer function.
 uniform sampler1D lut1d;
 
 in vec4 mc_slicing_coords;
 
-// Post-classification.
-vec4 post_classification ()
+// Window.
+float window (float x)
 {
-  // Texture lookup.
-  vec4 t0 = gl_TextureMatrix[0] * mc_slicing_coords;
-  float v0 = texture (image3d, t0.xyz) [0];
+  return (x - image_min) / (image_max - image_min);
+}
 
-  // Lut lookup.
-  return texture (lut1d, v0);
+// Post-classification.
+vec4 post_classification (vec4 p)
+{
+  vec4 v = image_scale * p;
+  float f = texture (image_tex3d, v.xyz) [0];
+  return texture (lut1d, window (f));
 }
 
 void main ()
 {
-  gl_FragColor = post_classification ();
+  gl_FragColor = post_classification (mc_slicing_coords);
 }
 

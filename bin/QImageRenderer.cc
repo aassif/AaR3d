@@ -52,6 +52,7 @@ namespace Aa
 
       if (m_fbo != NULL)
         delete m_fbo;
+
       //cout << "<<< " << __PRETTY_FUNCTION__ << endl;
     }
 
@@ -150,8 +151,8 @@ namespace Aa
     void QImageRenderer::init ()
     {
       glewInit ();
-      glClearColor (0.0, 0.0, 0.0, 0.0);
-      //glClearColor (1.0, 1.0, 1.0, 0.0);
+      //glClearColor (0.0, 0.0, 0.0, 0.0);
+      glClearColor (1.0, 1.0, 1.0, 0.0);
       glEnable (GL_CULL_FACE);
 
       cout << glGetString (GL_VENDOR) << endl;

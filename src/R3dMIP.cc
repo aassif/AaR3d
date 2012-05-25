@@ -1,3 +1,4 @@
+#include <AaPrimitives>
 #include "R3dMIP.h"
 
 using namespace std;
@@ -25,6 +26,11 @@ namespace Aa
     void MIP::glPreDraw (bool motion)
     {
       //cout << "--> " << __PRETTY_FUNCTION__ << endl;
+
+      glCullFace (GL_FRONT);
+      glColor3f (0.0f, 0.0f, 0.0f);
+      GL::Primitives::Box (m_box);
+      glCullFace (GL_BACK);
 
       ImageRenderer3dGLSL::glPreDraw (motion);
       glBlendEquation (m_mode);
