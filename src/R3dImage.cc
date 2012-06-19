@@ -80,17 +80,16 @@ namespace Aa
       if (int_w + 1 <   0) f = 0x00; else if (int_w     <   0) f &= (0x10 | 0x20 | 0x40 | 0x80);
       if (int_w     >= dz) f = 0x00; else if (int_w + 1 >= dz) f &= (0x01 | 0x02 | 0x04 | 0x08);
 
-      static const Mono8::Pixel ZERO = Mono8::Pixel (0);
       const Mono8::Pixel * d = m_image.begin () + ((int_w * dy + int_v) * dx + int_u); 
       return TriLinear (x - u, y - v, z - w,
-                        (f & 0x01) ? *(d                 ) : ZERO,
-                        (f & 0x02) ? *(d              + 1) : ZERO,
-                        (f & 0x04) ? *(d         + dx    ) : ZERO,
-                        (f & 0x08) ? *(d         + dx + 1) : ZERO,
-                        (f & 0x10) ? *(d + dx*dy         ) : ZERO,
-                        (f & 0x20) ? *(d + dx*dy      + 1) : ZERO,
-                        (f & 0x40) ? *(d + dx*dy + dx    ) : ZERO,
-                        (f & 0x80) ? *(d + dx*dy + dx + 1) : ZERO);
+                        (f & 0x01) ? d[             0][0] : 0,
+                        (f & 0x02) ? d[           + 1][0] : 0,
+                        (f & 0x04) ? d[      + dx    ][0] : 0,
+                        (f & 0x08) ? d[      + dx + 1][0] : 0,
+                        (f & 0x10) ? d[dx*dy         ][0] : 0,
+                        (f & 0x20) ? d[dx*dy      + 1][0] : 0,
+                        (f & 0x40) ? d[dx*dy + dx    ][0] : 0,
+                        (f & 0x80) ? d[dx*dy + dx + 1][0] : 0);
     }
 
     void ImageLoadB8 (Image * image, const string & filename)
@@ -107,7 +106,7 @@ namespace Aa
       unsigned short dz = 0;
       if (! f.read ((char *) &dz, sizeof (dz))) throw Aa::ParseError ("dz");
       // Resize buffer.
-      image->resize (vec<uint> (dx, dy, dz));
+      image->resize (vec<AaUInt> (dx, dy, dz));
       // Read data.
       if (! f.read ((char *) image->begin (), dx * dy * dz)) throw Aa::ParseError ("dat");
     }
