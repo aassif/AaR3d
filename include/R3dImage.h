@@ -15,26 +15,32 @@ namespace Aa
     class AA_R3D_API Image
     {
       public:
+        template <class T>
         inline static
-        double Linear (double du,
-                       double u0, double u1)
+        AA_PROMOTE(T,double) Linear (double du,
+                                     const T & u0, const T & u1)
         {
-          return u0 + du * (u1 - u0);
+          return (1.0 - du) * u0 + du * u1;
         }
 
+        template <class T>
         inline static
-        double BiLinear (double du, double dv,
-                         double u0, double u1, double v0, double v1)
+        AA_PROMOTE(T,double) BiLinear (double du, double dv,
+                                       const T & u0, const T & u1,
+                                       const T & v0, const T & v1)
         {
           return Linear (dv,
                          Linear (du, u0, u1),
                          Linear (du, v0, v1));
         }
 
+        template <class T>
         inline static
-        double TriLinear (double du, double dv, double dw,
-                          double d0, double d1, double d2, double d3,
-                          double d4, double d5, double d6, double d7)
+        AA_PROMOTE(T,double) TriLinear (double du, double dv, double dw,
+                                        const T & d0, const T & d1,
+                                        const T & d2, const T & d3,
+                                        const T & d4, const T & d5,
+                                        const T & d6, const T & d7)
         {
           return Linear (dw,
                          BiLinear (du, dv, d0, d1, d2, d3),

@@ -222,7 +222,7 @@ namespace Aa
           // B.M.E. Moret & H.D. Shapiro "P to NP" pp. 453
           int n = realIntersections.size ();
 
-          vec2 center;
+          vec3 center;
           for (int j = 0; j < n; ++j)
             center += projEdgeIntersections [j];
           center /= n;
@@ -231,7 +231,7 @@ namespace Aa
             double theta = -10;
             int next = j;
             for (int k = j; k < n; ++k){
-              vec2 d = projEdgeIntersections [realIntersections [k]] - center;
+              vec3 d = projEdgeIntersections [realIntersections [k]] - center;
               if ((d[0] == 0) && (d[1] == 0)) {
                 next = k;
                 cout << "What the--" << endl;
