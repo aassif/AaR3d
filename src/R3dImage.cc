@@ -106,7 +106,7 @@ namespace Aa
       unsigned short dz = 0;
       if (! f.read ((char *) &dz, sizeof (dz))) throw Aa::ParseError ("dz");
       // Resize buffer.
-      image->resize (vec<uint> (dx, dy, dz));
+      image->resize (vec<AaUInt> (dx, dy, dz));
       // Read data.
       if (! f.read ((char *) image->begin (), dx * dy * dz)) throw Aa::ParseError ("dat");
     }
