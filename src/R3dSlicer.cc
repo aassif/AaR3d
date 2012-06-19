@@ -231,7 +231,7 @@ namespace Aa
             double theta = -10;
             int next = j;
             for (int k = j; k < n; ++k){
-              vec2 d = projEdgeIntersections [realIntersections [k]] - center;
+              vec2 d = projEdgeIntersections [realIntersections [k]] - vec3(center);
               if ((d[0] == 0) && (d[1] == 0)) {
                 next = k;
                 cout << "What the--" << endl;
