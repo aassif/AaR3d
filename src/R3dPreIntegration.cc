@@ -9,6 +9,33 @@ namespace Aa
 {
   namespace R3d
   {
+
+    GLuint isosurface (int k)
+    {
+      GLubyte P [256][256][4];
+
+      for (int i = 0; i < 256; ++i)
+        for (int j = 0; j < 256; ++j)
+        {
+          P [i][j][0] = 255;
+          P [i][j][1] = 0;
+          P [i][j][2] = 0;
+          P [i][j][3] = ((i <= k && k <= j) || (j <= k && k <= i)) ? 255 : 0;
+        }
+
+      GLuint texture;
+      glGenTextures (1, &texture);
+      glBindTexture (GL_TEXTURE_2D, texture);
+      glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+      glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+      glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+      glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
+      glTexImage2D (GL_TEXTURE_2D, 0, GL_RGBA, 256, 256, 0, GL_RGBA, GL_UNSIGNED_BYTE, P);
+
+      return texture;
+    }
+
     PreIntegration::PreIntegration (const std::string & vertex,
                                     const std::string & geometry,
                                     const std::string & fragment) :
@@ -33,8 +60,13 @@ namespace Aa
       static const Lut DEFAULT = Lut ();
       const Lut * l = (lut != NULL ? lut : &DEFAULT);
 
+#if 1
       m_lut_tex2d [0] = l->glTex2d (m_steps [0]);
       m_lut_tex2d [1] = l->glTex2d (m_steps [1]);
+#else
+      m_lut_tex2d [0] = isosurface (64);
+      m_lut_tex2d [1] = isosurface (64);
+#endif
 
       //cout << "<-- PreIntegration::setLut (this = " << this << ", lut = " << lut << ");" << endl;
     }
