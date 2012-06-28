@@ -23,11 +23,13 @@ find_package(GLEW REQUIRED) # AaOpenGL
 
 # AaToolkit dependency
 set(AATOOLKIT_DIR $ENV{TLR_DEV}/aassif-toolkit)
-find_package(AaToolkit REQUIRED) # AaOpenGL
+find_package(AaToolkit REQUIRED)
+find_package(AaToolkit-static REQUIRED)
 
 # AaOpenGL dependency
 set(AAOPENGL_DIR $ENV{TLR_DEV}/aassif-opengl)
 find_package(AaOpenGL REQUIRED)
+find_package(AaOpenGL-static REQUIRED)
 
 # AaMesh dependency
 set(AAMESH_DIR $ENV{TLR_DEV}/aassif-mesh)
@@ -62,10 +64,9 @@ set_target_properties(
   PROPERTIES
   RUNTIME_OUTPUT_DIRECTORY_DEBUG   ${PROJECT_SOURCE_DIR}/bin/debug
   RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR}/bin/release
-  LIBRARY_OUTPUT_DIRECTORY_DEBUG   ${PROJECT_SOURCE_DIR}/lib/debug
-  LIBRARY_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR}/lib/release
   ARCHIVE_OUTPUT_DIRECTORY_DEBUG   ${PROJECT_SOURCE_DIR}/lib/debug
   ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR}/lib/release
+  COMPILE_DEFINITIONS AA_R3D_BUILD_SHARED
   DEBUG_POSTFIX d
 )
 
@@ -77,7 +78,26 @@ target_link_libraries(AaR3d
   ${AAOPENGL_LIBRARY}
 )
 
-# Project dependencies.
-#add_dependencies(AaR3d
-#  AaToolkit
-#)
+# Target generation.
+add_library(AaR3d-static
+  STATIC
+  ${PROJECT_HDR}
+  ${PROJECT_SRC}
+)
+
+# Output paths.
+set_target_properties(
+  AaR3d-static
+  PROPERTIES
+  ARCHIVE_OUTPUT_DIRECTORY_DEBUG   ${PROJECT_SOURCE_DIR}/lib/debug
+  ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR}/lib/release
+  DEBUG_POSTFIX d
+)
+
+# Target dependencies.
+target_link_libraries(AaR3d-static
+  ${OPENGL_LIBRARY}
+  ${GLEW_LIBRARY}
+  ${AATOOLKIT_STATIC_LIBRARY}
+  ${AAOPENGL_STATIC_LIBRARY}
+)
