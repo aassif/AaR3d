@@ -810,12 +810,11 @@ namespace Aa
 // Aa::R3d::SlicerViewCubeGLSLv1 ///////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-    SlicerViewCubeGLSLv1::SlicerViewCubeGLSLv1 (Aa::GL::Program * program,
-                                                const std::string & source) :
+    SlicerViewCubeGLSLv1::SlicerViewCubeGLSLv1 (Aa::GL::Program * program) :
       SlicerViewCube (),
       m_program (program)
     {
-      m_program->attach (GL_VERTEX_SHADER, source);
+      m_program->attach (GL_VERTEX_SHADER, GL::Program::String ("/AaR3d/McSlicing.vertex"));
     }
 
     SlicerViewCubeGLSLv1::~SlicerViewCubeGLSLv1 ()
@@ -895,20 +894,20 @@ namespace Aa
 // Aa::R3d::SlicerViewCubeGLSLv2 ///////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-    SlicerViewCubeGLSLv2::SlicerViewCubeGLSLv2 (Aa::GL::Program * program,
-                                                const std::string & source_vertex,
-                                                const std::string & source_geometry) :
+    SlicerViewCubeGLSLv2::SlicerViewCubeGLSLv2 (Aa::GL::Program * program) :
       SlicerViewCube (),
       m_program (program),
       m_table_tex2d (0)
     {
-      m_program->attach (GL_VERTEX_SHADER,       source_vertex);
-      m_program->attach (GL_GEOMETRY_SHADER_ARB, source_geometry);
+      m_program->attach (GL_VERTEX_SHADER,   GL::Program::String ("/AaR3d/PassThru.vertex"));
+      m_program->attach (GL_GEOMETRY_SHADER, GL::Program::String ("/AaR3d/McSlicing.geometry"));
 
+#if 0
       GLuint id = m_program->id ();
       glProgramParameteriARB (id, GL_GEOMETRY_INPUT_TYPE_ARB,   GL_POINTS);
       glProgramParameteriARB (id, GL_GEOMETRY_OUTPUT_TYPE_ARB,  GL_TRIANGLE_STRIP);
       glProgramParameteriARB (id, GL_GEOMETRY_VERTICES_OUT_ARB, 6);
+#endif
 
       glGenTextures (1, &m_table_tex2d);
       glBindTexture (GL_TEXTURE_2D, m_table_tex2d);
@@ -917,7 +916,7 @@ namespace Aa
       glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
       glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
       glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
-      glTexImage2D (GL_TEXTURE_2D, 0, GL_LUMINANCE8I_EXT, 8, 256, 0, GL_LUMINANCE_INTEGER_EXT, GL_BYTE, TABLE);
+      glTexImage2D (GL_TEXTURE_2D, 0, GL_R8I, 8, 256, 0, GL_RED_INTEGER, GL_BYTE, TABLE);
     }
 
     SlicerViewCubeGLSLv2::~SlicerViewCubeGLSLv2 ()

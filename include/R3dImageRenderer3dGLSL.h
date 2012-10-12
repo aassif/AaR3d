@@ -21,9 +21,14 @@ namespace Aa
         virtual void glPostDraw (bool);
 
       public:
-        ImageRenderer3dGLSL (const std::string & vertex,
-                             const std::string & geometry,
-                             const std::string & fragment);
+#if 0
+        ImageRenderer3dGLSL (const std::string & vertex   = "/AaR3d/PassThru.fragment",
+                             const std::string & geometry = "/AaR3d/McSlicing.fragment",
+                             const std::string & fragment = "/AaR3d/Texture3d.fragment");
+#endif
+
+        ImageRenderer3dGLSL (const std::string & fragment = "/AaR3d/Texture3d.fragment");
+
         virtual ~ImageRenderer3dGLSL ();
         void setWindow (GLfloat min, GLfloat max);
     };

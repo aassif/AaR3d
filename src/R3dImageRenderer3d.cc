@@ -70,8 +70,8 @@ namespace Aa
         glTexParameteri (GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
         glTexImage3D (GL_TEXTURE_3D, 0,
-                      GL_LUMINANCE8_EXT, d2x, d2y, d2z, 0,
-                      GL_LUMINANCE, GL_UNSIGNED_BYTE, b2);
+                      GL_R8, d2x, d2y, d2z, 0,
+                      GL_RED, GL_UNSIGNED_BYTE, b2);
         //cout << "glTexImage3D : " << gluErrorString (glGetError ()) << endl;
         glGenerateMipmap (GL_TEXTURE_3D);
 

@@ -7,10 +7,19 @@ namespace Aa
 {
   namespace R3d
   {
+#if 0
     Rainbow::Rainbow (const std::string & vertex,
                       const std::string & geometry,
                       const std::string & fragment) :
       PostClassification (vertex, geometry, fragment),
+      m_delta (vec (0.001f, 0.001f, 0.001f))
+    {
+      cout << "Rainbow (Powered by GLSL!)\n";
+    }
+#endif
+
+    Rainbow::Rainbow () :
+      PostClassification ("/AaR3d/Rainbow.fragment"),
       m_delta (vec (0.001f, 0.001f, 0.001f))
     {
       cout << "Rainbow (Powered by GLSL!)\n";

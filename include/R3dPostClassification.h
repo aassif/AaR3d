@@ -19,9 +19,12 @@ namespace Aa
         virtual void glPostDraw (bool);
 
       public:
+#if 0
         PostClassification (const std::string & vertex,
                             const std::string & geometry,
                             const std::string & fragment);
+#endif
+        PostClassification (const std::string & fragment = "/AaR3d/PostClassification.fragment");
         virtual ~PostClassification ();
         virtual void setLut (const Lut * = NULL);
     };

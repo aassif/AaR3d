@@ -1,9 +1,10 @@
-#version 130
+#version 420 compatibility
+
 #extension GL_EXT_gpu_shader4 : enable
 #extension GL_EXT_geometry_shader4 : enable
 
-//layout(points) in;
-//layout(triangle_strip, max_vertices=6) out;
+layout (points) in;
+layout (triangle_strip, max_vertices = 6) out;
 
 uniform isampler2D mc_slicing_table;
 uniform float      mc_slicing_vertex_depths [8];

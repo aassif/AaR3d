@@ -69,40 +69,30 @@ namespace Aa
         m_renderer = NULL;
       }
 
-      string vertex   = GL::Program::ReadSource ("shaders/PassThru.VertexShader.glsl");
-      string geometry = GL::Program::ReadSource ("shaders/McSlicing.GeometryShader.glsl");
-      string fragment;
-
       switch (type)
       {
         case RENDERER_TEXTURE :
-          fragment = GL::Program::ReadSource ("shaders/Texture3d.FragmentShader.glsl");
-          m_renderer = new R3d::ImageRenderer3dGLSL (vertex, geometry, fragment);
+          m_renderer = new R3d::ImageRenderer3dGLSL;
           break;
 
         case RENDERER_POST_CLASSIFICATION:
-          fragment = GL::Program::ReadSource ("shaders/PostClassification.FragmentShader.glsl");
-          m_renderer = new R3d::PostClassification (vertex, geometry, fragment);
+          m_renderer = new R3d::PostClassification;
           break;
 
         case RENDERER_PRE_INTEGRATION:
-          fragment = GL::Program::ReadSource ("shaders/PreIntegration.FragmentShader.glsl");
-          m_renderer = new R3d::PreIntegration (vertex, geometry, fragment);
+          m_renderer = new R3d::PreIntegration;
           break;
 
         case RENDERER_BLINN:
-          fragment = GL::Program::ReadSource ("shaders/Blinn.FragmentShader.glsl");
-          m_renderer = new R3d::Blinn (vertex, geometry, fragment);
+          m_renderer = new R3d::Blinn;
           break;
 
         case RENDERER_RAINBOW:
-          fragment = GL::Program::ReadSource ("shaders/Rainbow.FragmentShader.glsl");
-          m_renderer = new R3d::Rainbow (vertex, geometry, fragment);
+          m_renderer = new R3d::Rainbow;
           break;
 
         case RENDERER_MIP:
-          fragment = GL::Program::ReadSource ("shaders/Texture3d.FragmentShader.glsl");
-          m_renderer = new R3d::MIP (vertex, geometry, fragment, GL_MAX);
+          m_renderer = new R3d::MIP (GL_MAX);
           break;
 
         default:
@@ -159,6 +149,31 @@ namespace Aa
       cout << glGetString (GL_RENDERER) << endl;
       cout << glGetString (GL_VERSION) << endl;
       cout << glGetString (GL_EXTENSIONS) << endl;
+
+      static const char * SHADERS [][2] =
+      {
+        {"/AaR3d/PassThru.vertex",             "glsl/PassThru.VertexShader.glsl"},
+
+        {"/AaR3d/McSlicing.geometry",          "glsl/McSlicing.GeometryShader.glsl"},
+
+        {"/AaR3d/Texture3d",                   "glsl/Texture3d.glsl"},
+        {"/AaR3d/Texture3d.fragment",          "glsl/Texture3d.FragmentShader.glsl"},
+
+        {"/AaR3d/PostClassification",          "glsl/PostClassification.glsl"},
+        {"/AaR3d/PostClassification.fragment", "glsl/PostClassification.FragmentShader.glsl"},
+
+        {"/AaR3d/PreIntegration",              "glsl/PreIntegration.glsl"},
+        {"/AaR3d/PreIntegration.fragment",     "glsl/PreIntegration.FragmentShader.glsl"},
+
+        {"/AaR3d/Blinn",                       "glsl/Blinn.glsl"},
+        {"/AaR3d/Blinn.fragment",              "glsl/Blinn.FragmentShader.glsl"},
+
+        {"/AaR3d/Rainbow",                     "glsl/Rainbow.glsl"},
+        {"/AaR3d/Rainbow.fragment",            "glsl/Rainbow.FragmentShader.glsl"}
+      };
+
+      for (AaUInt i = 0; i < 12; ++i)
+        GL::Program::SetString (SHADERS [i][0], GL::Program::ReadSource (SHADERS [i][1]));
 
       // Renderer.
       this->setRenderer (RENDERER_PRE_INTEGRATION);

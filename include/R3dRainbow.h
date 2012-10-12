@@ -17,9 +17,12 @@ namespace Aa
         virtual void glPreDraw (bool);
 
       public:
+#if 0
         Rainbow (const std::string & vertex,
                  const std::string & geometry,
                  const std::string & fragment);
+#endif
+        Rainbow ();
         virtual ~Rainbow ();
     };
   } // namespace R3d

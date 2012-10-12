@@ -19,9 +19,12 @@ namespace Aa
         virtual void glPostDraw (bool);
 
       public:
+#if 0
         PreIntegration (const std::string & vertex,
                         const std::string & geometry,
                         const std::string & fragment);
+#endif
+        PreIntegration (const std::string & fragment = "/AaR3d/PreIntegration.fragment");
         virtual ~PreIntegration ();
         virtual void setLut (const Lut * = NULL);
     };
