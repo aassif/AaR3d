@@ -23,6 +23,14 @@ namespace Aa
   namespace R3d
   {
 
+    inline string resource (const QString & name)
+    {
+      QFile file (name);
+      file.open (QFile::ReadOnly);
+      QByteArray bytes = file.readAll ();
+      return bytes.data ();
+    }
+
 ////////////////////////////////////////////////////////////////////////////////
 // Aa::R3d::QImageRenderer /////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -152,28 +160,28 @@ namespace Aa
 
       static const char * SHADERS [][2] =
       {
-        {"/AaR3d/PassThru.vertex",             "glsl/PassThru.VertexShader.glsl"},
+        {"/AaR3d/PassThru.vertex",             ":/glsl/PassThru.VertexShader.glsl"},
 
-        {"/AaR3d/McSlicing.geometry",          "glsl/McSlicing.GeometryShader.glsl"},
+        {"/AaR3d/McSlicing.geometry",          ":/glsl/McSlicing.GeometryShader.glsl"},
 
-        {"/AaR3d/Texture3d",                   "glsl/Texture3d.glsl"},
-        {"/AaR3d/Texture3d.fragment",          "glsl/Texture3d.FragmentShader.glsl"},
+        {"/AaR3d/Texture3d",                   ":/glsl/Texture3d.glsl"},
+        {"/AaR3d/Texture3d.fragment",          ":/glsl/Texture3d.FragmentShader.glsl"},
 
-        {"/AaR3d/PostClassification",          "glsl/PostClassification.glsl"},
-        {"/AaR3d/PostClassification.fragment", "glsl/PostClassification.FragmentShader.glsl"},
+        {"/AaR3d/PostClassification",          ":/glsl/PostClassification.glsl"},
+        {"/AaR3d/PostClassification.fragment", ":/glsl/PostClassification.FragmentShader.glsl"},
 
-        {"/AaR3d/PreIntegration",              "glsl/PreIntegration.glsl"},
-        {"/AaR3d/PreIntegration.fragment",     "glsl/PreIntegration.FragmentShader.glsl"},
+        {"/AaR3d/PreIntegration",              ":/glsl/PreIntegration.glsl"},
+        {"/AaR3d/PreIntegration.fragment",     ":/glsl/PreIntegration.FragmentShader.glsl"},
 
-        {"/AaR3d/Blinn",                       "glsl/Blinn.glsl"},
-        {"/AaR3d/Blinn.fragment",              "glsl/Blinn.FragmentShader.glsl"},
+        {"/AaR3d/Blinn",                       ":/glsl/Blinn.glsl"},
+        {"/AaR3d/Blinn.fragment",              ":/glsl/Blinn.FragmentShader.glsl"},
 
-        {"/AaR3d/Rainbow",                     "glsl/Rainbow.glsl"},
-        {"/AaR3d/Rainbow.fragment",            "glsl/Rainbow.FragmentShader.glsl"}
+        {"/AaR3d/Rainbow",                     ":/glsl/Rainbow.glsl"},
+        {"/AaR3d/Rainbow.fragment",            ":/glsl/Rainbow.FragmentShader.glsl"}
       };
 
       for (AaUInt i = 0; i < 12; ++i)
-        GL::Program::SetString (SHADERS [i][0], GL::Program::ReadSource (SHADERS [i][1]));
+        GL::Program::SetString (SHADERS [i][0], resource (SHADERS [i][1]));
 
       // Renderer.
       this->setRenderer (RENDERER_PRE_INTEGRATION);

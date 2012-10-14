@@ -8,7 +8,7 @@ uniform vec3 delta; // = vec3 (0.01, 0.01, 0.01);
 // Gradient.
 float gradient_aux (vec3 p)
 {
-  return post_classification (p) [3];
+  return post_classification (vec4 (p, 1)) [3];
 }
 
 vec3 gradient (vec3 p)

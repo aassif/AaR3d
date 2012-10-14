@@ -1,7 +1,7 @@
 //#include <fstream>
 #include <cmath>
 #include <vector>
-#include <AaPrimitives>
+//#include <AaPrimitives>
 #include "R3dSlicer.h"
 
 using namespace std;
