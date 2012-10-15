@@ -21,35 +21,32 @@ namespace Aa
   namespace R3d
   {
 
-    QR3d::QR3d (const std::string & image,
-                const std::string & lut,
-                const dvec3 & scale) :
+    QR3d::QR3d () :
       m_renderer (NULL),
       m_editor (NULL),
       m_editor_dock (NULL),
       m_image (NULL),
       m_lut (NULL)
     {
-      m_renderer = new QImageRenderer (NULL, NULL);
+      m_renderer = new QImageRenderer;
       setCentralWidget (m_renderer);
 
       m_editor = new QLutEditor (0, 256);
-      m_editor_dock = new QDockWidget (tr("QLutEditor"));
+      m_editor_dock = new QDockWidget (tr ("QLutEditor"));
       m_editor_dock->setWidget (m_editor);
       addDockWidget (Qt::LeftDockWidgetArea, m_editor_dock);
 
       QMenuBar * bar = menuBar ();
-      QMenu * menuFile = bar->addMenu (tr("&File"));
-      menuFile->addAction (tr("&Open"), this, SLOT (openImage ()));
-      menuFile->addAction (tr("&Quit"), qApp, SLOT (quit ()));
-      QMenu * menuView = bar->addMenu (tr("&View"));
+      QMenu * menuFile = bar->addMenu (tr ("&File"));
+      menuFile->addAction (tr ("&Open"), this, SLOT (openImage ()));
+      menuFile->addAction (tr ("&Quit"), qApp, SLOT (quit ()));
+      QMenu * menuView = bar->addMenu (tr ("&View"));
       menuView->addAction (m_editor_dock->toggleViewAction ());
 
       connect (m_editor, SIGNAL (computed (const QVector<QColor> &)),
                this,     SLOT   (setLut   (const QVector<QColor> &)));
 
-      setImage (image, scale);
-      setLut (lut);
+      this->setLut (m_editor->table ());
     }
 
     QR3d::~QR3d ()
@@ -75,9 +72,9 @@ namespace Aa
 
     void QR3d::openImage ()
     {
-      static const QString title  = tr("");
-      static const QString dir    = "/home/prof/aassif/data/import";
-      static const QString filter = tr("Images (*.b8 DICOMDIR)");
+      QString title  = tr ("");
+      QString dir    = "/home/prof/aassif/data/import";
+      QString filter = tr ("Images (*.b8 DICOMDIR)");
       QString path = QFileDialog::getOpenFileName (this, title, dir, filter);
       if (! path.isEmpty ()) setImage (path);
     }

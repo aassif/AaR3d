@@ -35,7 +35,7 @@ namespace Aa
         R3d::Lut         * m_lut;
 
       public:
-        QR3d (const std::string & image, const std::string & lut, const dvec3 & scale = dvec3 (1));
+        QR3d ();
         virtual ~QR3d ();
 
       public slots:

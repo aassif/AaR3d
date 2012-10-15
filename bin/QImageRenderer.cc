@@ -9,6 +9,7 @@
 //#include <QDockWidget>
 #include <QApplication>
 #include <QKeyEvent>
+#include <QFile>
 //#include <QFileDialog>
 //#include <QGLViewer/qglviewer.h>
 //#include "QLutEditor.h"
@@ -16,7 +17,7 @@
 
 using namespace std;
 using namespace Aa;
-using namespace Aa::Math;
+//using namespace Aa::Math;
 
 namespace Aa
 {
@@ -35,13 +36,11 @@ namespace Aa
 // Aa::R3d::QImageRenderer /////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-    QImageRenderer::QImageRenderer (const R3d::Image * image,
-                                    const R3d::Lut   * lut,
-                                    QWidget          * parent) :
+    QImageRenderer::QImageRenderer (QWidget * parent) :
       QGLViewer (parent),
       m_fast (false),
-      m_image (image),
-      m_lut (lut),
+      m_image (NULL),
+      m_lut (NULL),
       m_renderer (NULL),
       m_fbo (NULL),
       m_timer (this)
@@ -69,6 +68,20 @@ namespace Aa
       m_fast = f;
     }
 
+    R3d::ImageRenderer3dGLSL * QImageRenderer::Factory (RendererType type)
+    {
+      switch (type)
+      {
+        case RENDERER_TEXTURE             : return new R3d::ImageRenderer3dGLSL;
+        case RENDERER_POST_CLASSIFICATION : return new R3d::PostClassification;
+        case RENDERER_PRE_INTEGRATION     : return new R3d::PreIntegration;
+        case RENDERER_BLINN               : return new R3d::Blinn;
+        case RENDERER_RAINBOW             : return new R3d::Rainbow;
+        case RENDERER_MIP                 : return new R3d::MIP (GL_MAX);
+        default                           : return NULL;
+      }
+    }
+
     void QImageRenderer::setRenderer (RendererType type)
     {
       if (m_renderer != NULL)
@@ -77,35 +90,7 @@ namespace Aa
         m_renderer = NULL;
       }
 
-      switch (type)
-      {
-        case RENDERER_TEXTURE :
-          m_renderer = new R3d::ImageRenderer3dGLSL;
-          break;
-
-        case RENDERER_POST_CLASSIFICATION:
-          m_renderer = new R3d::PostClassification;
-          break;
-
-        case RENDERER_PRE_INTEGRATION:
-          m_renderer = new R3d::PreIntegration;
-          break;
-
-        case RENDERER_BLINN:
-          m_renderer = new R3d::Blinn;
-          break;
-
-        case RENDERER_RAINBOW:
-          m_renderer = new R3d::Rainbow;
-          break;
-
-        case RENDERER_MIP:
-          m_renderer = new R3d::MIP (GL_MAX);
-          break;
-
-        default:
-          break;
-      }
+      m_renderer = QImageRenderer::Factory (type);
 
       if (m_renderer != NULL)
       {
@@ -117,6 +102,7 @@ namespace Aa
     void QImageRenderer::setImage (const R3d::Image * image)
     {
       m_image = image;
+
       if (image != NULL)
       {
         // Camera.
@@ -139,6 +125,7 @@ namespace Aa
     void QImageRenderer::setLut (const R3d::Lut * lut)
     {
       m_lut = lut;
+
       if (m_renderer != NULL)
       {
         m_renderer->setLut (lut);
