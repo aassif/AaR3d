@@ -51,7 +51,7 @@ namespace Aa
         QTimer                     m_timer;
 
       private:
-        R3d::ImageRenderer3dGLSL * Factory (RendererType);
+        static R3d::ImageRenderer3dGLSL * Factory (RendererType);
 
       public:
         QImageRenderer (QWidget * parent = NULL);

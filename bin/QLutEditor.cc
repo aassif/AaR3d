@@ -151,9 +151,9 @@ namespace Aa
     QLutEditor::QLutEditor (qreal min, qreal max, QWidget * parent) :
       QGraphicsView (parent),
       m_scene (),
-      m_first (this, min,   0, Qt::red,  NULL,     NULL, QLutKnob::VERTICAL),
-      m_last  (this, max, 256, Qt::blue, &m_first, NULL, QLutKnob::VERTICAL),
-      m_background (0, 0, 256, 256),
+      m_first (this, min,   0, Qt::black, NULL,     NULL, QLutKnob::VERTICAL),
+      m_last  (this, max, 256, Qt::white, &m_first, NULL, QLutKnob::VERTICAL),
+      m_frame (0, 0, 256, 256),
       m_path (),
       m_magic (NULL),
       m_table (256)
@@ -167,14 +167,14 @@ namespace Aa
       m_scene.setBackgroundBrush (checker);
 
       // Background.
-      m_background.setZValue (0);
-      m_background.setPen (QPen (Qt::black, 1.5));
+      m_frame.setZValue (0);
+      m_frame.setPen (QPen (Qt::black, 1.5));
 
       // Path.
       m_path.setZValue (1);
       m_path.setPen (QPen (Qt::black, 1.5));
 
-      m_scene.addItem (&m_background);
+      m_scene.addItem (&m_frame);
       m_scene.addItem (&m_path);
       m_scene.addItem (&m_first);
       m_scene.addItem (&m_last);
@@ -331,7 +331,7 @@ namespace Aa
         m_table [i] = c;
         image.setPixel (i, 0, c.rgba ());
       }
-      m_background.setBrush (QBrush (image));
+      m_frame.setBrush (QBrush (image));
 
       emit computed (m_table);
     }

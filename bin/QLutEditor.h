@@ -82,7 +82,7 @@ namespace Aa
       protected:
         QGraphicsScene m_scene;
         QLutKnob m_first, m_last;
-        QGraphicsRectItem m_background;
+        QGraphicsRectItem m_frame;
         QGraphicsPathItem m_path;
         QLutKnob * m_magic;
         QVector<QColor> m_table;
