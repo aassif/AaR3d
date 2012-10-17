@@ -53,7 +53,6 @@ namespace Aa
       ImageRenderer3dGLSL (fragment),
       m_lut_tex2d ()
     {
-      cout << "PreIntegration (Powered by GLSL!)\n";
       m_lut_tex2d [0] = 0;
       m_lut_tex2d [1] = 0;
     }

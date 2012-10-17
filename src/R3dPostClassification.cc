@@ -15,7 +15,6 @@ namespace Aa
       ImageRenderer3dGLSL (vertex, geometry, fragment),
       m_lut_tex1d ()
     {
-      cout << "PostClassification (Powered by GLSL!)\n";
       m_lut_tex1d [0] = 0;
       m_lut_tex1d [1] = 0;
     }
@@ -25,7 +24,6 @@ namespace Aa
       ImageRenderer3dGLSL (fragment),
       m_lut_tex1d ()
     {
-      cout << "PostClassification (Powered by GLSL!)\n";
       m_lut_tex1d [0] = 0;
       m_lut_tex1d [1] = 0;
     }

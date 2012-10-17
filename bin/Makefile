@@ -67,12 +67,8 @@ L_QGLViewer=    -L$(P_QGLViewer)/QGLViewer -lQGLViewer $(L_Qt4)
 ################################################################################
 
 EXE=      r3d lut b8
-HDR=      QLutEditor.h \
-          QImageRenderer.h \
-          QR3d.h
-SRC=      QLutEditor.cc \
-          QImageRenderer.cc \
-          QR3d.cc
+HDR=      
+SRC=      
 OBJ=      $(HDR:%.h=%.moc.o) \
           $(SRC:%.cc=%.o)
 ALL=      make.depend $(EXE)

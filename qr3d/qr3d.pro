@@ -1,5 +1,5 @@
 TEMPLATE = app
-TARGET = qr3d
+TARGET = r3d
 QT *= xml opengl
 
 include (qr3d.pri)
@@ -18,7 +18,6 @@ else {
 OBJECTS_DIR = obj
 SOURCES += \
     ../../toolkit/src/AaException.cc \
-#    ../../toolkit/src/AaText.cc \
     ../../opengl/src/AaGLSL.cc \
     ../../opengl/src/AaScene.cc \
     ../../opengl/src/AaPrimitives.cc \
@@ -35,24 +34,19 @@ SOURCES += \
     ../src/R3dImageRenderer.cc \
     ../src/R3dImage.cc \
     ../src/R3dBlinn.cc \
-    ../bin/QR3d.cc \
-    ../bin/QLutEditor.cc \
-    ../bin/QImageRenderer.cc \
-    ../bin/r3d.cc
+    src/QR3d.cc \
+    src/QLutEditor.cc \
+    src/QImageRenderer.cc \
+    src/r3d.cc
 
 MOC_DIR = moc
 HEADERS += \
     ../../toolkit/include/bits/AaException.h \
-#    ../../toolkit/include/bits/AaGridIterator.hh \
     ../../toolkit/include/bits/AaMatrix.hh \
-#    ../../toolkit/include/bits/AaText.h \
     ../../toolkit/include/bits/AaVector.hh \
     ../../opengl/include/bits/AaGLSL.h \
     ../../opengl/include/bits/AaScene.h \
     ../../opengl/include/bits/AaPrimitives.h \
-#    ../../mesh/include/bits/AaMesh.hh \
-#    ../../mesh/include/bits/AaMeshPolygonizer.hh \
-#    ../../mesh/include/bits/AaMeshNOFF.hh \
     ../include/AaR3d.h \
     ../include/R3dSlicer.h \
     ../include/R3dRainbow.h \
@@ -67,20 +61,20 @@ HEADERS += \
     ../include/R3dImageRenderer.h \
     ../include/R3dImage.h \
     ../include/R3dBlinn.h \
-    ../bin/QR3d.h \
-    ../bin/QLutEditor.h \
-    ../bin/QImageRenderer.h
+    include/QR3d.h \
+    include/QLutEditor.h \
+    include/QImageRenderer.h
 
 RCC_DIR = rcc
-RESOURCES = ../qr3d.qrc
+RESOURCES = qr3d.qrc
 
 #RC_FILE = qr3d.rc
 
 INCLUDEPATH += \
     ../../toolkit/include \
     ../../opengl/include \
-#    ../../mesh/include \
     ../include \
+    include \
     $${GLEW}/include \
     $${QGLVIEWER}
 
@@ -102,9 +96,8 @@ else {
         -L$${QGLVIEWER}/QGLViewer -lQGLViewer
 }
 
-TRANSLATIONS = ../qr3d_fr.ts
+TRANSLATIONS = qr3d_fr.ts
 
-#DEFINES += AA_TOOLKIT_BUILD_SHARED
 DEFINES += GLEW_STATIC
 
 OTHER_FILES += \

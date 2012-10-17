@@ -16,7 +16,6 @@ namespace Aa
       m_shininess (8.0),
       m_delta (vec (0.001f, 0.001f, 0.001f))
     {
-      cout << "Blinn (Powered by GLSL!)\n";
     }
 #endif
 
@@ -25,7 +24,6 @@ namespace Aa
       m_shininess (8.0),
       m_delta (vec (0.001f, 0.001f, 0.001f))
     {
-      cout << "Blinn (Powered by GLSL!)\n";
     }
 
     Blinn::~Blinn ()

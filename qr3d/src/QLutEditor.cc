@@ -4,10 +4,10 @@
 #include <QMouseEvent>
 #include <QGraphicsSceneMouseEvent>
 #include <QMenu>
-#include <AaXml>
+//#include <AaXml>
 #include "QLutEditor.h"
 
-#include <QMessageBox> // debug
+//#include <QMessageBox> // debug
 
 using namespace std;
 
@@ -279,8 +279,8 @@ namespace Aa
 
     QColor QLutEditor::Mix (const QLutKnob * k0, const QLutKnob * k1, qreal x)
     {
-      if (k0 == NULL) return (k1 != NULL) ? k1->color () : Qt::black;
-      if (k1 == NULL) return (k0 != NULL) ? k0->color () : Qt::black;
+      if (k0 == NULL) return (k1 != NULL) ? k1->color () : Qt::transparent;
+      if (k1 == NULL) return (k0 != NULL) ? k0->color () : Qt::transparent;
 
       qreal x0 = k0->x ();
       qreal x1 = k1->x ();
@@ -396,7 +396,7 @@ namespace Aa
          || d1b0 * d1b1 < 0 || fabs (d1b1 - d1b0) > 1
          || d1a0 * d1a1 < 0 || fabs (d1a1 - d1a0) > 1)
         {
-          knob = new QLutKnob (this, k, m_table [k].alpha (), m_table [k], knob, &m_last, QLutKnob::NORMAL);
+          knob = new QLutKnob (this, k + 0.5, m_table [k].alpha (), m_table [k], knob, &m_last, QLutKnob::NORMAL);
           m_scene.addItem (knob);
         }
       }

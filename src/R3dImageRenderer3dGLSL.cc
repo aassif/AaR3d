@@ -16,8 +16,6 @@ namespace Aa
       m_min (0.0f),
       m_max (1.0f)
     {
-      cout << "ImageRenderer3dGLSL (Powered by GLSL!)\n";
-
       m_slicer = new SlicerViewCubeGLSLv2 (&m_program, vertex, geometry);
       m_program.attach (GL_FRAGMENT_SHADER, GL::Program::String (fragment));
       m_program.link ();
@@ -31,8 +29,6 @@ namespace Aa
       m_min (0.0f),
       m_max (1.0f)
     {
-      cout << "ImageRenderer3dGLSL (Powered by GLSL!)\n";
-
       m_slicer = new SlicerViewCubeGLSLv2 (&m_program);
       m_program.attach (GL_FRAGMENT_SHADER, GL::Program::String (fragment));
       m_program.link ();

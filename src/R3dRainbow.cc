@@ -14,7 +14,6 @@ namespace Aa
       PostClassification (vertex, geometry, fragment),
       m_delta (vec (0.001f, 0.001f, 0.001f))
     {
-      cout << "Rainbow (Powered by GLSL!)\n";
     }
 #endif
 
@@ -22,7 +21,6 @@ namespace Aa
       PostClassification ("/AaR3d/Rainbow.fragment"),
       m_delta (vec (0.001f, 0.001f, 0.001f))
     {
-      cout << "Rainbow (Powered by GLSL!)\n";
     }
 
     Rainbow::~Rainbow ()

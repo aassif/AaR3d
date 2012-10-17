@@ -105,19 +105,18 @@ namespace Aa
 
         ConstKnobPair find (qreal x) const;
         QColor color (qreal x) const;
-        QVector<QColor> vector () const;
 
         void read (std::istream &);
         void write (std::ostream &) const;
 
-        void import (const QColor [256]);
+        void import (const QColor [256]); // FIXME
 
       public:
         virtual QSize sizeHint () const {return QSize (512, 512);}
 
       protected:
         virtual void resizeEvent (QResizeEvent *);
-        virtual void mouseMoveEvent    (QMouseEvent *);
+        virtual void mouseMoveEvent (QMouseEvent *);
         //virtual void keyPressEvent (QKeyEvent *);
     };
 

@@ -17,7 +17,6 @@ namespace Aa
       ImageRenderer3dGLSL (vertex, geometry, fragment),
       m_mode (mode)
     {
-      cout << "MIP\n";
     }
 #endif
 
@@ -25,7 +24,6 @@ namespace Aa
       ImageRenderer3dGLSL ("/AaR3d/Texture3d.fragment"),
       m_mode (mode)
     {
-      cout << "MIP\n";
     }
 
     MIP::~MIP ()
