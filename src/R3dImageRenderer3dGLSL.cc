@@ -25,9 +25,7 @@ namespace Aa
 
     ImageRenderer3dGLSL::ImageRenderer3dGLSL (const std::string & fragment) :
       ImageRenderer3d (),
-      m_program (),
-      m_min (0.0f),
-      m_max (1.0f)
+      m_program ()
     {
       m_slicer = new SlicerViewCubeGLSLv2 (&m_program);
       m_program.attach (GL_FRAGMENT_SHADER, GL::Program::String (fragment));
@@ -37,12 +35,6 @@ namespace Aa
 
     ImageRenderer3dGLSL::~ImageRenderer3dGLSL ()
     {
-    }
-
-    void ImageRenderer3dGLSL::setWindow (GLfloat min, GLfloat max)
-    {
-      m_min = min;
-      m_max = max;
     }
 
     void ImageRenderer3dGLSL::glPreDraw (bool motion)

@@ -13,8 +13,6 @@ namespace Aa
     {
       protected:
         GL::Program m_program;
-        GLfloat m_min;
-        GLfloat m_max;
         
       protected:
         virtual void glPreDraw  (bool);
@@ -28,9 +26,7 @@ namespace Aa
 #endif
 
         ImageRenderer3dGLSL (const std::string & fragment = "/AaR3d/Texture3d.fragment");
-
         virtual ~ImageRenderer3dGLSL ();
-        void setWindow (GLfloat min, GLfloat max);
     };
   } // namespace R3d
 } // namespace Aa

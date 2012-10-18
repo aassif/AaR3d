@@ -36,12 +36,20 @@ namespace Aa
 
     ImageRenderer::ImageRenderer () :
       Aa::GL::Plugin (),
-      planes ()
+      planes (),
+      m_min (0.0f),
+      m_max (1.0f)
     {
     }
 
     ImageRenderer::~ImageRenderer()
     {
+    }
+
+    void ImageRenderer::setWindow (GLfloat min, GLfloat max)
+    {
+      m_min = min;
+      m_max = max;
     }
 
   } // namespace R3d

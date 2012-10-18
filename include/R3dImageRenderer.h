@@ -1,5 +1,5 @@
-#ifndef __AA_R3D_IMAGE_RENDERER__
-#define __AA_R3D_IMAGE_RENDERER__
+#ifndef AA_R3D_IMAGE_RENDERER__H
+#define AA_R3D_IMAGE_RENDERER__H
 
 #include <AaScene>
 #include "R3dLut.h"
@@ -28,6 +28,8 @@ namespace Aa
 
       public:
         std::vector<ClippingPlane> planes;
+        GLfloat m_min;
+        GLfloat m_max;
 
       protected:
         virtual void glPreDraw (bool) = 0;
@@ -36,6 +38,7 @@ namespace Aa
       public:
         ImageRenderer ();
         virtual ~ImageRenderer ();
+        void setWindow (GLfloat min, GLfloat max);
         virtual void setImg (const Image *) = 0;
         virtual void setLut (const Lut *) = 0;
         virtual void glDraw (bool = false) = 0;
@@ -43,5 +46,5 @@ namespace Aa
   } // namespace R3d
 } // namespace Aa
 
-#endif // __AA_R3D_IMAGE_RENDERER__
+#endif // AA_R3D_IMAGE_RENDERER__H
 

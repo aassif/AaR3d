@@ -32,7 +32,7 @@ int main (int argc, char ** argv)
     if (! arguments.empty ())
       r3d.setImage (arguments.front (), vec (box [0], box [1], box [2]));
 
-    r3d.setWindowTitle ("R3d!");
+    r3d.setWindowTitle ("AaR3d!");
     r3d.show ();
 
     return application.exec ();
