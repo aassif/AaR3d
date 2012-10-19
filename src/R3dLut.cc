@@ -47,6 +47,7 @@ namespace Aa
       this->load (filename);
     }
 
+#if 0
     Lut::Lut (const Lut & lut) :
       m_data ()
     {
@@ -64,6 +65,7 @@ namespace Aa
     {
       return m_data;
     }
+#endif
 
     const Lut::Entry & Lut::operator[] (int k) const
     {
@@ -203,10 +205,8 @@ namespace Aa
       for (int i = 0; i < 256; ++i)
       {
         GLuint r, g, b, a;
-        if (! ifs >> r) throw ParseError::Type ("GLuint");
-        if (! ifs >> g) throw ParseError::Type ("GLuint");
-        if (! ifs >> b) throw ParseError::Type ("GLuint");
-        if (! ifs >> a) throw ParseError::Type ("GLuint");
+        ifs >> r >> g >> b >> a;
+        if (! ifs) throw ParseError::Type ("RGBA");
         m_data [i] = vec<AaUInt8> (r, g, b, a);
       }
 

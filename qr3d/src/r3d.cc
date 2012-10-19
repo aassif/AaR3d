@@ -27,10 +27,10 @@ int main (int argc, char ** argv)
     R3d::QR3d r3d;
 
     if (! lut.empty ())
-      r3d.setLut (lut);
+      r3d.setLut (lut.c_str ());
 
     if (! arguments.empty ())
-      r3d.setImage (arguments.front (), vec (box [0], box [1], box [2]));
+      r3d.setImage (arguments.front ().c_str (), vec (box [0], box [1], box [2]));
 
     r3d.setWindowTitle ("AaR3d!");
     r3d.show ();

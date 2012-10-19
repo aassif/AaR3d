@@ -21,29 +21,54 @@ namespace Aa
 ////////////////////////////////////////////////////////////////////////////////
 
     QLutKnob::QLutKnob (QLutEditor * editor,
-                        qreal x, qreal y,
-                        const QColor & color,
                         QLutKnob * prev,
                         QLutKnob * next,
+                        const QPointF & pos,
+                        const QColor & color,
                         int mode) :
       QGraphicsEllipseItem (-RADIUS, -RADIUS, 2*RADIUS + 1, 2*RADIUS + 1),
       m_editor (editor),
-      m_color (),
       m_prev (prev),
       m_next (next),
+      m_color (),
       m_mode (mode)
     {
-      setPos (x, y);
-      setFlag (QGraphicsItem::ItemIsMovable);
-
-      setColor (color);
-      setToolTip ();
-
       if (m_mode != MAGIC)
       {
         if (m_prev != NULL) m_prev->m_next = this;
         if (m_next != NULL) m_next->m_prev = this;
       }
+
+      setPos (pos);
+      setColor (color);
+      setToolTip ();
+
+      setFlag (QGraphicsItem::ItemIsMovable);
+      setFlag (QGraphicsItem::ItemSendsGeometryChanges);
+    }
+
+    QLutKnob::QLutKnob (QLutEditor * editor,
+                        QLutKnob * prev,
+                        QLutKnob * next,
+                        const QDomElement & element) :
+      QGraphicsEllipseItem (-RADIUS, -RADIUS, 2*RADIUS + 1, 2*RADIUS + 1),
+      m_editor (editor),
+      m_prev (prev),
+      m_next (next),
+      m_color (),
+      m_mode (NORMAL)
+    {
+      if (m_mode != MAGIC)
+      {
+        if (m_prev != NULL) m_prev->m_next = this;
+        if (m_next != NULL) m_next->m_prev = this;
+      }
+
+      this->init (element);
+      setToolTip ();
+
+      setFlag (QGraphicsItem::ItemIsMovable);
+      setFlag (QGraphicsItem::ItemSendsGeometryChanges);
     }
 
     QLutKnob::~QLutKnob ()
@@ -90,36 +115,31 @@ namespace Aa
       }
     }
 
-    void QLutKnob::mouseMoveEvent (QGraphicsSceneMouseEvent * e)
+    QDomElement QLutKnob::dom (QDomDocument & doc) const
     {
-      QPointF p = this->pos ();
-      QGraphicsItem::mouseMoveEvent (e);
+      QDomElement e = doc.createElement ("knob");
 
-      if (m_mode == VERTICAL)
-        this->setPos (p.x (), this->y ());
-      else
-      {
-        if (this->x () < m_prev->x ()) this->setPos (m_prev->x (), this->y ());
-        if (this->x () > m_next->x ()) this->setPos (m_next->x (), this->y ());
-      }
+      e.setAttribute ("x", this->x ());
+      e.setAttribute ("y", this->y ());
 
-      if (this->y () <   0) this->setPos (this->x (),   0);
-      if (this->y () > 256) this->setPos (this->x (), 256);
+      e.setAttribute ("color", m_color.name ());
 
-      this->setToolTip ();
-      m_editor->compute ();
+      return e;
+    }
+
+    void QLutKnob::init (const QDomElement & e)
+    {
+      double x = e.attribute ("x").toDouble ();
+      double y = e.attribute ("y").toDouble ();
+      this->setPos (x, y);
+
+      this->setColor (QColor (e.attribute ("color")));
     }
 
     void QLutKnob::mousePressEvent (QGraphicsSceneMouseEvent * e)
     {
       QGraphicsItem::mousePressEvent (e);
       if (m_mode == MAGIC) m_editor->add ();
-      //e->accept ();
-    }
-
-    void QLutKnob::mouseReleaseEvent (QGraphicsSceneMouseEvent * e)
-    {
-      QGraphicsItem::mouseReleaseEvent (e);
       //e->accept ();
     }
 
@@ -143,16 +163,47 @@ namespace Aa
       if (action == remove) m_editor->remove (this);
     }
 
+    QVariant QLutKnob::itemChange (GraphicsItemChange change, const QVariant & value)
+    {
+      switch (change)
+      {
+        case ItemPositionChange:
+        {
+          QPointF p0 = this->pos ();
+          QPointF p1 = value.toPointF ();
+
+          double y = qBound (0.0, p1.y (), 256.0);
+
+          if (m_mode == VERTICAL)
+            return QPointF (p0.x (), y);
+
+          //double min = (m_prev != NULL ?   0 : m_prev->x ());
+          //double max = (m_next != NULL ? 256 : m_next->x ());
+          double x = qBound (m_prev->x (), p1.x (), m_next->x ());
+
+          return QPointF (x, y);
+        }
+
+        case ItemPositionHasChanged:
+          this->setToolTip ();
+          m_editor->compute ();
+          return QVariant ();
+
+        default:
+          return QGraphicsItem::itemChange (change, value);
+      }
+    }
+
 ////////////////////////////////////////////////////////////////////////////////
 // Aa::R3d::QLutEditor /////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
 
-    QLutEditor::QLutEditor (qreal min, qreal max, QWidget * parent) :
+    QLutEditor::QLutEditor (QWidget * parent) :
       QGraphicsView (parent),
       m_scene (),
-      m_first (this, min,   0, Qt::black, NULL,     NULL, QLutKnob::VERTICAL),
-      m_last  (this, max, 256, Qt::white, &m_first, NULL, QLutKnob::VERTICAL),
+      m_first (this, NULL,     NULL, QPointF (0,   0),   Qt::black, QLutKnob::VERTICAL),
+      m_last  (this, &m_first, NULL, QPointF (256, 256), Qt::white, QLutKnob::VERTICAL),
       m_frame (0, 0, 256, 256),
       m_path (),
       m_magic (NULL),
@@ -166,7 +217,7 @@ namespace Aa
       p.fillRect (8, 0,  8,  8, Qt::darkGray);
       m_scene.setBackgroundBrush (checker);
 
-      // Background.
+      // Frame.
       m_frame.setZValue (0);
       m_frame.setPen (QPen (Qt::black, 1.5));
 
@@ -264,17 +315,23 @@ namespace Aa
       qreal a1 = qBound (0.0, (QLineF (p, k1->pos ()).length () - 2 * r) / r, 1.0);
       qreal a  = qBound (0.0, (a0 * a1) - (QLineF (p, proj).length () - r) / R, 1.0);
       return new QLutKnob (this,
-                           proj.x (), proj.y (),
+                           k0, k1,
+                           proj,
                            QColor (c.red (), c.green (), c.blue (), 255.0 * a),
-                           k0, k1, QLutKnob::MAGIC);
+                           QLutKnob::MAGIC);
+    }
+
+    int QLutEditor::Mix (int c0, int c1, qreal t)
+    {
+      return qBound (0, qRound ((1 - t) * c0 + t * c1), 255);
     }
 
     QColor QLutEditor::Mix (const QColor & c0, const QColor & c1, qreal t)
     {
-      return QColor (qRound ((1 - t) * c0.red   () + t * c1.red   ()),
-                     qRound ((1 - t) * c0.green () + t * c1.green ()),
-                     qRound ((1 - t) * c0.blue  () + t * c1.blue  ()),
-                     qRound ((1 - t) * c0.alpha () + t * c1.alpha ()));
+      return QColor (QLutEditor::Mix (c0.red   (), c1.red   (), t),
+                     QLutEditor::Mix (c0.green (), c1.green (), t),
+                     QLutEditor::Mix (c0.blue  (), c1.blue  (), t),
+                     QLutEditor::Mix (c0.alpha (), c1.alpha (), t));
     }
 
     QColor QLutEditor::Mix (const QLutKnob * k0, const QLutKnob * k1, qreal x)
@@ -311,13 +368,11 @@ namespace Aa
 
     void QLutEditor::compute ()
     {
-      //this->write (cout);
-
-      QPainterPath path (QPointF (m_first.x (), m_first.y ()));
+      QPainterPath path (m_first.pos ());
       for (Knob * k0 = &m_first; k0 != &m_last; k0 = k0->next ())
       {
         Knob * k1 = k0->next ();
-        path.lineTo (k1->x (), k1->y ());
+        path.lineTo (k1->pos ());
       }
       m_path.setPath (path);
 
@@ -336,24 +391,37 @@ namespace Aa
       emit computed (m_table);
     }
 
-    void QLutEditor::read (istream &)
+    QDomElement QLutEditor::dom (QDomDocument & doc) const
     {
-      // TODO
-      compute ();
+      QDomElement e = doc.createElement ("lut");
+
+      for (const Knob * k = &m_first; k != NULL; k = k->next ())
+        e.appendChild (k->dom (doc));
+
+      return e;
     }
 
-    void QLutEditor::write (ostream & os) const
+    void QLutEditor::init (const QDomElement & element)
     {
-      os << "<knobs>\n";
-      for (const Knob * k = &m_first; k != NULL; k = k->next ())
+      while (m_first.next () != &m_last)
+        delete m_first.next ();
+
+      QDomElement first = element.firstChildElement ("knob");
+      m_first.init (first);
+
+      QDomElement last = element.lastChildElement ("knob");
+      m_last.init (last);
+
+      Knob * knob = &m_first;
+      for (QDomElement e = first.nextSiblingElement ("knob");
+           e != last;
+           e = e.nextSiblingElement ("knob"))
       {
-        const QColor & c = k->color ();
-        os << "  <knob "
-           <<     "x=\"" << k->x () << "\" "
-           <<     "y=\"" << k->y () << "\" "
-           <<     "color=\"" << qPrintable (c.name ()) << "\" />\n";
+        knob = new QLutKnob (this, knob, &m_last, e);
+        m_scene.addItem (knob);
       }
-      os << "</knobs>\n";
+
+      compute ();
     }
 
     void QLutEditor::import (const QColor table [256])
@@ -396,7 +464,12 @@ namespace Aa
          || d1b0 * d1b1 < 0 || fabs (d1b1 - d1b0) > 1
          || d1a0 * d1a1 < 0 || fabs (d1a1 - d1a0) > 1)
         {
-          knob = new QLutKnob (this, k + 0.5, m_table [k].alpha (), m_table [k], knob, &m_last, QLutKnob::NORMAL);
+          knob = new QLutKnob (this,
+                               knob, &m_last,
+                               QPointF (k + 0.5, m_table [k].alpha ()),
+                               m_table [k],
+                               QLutKnob::NORMAL);
+
           m_scene.addItem (knob);
         }
       }
@@ -406,20 +479,6 @@ namespace Aa
 
       compute ();
     }
-
-#if 0
-    void QLutEditor::write (ostream & o) const
-    {
-      for (int k = 0; k < 256; ++k)
-      {
-        QColor c = this->color (k);
-        o << c.red   () << ' '
-          << c.green () << ' '
-          << c.blue  () << ' '
-          << c.alpha () << std::endl;
-      }
-    }
-#endif
 
     void QLutEditor::resizeEvent (QResizeEvent *)
     {
@@ -468,16 +527,6 @@ namespace Aa
       }
     }
 
-#if 0
-    void QLutEditor::keyPressEvent (QKeyEvent * e)
-    {
-      std::ostringstream oss;
-      this->dump (oss);
-      QMessageBox::information (this, "QLutEditor", oss.str ().c_str ());
-    }
-#endif
   }
 }
-
-//#include "QLutEditor.moc"
 

@@ -1,11 +1,12 @@
-#ifndef __AA_R3D_QLUT_EDITOR__
-#define __AA_R3D_QLUT_EDITOR__
+#ifndef AA_R3D_QLUT_EDITOR__H
+#define AA_R3D_QLUT_EDITOR__H
 
 #include <QGraphicsItem>
 #include <QGraphicsScene>
 #include <QGraphicsView>
 //#include <QMouseEvent>
 //#include <QGraphicsSceneMouseEvent>
+#include <QDomDocument>
 
 namespace Aa
 {
@@ -27,9 +28,9 @@ namespace Aa
 
       protected:
         QLutEditor * m_editor;
-        QColor m_color;
         QLutKnob * m_prev;
         QLutKnob * m_next;
+        QColor m_color;
         int m_mode;
 
       protected:
@@ -37,14 +38,20 @@ namespace Aa
 
       public:
         QLutKnob (QLutEditor *,
-                  qreal x, qreal y,
-                  const QColor & color,
                   QLutKnob * prev,
                   QLutKnob * next,
+                  const QPointF &,
+                  const QColor &,
                   int mode = NORMAL);
+
+        QLutKnob (QLutEditor *,
+                  QLutKnob * prev,
+                  QLutKnob * next,
+                  const QDomElement &);
+
         virtual ~QLutKnob ();
 
-        void setColor (const QColor & c);
+        void setColor (const QColor &);
         QColor color () const;
 
         QLutKnob * prev () const {return m_prev;}
@@ -52,11 +59,15 @@ namespace Aa
 
         void validate ();
 
-        virtual void mouseMoveEvent        (QGraphicsSceneMouseEvent *);
+        QDomElement dom (QDomDocument &) const;
+        void init (const QDomElement &);
+
+        //virtual void mouseMoveEvent        (QGraphicsSceneMouseEvent *);
         virtual void mousePressEvent       (QGraphicsSceneMouseEvent *);
-        virtual void mouseReleaseEvent     (QGraphicsSceneMouseEvent *);
+        //virtual void mouseReleaseEvent     (QGraphicsSceneMouseEvent *);
         virtual void mouseDoubleClickEvent (QGraphicsSceneMouseEvent *);
         virtual void contextMenuEvent      (QGraphicsSceneContextMenuEvent *);
+        virtual QVariant itemChange (GraphicsItemChange, const QVariant &);
     };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -74,6 +85,7 @@ namespace Aa
         typedef QPair<ConstKnob *, ConstKnob *> ConstKnobPair;
 
       public:
+        static int    Mix (int,              int,              qreal t);
         static QColor Mix (const QColor   &, const QColor   &, qreal t);
         static QColor Mix (const QLutKnob *, const QLutKnob *, qreal x);
 
@@ -94,7 +106,7 @@ namespace Aa
         void computed (const QVector<QColor> &);
 
       public:
-        QLutEditor (qreal min = 0, qreal max = 256, QWidget * parent = NULL);
+        QLutEditor (QWidget * parent = NULL);
         virtual ~QLutEditor ();
 
         QVector<QColor> table () const {return m_table;}
@@ -106,8 +118,8 @@ namespace Aa
         ConstKnobPair find (qreal x) const;
         QColor color (qreal x) const;
 
-        void read (std::istream &);
-        void write (std::ostream &) const;
+        QDomElement dom (QDomDocument &) const;
+        void init (const QDomElement &);
 
         void import (const QColor [256]); // FIXME
 
@@ -123,5 +135,5 @@ namespace Aa
   }
 }
 
-#endif // __AA_R3D_QLUT_EDITOR__
+#endif // AA_R3D_QLUT_EDITOR__H
 

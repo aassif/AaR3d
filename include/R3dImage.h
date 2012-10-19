@@ -105,10 +105,10 @@ namespace Aa
     };
 
     // Loading.
-    AA_R3D_API void ImageLoadB8 (Image *, const std::string &)
+    AA_R3D_API void ImageLoadB8 (Image *, const std::string &, const vec3 & scale = vec3 (1))
       throw (Aa::FileNotFound, Aa::ParseError);
 
-    AA_R3D_API Image * ImageLoadB8 (const std::string &)
+    AA_R3D_API Image * ImageLoadB8 (const std::string &, const vec3 & scale = vec3 (1))
       throw (Aa::FileNotFound, Aa::ParseError);
 
 #if 0

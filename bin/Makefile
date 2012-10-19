@@ -66,7 +66,7 @@ L_QGLViewer=    -L$(P_QGLViewer)/QGLViewer -lQGLViewer $(L_Qt4)
 # Règles #######################################################################
 ################################################################################
 
-EXE=      r3d lut b8
+EXE=      b8
 HDR=      
 SRC=      
 OBJ=      $(HDR:%.h=%.moc.o) \
@@ -75,14 +75,14 @@ ALL=      make.depend $(EXE)
 
 all:		$(ALL)
 
-r3d:		r3d.o $(OBJ) ../lib/libAaR3d.so
-			$(GCC) $< $(OBJ) $(L_QGLViewer) $(L_AaR3d) $(L_AaFFmpeg) -o $@
+#r3d:		r3d.o $(OBJ) ../lib/libAaR3d.so
+#			$(GCC) $< $(OBJ) $(L_QGLViewer) $(L_AaR3d) $(L_AaFFmpeg) -o $@
 
 b8:		b8.o ../lib/libAaR3d.so
 			$(GCC) $< $(L_QGLViewer) $(L_AaR3d) $(L_AaFFmpeg) -o $@
 
-lut:		lut.o QLutEditor.moc.o QLutEditor.o ../lib/libAaR3d.so
-			$(GCC) $< QLutEditor.moc.o QLutEditor.o $(L_QGLViewer) $(L_AaR3d) $(L_AaFFmpeg) -o $@
+#lut:		lut.o QLutEditor.moc.o QLutEditor.o ../lib/libAaR3d.so
+#			$(GCC) $< QLutEditor.moc.o QLutEditor.o $(L_QGLViewer) $(L_AaR3d) $(L_AaFFmpeg) -o $@
 
 %.o:			%.cc
 			$(GCC) -c $(I_QGLViewer) $(I_AaR3d) $(I_AaFFmpeg) $< -o $@

@@ -26,10 +26,9 @@ namespace Aa
         Lut (const Entry   [256]);
         Lut (const GLubyte [256][4]);
         Lut (const std::string &) throw (Aa::FileNotFound, Aa::ParseError);
-        Lut (const Lut &);
-        // default dtor.
-        Lut & operator= (const Lut &);
-        const Entry * data () const;
+        //Lut (const Lut &);
+        //Lut & operator= (const Lut &);
+        //const Entry * data () const;
         const Entry & operator[] (int k) const;
         GLuint glTex1d (GLdouble step) const;
         GLuint glTex2d (GLdouble step) const;
