@@ -5,7 +5,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QMenu>
 //#include <AaXml>
-#include "QLutEditor.h"
+#include "QTransferFunction.h"
 
 //#include <QMessageBox> // debug
 
@@ -17,15 +17,15 @@ namespace Aa
   {
 
 ////////////////////////////////////////////////////////////////////////////////
-// Aa::R3d::QLutKnob ///////////////////////////////////////////////////////////
+// Aa::R3d::QTransferKnob //////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-    QLutKnob::QLutKnob (QLutEditor * editor,
-                        QLutKnob * prev,
-                        QLutKnob * next,
-                        const QPointF & pos,
-                        const QColor & color,
-                        int mode) :
+    QTransferKnob::QTransferKnob (QTransferFunction * editor,
+                                  QTransferKnob * prev,
+                                  QTransferKnob * next,
+                                  const QPointF & pos,
+                                  const QColor & color,
+                                  int mode) :
       QGraphicsEllipseItem (-RADIUS, -RADIUS, 2*RADIUS + 1, 2*RADIUS + 1),
       m_editor (editor),
       m_prev (prev),
@@ -47,10 +47,10 @@ namespace Aa
       setFlag (QGraphicsItem::ItemSendsGeometryChanges);
     }
 
-    QLutKnob::QLutKnob (QLutEditor * editor,
-                        QLutKnob * prev,
-                        QLutKnob * next,
-                        const QDomElement & element) :
+    QTransferKnob::QTransferKnob (QTransferFunction * editor,
+                                  QTransferKnob * prev,
+                                  QTransferKnob * next,
+                                  const QDomElement & element) :
       QGraphicsEllipseItem (-RADIUS, -RADIUS, 2*RADIUS + 1, 2*RADIUS + 1),
       m_editor (editor),
       m_prev (prev),
@@ -71,7 +71,7 @@ namespace Aa
       setFlag (QGraphicsItem::ItemSendsGeometryChanges);
     }
 
-    QLutKnob::~QLutKnob ()
+    QTransferKnob::~QTransferKnob ()
     {
       if (m_mode != MAGIC)
       {
@@ -80,13 +80,13 @@ namespace Aa
       }
     }
 
-    void QLutKnob::setToolTip ()
+    void QTransferKnob::setToolTip ()
     {
       static const QString FORMAT = QString ("(%1, %2)");
       QGraphicsItem::setToolTip (FORMAT.arg (this->x ()).arg (this->y ()));
     }
 
-    void QLutKnob::setColor (const QColor & c)
+    void QTransferKnob::setColor (const QColor & c)
     {
       int a = (m_mode == MAGIC ? c.alpha () : 255);
       m_color = QColor (c.red (), c.green (), c.blue (), a);
@@ -96,7 +96,7 @@ namespace Aa
       setZValue (m_mode == MAGIC ? 2 : 3);
     }
 
-    QColor QLutKnob::color () const
+    QColor QTransferKnob::color () const
     {
       return QColor (m_color.red (),
                      m_color.green (),
@@ -104,7 +104,7 @@ namespace Aa
                      qBound (0.0, this->y (), 255.0));
     }
 
-    void QLutKnob::validate ()
+    void QTransferKnob::validate ()
     {
       if (m_mode == MAGIC)
       {
@@ -115,7 +115,7 @@ namespace Aa
       }
     }
 
-    QDomElement QLutKnob::dom (QDomDocument & doc) const
+    QDomElement QTransferKnob::dom (QDomDocument & doc) const
     {
       QDomElement e = doc.createElement ("knob");
 
@@ -127,7 +127,7 @@ namespace Aa
       return e;
     }
 
-    void QLutKnob::init (const QDomElement & e)
+    void QTransferKnob::init (const QDomElement & e)
     {
       double x = e.attribute ("x").toDouble ();
       double y = e.attribute ("y").toDouble ();
@@ -136,14 +136,14 @@ namespace Aa
       this->setColor (QColor (e.attribute ("color")));
     }
 
-    void QLutKnob::mousePressEvent (QGraphicsSceneMouseEvent * e)
+    void QTransferKnob::mousePressEvent (QGraphicsSceneMouseEvent * e)
     {
       QGraphicsItem::mousePressEvent (e);
       if (m_mode == MAGIC) m_editor->add ();
       //e->accept ();
     }
 
-    void QLutKnob::mouseDoubleClickEvent (QGraphicsSceneMouseEvent *)
+    void QTransferKnob::mouseDoubleClickEvent (QGraphicsSceneMouseEvent *)
     {
       QColor c = QColorDialog::getColor (m_color);
       if (c.isValid ())
@@ -154,7 +154,7 @@ namespace Aa
       //e->accept ();
     }
 
-    void QLutKnob::contextMenuEvent (QGraphicsSceneContextMenuEvent * e)
+    void QTransferKnob::contextMenuEvent (QGraphicsSceneContextMenuEvent * e)
     {
       QMenu menu;
       QAction * remove = menu.addAction ("Remove");
@@ -163,7 +163,7 @@ namespace Aa
       if (action == remove) m_editor->remove (this);
     }
 
-    QVariant QLutKnob::itemChange (GraphicsItemChange change, const QVariant & value)
+    QVariant QTransferKnob::itemChange (GraphicsItemChange change, const QVariant & value)
     {
       switch (change)
       {
@@ -177,8 +177,8 @@ namespace Aa
           if (m_mode == VERTICAL)
             return QPointF (p0.x (), y);
 
-          //double min = (m_prev != NULL ?   0 : m_prev->x ());
-          //double max = (m_next != NULL ? 256 : m_next->x ());
+          //double min = (m_prev != NULL ?   0.0 : m_prev->x ());
+          //double max = (m_next != NULL ? 256.0 : m_next->x ());
           double x = qBound (m_prev->x (), p1.x (), m_next->x ());
 
           return QPointF (x, y);
@@ -195,15 +195,15 @@ namespace Aa
     }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Aa::R3d::QLutEditor /////////////////////////////////////////////////////////
+// Aa::R3d::QTransferFunction //////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
 
-    QLutEditor::QLutEditor (QWidget * parent) :
+    QTransferFunction::QTransferFunction (QWidget * parent) :
       QGraphicsView (parent),
       m_scene (),
-      m_first (this, NULL,     NULL, QPointF (0,   0),   Qt::black, QLutKnob::VERTICAL),
-      m_last  (this, &m_first, NULL, QPointF (256, 256), Qt::white, QLutKnob::VERTICAL),
+      m_first (this, NULL,     NULL, QPointF (0,   0),   Qt::black, QTransferKnob::VERTICAL),
+      m_last  (this, &m_first, NULL, QPointF (256, 256), Qt::white, QTransferKnob::VERTICAL),
       m_frame (0, 0, 256, 256),
       m_path (),
       m_magic (NULL),
@@ -236,12 +236,12 @@ namespace Aa
       setRenderHints (QPainter::Antialiasing);
       setCacheMode (QGraphicsView::CacheBackground);
       setMouseTracking (true);
-      setWindowTitle ("QLutEditor");
+      setWindowTitle ("QTransferFunction");
 
       compute ();
     }
 
-    QLutEditor::~QLutEditor ()
+    QTransferFunction::~QTransferFunction ()
     {
 #if 0
       for (Knob * k = m_first.next (); k != &m_last; k = k->next ())
@@ -266,7 +266,7 @@ namespace Aa
       setScene (NULL);
     }
 
-    QLutEditor::ConstKnobPair QLutEditor::find (qreal x) const
+    QTransferFunction::ConstKnobPair QTransferFunction::find (qreal x) const
     {
       if (x < m_first.x ()) return ConstKnobPair (NULL, &m_first);
       if (x > m_last .x ()) return ConstKnobPair (&m_last,  NULL);
@@ -283,23 +283,25 @@ namespace Aa
       return ConstKnobPair (NULL, NULL);
     }
 
-    void QLutEditor::add ()
+    void QTransferFunction::add ()
     {
       m_magic->validate ();
       m_magic = NULL;
       compute ();
     }
 
-    void QLutEditor::remove (QLutKnob * knob)
+    void QTransferFunction::remove (QTransferKnob * knob)
     {
       delete knob;
       compute ();
     }
 
-    QLutKnob * QLutEditor::project (QLutKnob * k0, QLutKnob * k1, const QPointF & p)
+    QTransferKnob * QTransferFunction::project (QTransferKnob * k0,
+                                                QTransferKnob * k1,
+                                                const QPointF & p)
     {
-      static const qreal r = QLutKnob::RADIUS;
-      static const qreal R = QLutKnob::RADIUS * 8;
+      static const qreal r = QTransferKnob::RADIUS;
+      static const qreal R = QTransferKnob::RADIUS * 8;
 
       QLineF segment (k0->pos (), k1->pos ());
       QLineF n = segment.normalVector ().unitVector ();
@@ -310,31 +312,31 @@ namespace Aa
       QLineF::IntersectType type = segment.intersect (line, &proj);
       if (type != QLineF::BoundedIntersection) return NULL;
 
-      QColor c = QLutEditor::Mix (k0, k1, proj.x ());
+      QColor c = QTransferFunction::Mix (k0, k1, proj.x ());
       qreal a0 = qBound (0.0, (QLineF (p, k0->pos ()).length () - 2 * r) / r, 1.0);
       qreal a1 = qBound (0.0, (QLineF (p, k1->pos ()).length () - 2 * r) / r, 1.0);
       qreal a  = qBound (0.0, (a0 * a1) - (QLineF (p, proj).length () - r) / R, 1.0);
-      return new QLutKnob (this,
-                           k0, k1,
-                           proj,
-                           QColor (c.red (), c.green (), c.blue (), 255.0 * a),
-                           QLutKnob::MAGIC);
+      return new QTransferKnob (this,
+                                k0, k1,
+                                proj,
+                                QColor (c.red (), c.green (), c.blue (), 255.0 * a),
+                                QTransferKnob::MAGIC);
     }
 
-    int QLutEditor::Mix (int c0, int c1, qreal t)
+    int QTransferFunction::Mix (int c0, int c1, qreal t)
     {
       return qBound (0, qRound ((1 - t) * c0 + t * c1), 255);
     }
 
-    QColor QLutEditor::Mix (const QColor & c0, const QColor & c1, qreal t)
+    QColor QTransferFunction::Mix (const QColor & c0, const QColor & c1, qreal t)
     {
-      return QColor (QLutEditor::Mix (c0.red   (), c1.red   (), t),
-                     QLutEditor::Mix (c0.green (), c1.green (), t),
-                     QLutEditor::Mix (c0.blue  (), c1.blue  (), t),
-                     QLutEditor::Mix (c0.alpha (), c1.alpha (), t));
+      return QColor (QTransferFunction::Mix (c0.red   (), c1.red   (), t),
+                     QTransferFunction::Mix (c0.green (), c1.green (), t),
+                     QTransferFunction::Mix (c0.blue  (), c1.blue  (), t),
+                     QTransferFunction::Mix (c0.alpha (), c1.alpha (), t));
     }
 
-    QColor QLutEditor::Mix (const QLutKnob * k0, const QLutKnob * k1, qreal x)
+    QColor QTransferFunction::Mix (const QTransferKnob * k0, const QTransferKnob * k1, qreal x)
     {
       if (k0 == NULL) return (k1 != NULL) ? k1->color () : Qt::transparent;
       if (k1 == NULL) return (k0 != NULL) ? k0->color () : Qt::transparent;
@@ -342,11 +344,11 @@ namespace Aa
       qreal x0 = k0->x ();
       qreal x1 = k1->x ();
       qreal t = (x0 != x1) ? (x - x0) / (x1 - x0) : 0.5;
-      return QLutEditor::Mix (k0->color (), k1->color (), t);
+      return QTransferFunction::Mix (k0->color (), k1->color (), t);
     }
 
 #if 0
-    QPointF QLutEditor::CatmullRom (const QLutKnob * k1, const QLutKnob * k2, qreal t)
+    QPointF QTransferFunction::CatmullRom (const QTransferKnob * k1, const QTransferKnob * k2, qreal t)
     {
       QPointF p1 = k1->pos ();
       QPointF p2 = k2->pos ();
@@ -360,13 +362,13 @@ namespace Aa
     }
 #endif
 
-    QColor QLutEditor::color (qreal x) const
+    QColor QTransferFunction::color (qreal x) const
     {
       ConstKnobPair f = this->find (x);
-      return QLutEditor::Mix (f.first, f.second, x);
+      return QTransferFunction::Mix (f.first, f.second, x);
     }
 
-    void QLutEditor::compute ()
+    void QTransferFunction::compute ()
     {
       QPainterPath path (m_first.pos ());
       for (Knob * k0 = &m_first; k0 != &m_last; k0 = k0->next ())
@@ -382,7 +384,7 @@ namespace Aa
       {
         qreal x = i + 0.5;
         while (x > k->next ()->x ()) k = k->next ();
-        QColor c = QLutEditor::Mix (k, k->next (), x);
+        QColor c = QTransferFunction::Mix (k, k->next (), x);
         m_table [i] = c;
         image.setPixel (i, 0, c.rgba ());
       }
@@ -391,7 +393,7 @@ namespace Aa
       emit computed (m_table);
     }
 
-    QDomElement QLutEditor::dom (QDomDocument & doc) const
+    QDomElement QTransferFunction::dom (QDomDocument & doc) const
     {
       QDomElement e = doc.createElement ("lut");
 
@@ -401,7 +403,7 @@ namespace Aa
       return e;
     }
 
-    void QLutEditor::init (const QDomElement & element)
+    void QTransferFunction::init (const QDomElement & element)
     {
       while (m_first.next () != &m_last)
         delete m_first.next ();
@@ -417,14 +419,14 @@ namespace Aa
            e != last;
            e = e.nextSiblingElement ("knob"))
       {
-        knob = new QLutKnob (this, knob, &m_last, e);
+        knob = new QTransferKnob (this, knob, &m_last, e);
         m_scene.addItem (knob);
       }
 
       compute ();
     }
 
-    void QLutEditor::import (const QColor table [256])
+    void QTransferFunction::import (const QColor table [256])
     {
       int d1r [256]; d1r [0] = 0;
       int d1g [256]; d1g [0] = 0;
@@ -444,7 +446,7 @@ namespace Aa
       m_first.setPos (0, m_table [0].alpha ());
       m_first.setColor (m_table [0]);
 
-      QLutKnob * knob = &m_first;
+      QTransferKnob * knob = &m_first;
       for (int k = 1; k < 255; ++k)
       {
         int d1r0 = d1r [k-1], d1r1 = d1r [k];
@@ -464,11 +466,11 @@ namespace Aa
          || d1b0 * d1b1 < 0 || fabs (d1b1 - d1b0) > 1
          || d1a0 * d1a1 < 0 || fabs (d1a1 - d1a0) > 1)
         {
-          knob = new QLutKnob (this,
-                               knob, &m_last,
-                               QPointF (k + 0.5, m_table [k].alpha ()),
-                               m_table [k],
-                               QLutKnob::NORMAL);
+          knob = new QTransferKnob (this,
+                                    knob, &m_last,
+                                    QPointF (k + 0.5, m_table [k].alpha ()),
+                                    m_table [k],
+                                    QTransferKnob::NORMAL);
 
           m_scene.addItem (knob);
         }
@@ -480,13 +482,13 @@ namespace Aa
       compute ();
     }
 
-    void QLutEditor::resizeEvent (QResizeEvent *)
+    void QTransferFunction::resizeEvent (QResizeEvent *)
     {
       static const int MARGIN = 40;
       this->fitInView (-MARGIN, -MARGIN, 256 + MARGIN, 256 + MARGIN, Qt::KeepAspectRatio);
     }
 
-    void QLutEditor::mouseMoveEvent (QMouseEvent * e)
+    void QTransferFunction::mouseMoveEvent (QMouseEvent * e)
     {
       QGraphicsView::mouseMoveEvent (e);
 
@@ -499,11 +501,11 @@ namespace Aa
 
       if (e->buttons () == Qt::NoButton)
       {
-        QLutKnob * p0 = NULL;
+        QTransferKnob * p0 = NULL;
         QPointF q = this->mapToScene (e->pos ());
-        for (QLutKnob * k = &m_first; k != &m_last; k = k->next ())
+        for (QTransferKnob * k = &m_first; k != &m_last; k = k->next ())
         {
-          QLutKnob * p1 = this->project (k, k->next (), q);
+          QTransferKnob * p1 = this->project (k, k->next (), q);
           if (p1 != NULL)
           {
             if (p0 != NULL)

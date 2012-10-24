@@ -32,8 +32,8 @@ namespace Aa
       m_renderer = new QImageRenderer;
       setCentralWidget (m_renderer);
 
-      m_editor = new QLutEditor;
-      m_editor_dock = new QDockWidget (tr ("QLutEditor"));
+      m_editor = new QTransferFunction;
+      m_editor_dock = new QDockWidget (tr ("QTransferFunction"));
       m_editor_dock->setWidget (m_editor);
       addDockWidget (Qt::LeftDockWidgetArea, m_editor_dock);
 

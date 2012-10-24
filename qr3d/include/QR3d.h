@@ -15,7 +15,7 @@
 //#include <QKeyEvent>
 //#include <QFileDialog>
 //#include <QGLViewer/qglviewer.h>
-#include "QLutEditor.h"
+#include "QTransferFunction.h"
 #include "QImageRenderer.h"
 
 namespace Aa
@@ -28,11 +28,11 @@ namespace Aa
       Q_OBJECT
 
       private:
-        QImageRenderer * m_renderer;
-        QLutEditor     * m_editor;
-        QDockWidget    * m_editor_dock;
-        R3d::Image     * m_image;
-        R3d::Lut       * m_lut;
+        QImageRenderer    * m_renderer;
+        QTransferFunction * m_editor;
+        QDockWidget       * m_editor_dock;
+        R3d::Image        * m_image;
+        R3d::Lut          * m_lut;
 
       public:
         QR3d ();

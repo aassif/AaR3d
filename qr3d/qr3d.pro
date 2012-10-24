@@ -35,7 +35,7 @@ SOURCES += \
     ../src/R3dImage.cc \
     ../src/R3dBlinn.cc \
     src/QR3d.cc \
-    src/QLutEditor.cc \
+    src/QTransferFunction.cc \
     src/QImageRenderer.cc \
     src/r3d.cc
 
@@ -62,7 +62,7 @@ HEADERS += \
     ../include/R3dImage.h \
     ../include/R3dBlinn.h \
     include/QR3d.h \
-    include/QLutEditor.h \
+    include/QTransferFunction.h \
     include/QImageRenderer.h
 
 RCC_DIR = rcc

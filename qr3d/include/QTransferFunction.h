@@ -1,5 +1,5 @@
-#ifndef AA_R3D_QLUT_EDITOR__H
-#define AA_R3D_QLUT_EDITOR__H
+#ifndef AA_R3D_TRANSFER_FUNCTION__H
+#define AA_R3D_TRANSFER_FUNCTION__H
 
 #include <QGraphicsItem>
 #include <QGraphicsScene>
@@ -13,23 +13,23 @@ namespace Aa
   namespace R3d
   {
 
-    class QLutKnob;
-    class QLutEditor;
+    class QTransferKnob;
+    class QTransferFunction;
 
 ////////////////////////////////////////////////////////////////////////////////
-// Aa::R3d::QLutKnob ///////////////////////////////////////////////////////////
+// Aa::R3d::QTransferKnob ///////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-    class QLutKnob : public QGraphicsEllipseItem
+    class QTransferKnob : public QGraphicsEllipseItem
     {
       public:
         static const int RADIUS = 3;
         enum {NORMAL = 0, VERTICAL = 1, MAGIC = 2};
 
       protected:
-        QLutEditor * m_editor;
-        QLutKnob * m_prev;
-        QLutKnob * m_next;
+        QTransferFunction * m_editor;
+        QTransferKnob * m_prev;
+        QTransferKnob * m_next;
         QColor m_color;
         int m_mode;
 
@@ -37,25 +37,25 @@ namespace Aa
         void setToolTip ();
 
       public:
-        QLutKnob (QLutEditor *,
-                  QLutKnob * prev,
-                  QLutKnob * next,
-                  const QPointF &,
-                  const QColor &,
-                  int mode = NORMAL);
+        QTransferKnob (QTransferFunction *,
+                       QTransferKnob * prev,
+                       QTransferKnob * next,
+                       const QPointF &,
+                       const QColor &,
+                       int mode = NORMAL);
 
-        QLutKnob (QLutEditor *,
-                  QLutKnob * prev,
-                  QLutKnob * next,
-                  const QDomElement &);
+        QTransferKnob (QTransferFunction *,
+                       QTransferKnob * prev,
+                       QTransferKnob * next,
+                       const QDomElement &);
 
-        virtual ~QLutKnob ();
+        virtual ~QTransferKnob ();
 
         void setColor (const QColor &);
         QColor color () const;
 
-        QLutKnob * prev () const {return m_prev;}
-        QLutKnob * next () const {return m_next;}
+        QTransferKnob * prev () const {return m_prev;}
+        QTransferKnob * next () const {return m_next;}
 
         void validate ();
 
@@ -71,48 +71,48 @@ namespace Aa
     };
 
 ////////////////////////////////////////////////////////////////////////////////
-// Aa::R3d::QLutEditor /////////////////////////////////////////////////////////
+// Aa::R3d::QTransferFunction //////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-    class QLutEditor : public QGraphicsView
+    class QTransferFunction : public QGraphicsView
     {
       Q_OBJECT
 
       public:
-        typedef /***/ QLutKnob /***/Knob;
-        typedef const QLutKnob ConstKnob;
+        typedef /***/ QTransferKnob /***/Knob;
+        typedef const QTransferKnob ConstKnob;
         typedef QPair</***/Knob *, /***/Knob *> /***/KnobPair;
         typedef QPair<ConstKnob *, ConstKnob *> ConstKnobPair;
 
       public:
-        static int    Mix (int,              int,              qreal t);
-        static QColor Mix (const QColor   &, const QColor   &, qreal t);
-        static QColor Mix (const QLutKnob *, const QLutKnob *, qreal x);
+        static int    Mix (int,                   int,                   qreal t);
+        static QColor Mix (const QColor        &, const QColor        &, qreal t);
+        static QColor Mix (const QTransferKnob *, const QTransferKnob *, qreal x);
 
-        //static QPointF CatmullRom (const QLutKnob *, const QLutKnob *, qreal t);
+        //static QPointF CatmullRom (const QTransferKnob *, const QTransferKnob *, qreal t);
 
       protected:
         QGraphicsScene m_scene;
-        QLutKnob m_first, m_last;
+        QTransferKnob m_first, m_last;
         QGraphicsRectItem m_frame;
         QGraphicsPathItem m_path;
-        QLutKnob * m_magic;
+        QTransferKnob * m_magic;
         QVector<QColor> m_table;
 
       protected:
-        QLutKnob * project (QLutKnob *, QLutKnob *, const QPointF &);
+        QTransferKnob * project (QTransferKnob *, QTransferKnob *, const QPointF &);
 
       signals:
         void computed (const QVector<QColor> &);
 
       public:
-        QLutEditor (QWidget * parent = NULL);
-        virtual ~QLutEditor ();
+        QTransferFunction (QWidget * parent = NULL);
+        virtual ~QTransferFunction ();
 
         QVector<QColor> table () const {return m_table;}
 
         void add ();
-        void remove (QLutKnob *);
+        void remove (QTransferKnob *);
         void compute ();
 
         ConstKnobPair find (qreal x) const;
@@ -135,5 +135,5 @@ namespace Aa
   }
 }
 
-#endif // AA_R3D_QLUT_EDITOR__H
+#endif // AA_R3D_TRANSFER_FUNCTION__H
 
