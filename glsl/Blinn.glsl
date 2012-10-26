@@ -1,13 +1,4 @@
-#version 130
-
-// Texture.
-uniform sampler3D image_tex3d;
-uniform mat4      image_scale;
-uniform float     image_min;
-uniform float     image_max;
-
-// Transfer function.
-uniform sampler1D lut1d;
+#include "/AaR3d/PostClassification"
 
 // Material shininess.
 uniform float shininess; // = 8.0;
@@ -15,26 +6,10 @@ uniform float shininess; // = 8.0;
 // Kernel size.
 uniform vec3 delta; // = vec3 (0.01, 0.01, 0.01);
 
-in vec4 mc_slicing_coords;
-
-// Window.
-float window (float x)
-{
-  return (x - image_min) / (image_max - image_min);
-}
-
-// Post-classification.
-vec4 post_classification (vec3 p)
-{
-  vec4 v = image_scale * vec4 (p, 1);
-  float f = texture (image_tex3d, v.xyz) [0];
-  return texture (lut1d, window (f));
-}
-
 // Gradient.
 float gradient_aux (vec3 p)
 {
-  return post_classification (p) [3];
+  return post_classification (vec4 (p, 1)) [3];
 }
 
 vec3 gradient (vec3 p)
@@ -45,26 +20,14 @@ vec3 gradient (vec3 p)
   return vec3 (x1 - x0, y1 - y0, z1 - z0) / sqrt (3.0);
 }
 
-vec3 colorize (vec3 v)
-{
-  return (0.5 * v) + 0.5;
-}
-
-vec4 rainbow (vec3 p)
-{
-  vec3 G = gradient (p);
-  float k = gradient_aux (p);
-  return k * vec4 (colorize (G), 1.0);
-}
-
 vec3 boost (vec3 v, float k)
 {
   return 1.0 - (1.0 - k) * (1.0 - v);
 }
 
-vec4 post_classification_blinn (vec3 p)
+vec4 post_classification_blinn (vec4 p)
 {
-  vec3 g = gradient (p);
+  vec3 g = gradient (p.xyz);
   float l = length (g);
   vec3 G = -normalize (g);
   vec3 N = (l != 0.0) ? normalize ((gl_ModelViewMatrix * vec4 (G, 0.0)).xyz) : vec3 (0, 0, 1);
@@ -77,10 +40,5 @@ vec4 post_classification_blinn (vec3 p)
 
   return vec4 (gl_LightSource[0].diffuse.rgb  * diffuse
              + gl_LightSource[0].specular.rgb * specular, K.a);
-}
-
-void main ()
-{
-  gl_FragColor = post_classification_blinn (mc_slicing_coords.xyz);
 }
 

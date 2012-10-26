@@ -9,6 +9,7 @@ namespace Aa
   namespace R3d
   {
 
+#if 0
     MIP::MIP (const std::string & vertex,
               const std::string & geometry,
               const std::string & fragment,
@@ -16,7 +17,13 @@ namespace Aa
       ImageRenderer3dGLSL (vertex, geometry, fragment),
       m_mode (mode)
     {
-      cout << "MIP\n";
+    }
+#endif
+
+    MIP::MIP (GLenum mode) :
+      ImageRenderer3dGLSL ("/AaR3d/Texture3d.fragment"),
+      m_mode (mode)
+    {
     }
 
     MIP::~MIP ()

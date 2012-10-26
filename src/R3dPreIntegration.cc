@@ -36,6 +36,7 @@ namespace Aa
       return texture;
     }
 
+#if 0
     PreIntegration::PreIntegration (const std::string & vertex,
                                     const std::string & geometry,
                                     const std::string & fragment) :
@@ -43,6 +44,15 @@ namespace Aa
       m_lut_tex2d ()
     {
       cout << "PreIntegration (Powered by GLSL!)\n";
+      m_lut_tex2d [0] = 0;
+      m_lut_tex2d [1] = 0;
+    }
+#endif
+
+    PreIntegration::PreIntegration (const std::string & fragment) :
+      ImageRenderer3dGLSL (fragment),
+      m_lut_tex2d ()
+    {
       m_lut_tex2d [0] = 0;
       m_lut_tex2d [1] = 0;
     }

@@ -18,9 +18,12 @@ namespace Aa
         virtual void glPreDraw (bool);
 
       public:
+#if 0
         Blinn (const std::string & vertex,
                const std::string & geometry,
                const std::string & fragment);
+#endif
+        Blinn (const std::string & fragment = "/AaR3d/Blinn.fragment");
         virtual ~Blinn ();
         float shininess () const {return m_shininess;}
         void setShininess (float f) {m_shininess = f;}

@@ -24,19 +24,20 @@ namespace Aa
       m_data ()
     {
       for (int i = 0; i < 256; ++i)
-      {
-        m_data [i][0] = 255;
-        m_data [i][1] = 255;
-        m_data [i][2] = 255;
-        m_data [i][3] = i;
-      }
+        m_data [i] = vec<AaUInt8> (255, 255, 255, i);
+    }
+
+    Lut::Lut (const Entry data [256]) :
+      m_data ()
+    {
+      copy (data, data + 256, m_data);
     }
 
     Lut::Lut (const GLubyte data [256][4]) :
       m_data ()
     {
-      const GLubyte * d = (const GLubyte *) data;
-      copy (d, d + 1024, (GLubyte *) m_data);
+      const Entry * d = (const Entry *) data;
+      copy (d, d + 256, m_data);
     }
 
     Lut::Lut (const string & filename)
@@ -46,6 +47,7 @@ namespace Aa
       this->load (filename);
     }
 
+#if 0
     Lut::Lut (const Lut & lut) :
       m_data ()
     {
@@ -54,17 +56,18 @@ namespace Aa
 
     Lut & Lut::operator= (const Lut & lut)
     {
-      const GLubyte * d = lut.data ();
-      copy (d, d + 1024, (GLubyte *) m_data);
+      const Entry * d = lut.data ();
+      copy (d, d + 256, m_data);
       return (*this);
     }
 
-    const GLubyte * Lut::data () const
+    const Lut::Entry * Lut::data () const
     {
-      return (const GLubyte *) m_data;
+      return m_data;
     }
+#endif
 
-    const GLubyte * Lut::operator[] (int k) const
+    const Lut::Entry & Lut::operator[] (int k) const
     {
       return m_data [k];
     }
@@ -201,11 +204,10 @@ namespace Aa
 
       for (int i = 0; i < 256; ++i)
       {
-        GLushort c;
-        ifs >> c; m_data [i][0] = c;
-        ifs >> c; m_data [i][1] = c;
-        ifs >> c; m_data [i][2] = c;
-        ifs >> c; m_data [i][3] = c;
+        GLuint r, g, b, a;
+        ifs >> r >> g >> b >> a;
+        if (! ifs) throw ParseError::Type ("RGBA");
+        m_data [i] = vec<AaUInt8> (r, g, b, a);
       }
 
       ifs.close ();

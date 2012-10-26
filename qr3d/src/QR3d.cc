@@ -10,6 +10,7 @@
 //#include <QDockWidget>
 #include <QApplication>
 #include <QFileDialog>
+#include <QTextStream>
 #include "QR3d.h"
 
 using namespace std;
@@ -21,35 +22,35 @@ namespace Aa
   namespace R3d
   {
 
-    QR3d::QR3d (const std::string & image,
-                const std::string & lut,
-                const dvec3 & scale) :
+    QR3d::QR3d () :
       m_renderer (NULL),
       m_editor (NULL),
       m_editor_dock (NULL),
       m_image (NULL),
       m_lut (NULL)
     {
-      m_renderer = new QImageRenderer (NULL, NULL);
+      m_renderer = new QImageRenderer;
       setCentralWidget (m_renderer);
 
-      m_editor = new QLutEditor (0, 256);
-      m_editor_dock = new QDockWidget (tr("QLutEditor"));
+      m_editor = new QTransferFunction;
+      m_editor_dock = new QDockWidget (tr ("QTransferFunction"));
       m_editor_dock->setWidget (m_editor);
       addDockWidget (Qt::LeftDockWidgetArea, m_editor_dock);
 
       QMenuBar * bar = menuBar ();
-      QMenu * menuFile = bar->addMenu (tr("&File"));
-      menuFile->addAction (tr("&Open"), this, SLOT (openImage ()));
-      menuFile->addAction (tr("&Quit"), qApp, SLOT (quit ()));
-      QMenu * menuView = bar->addMenu (tr("&View"));
+      QMenu * menuFile = bar->addMenu (tr ("&File"));
+      menuFile->addAction (tr ("&Open"), this, SLOT (openImage ()));
+      menuFile->addAction (tr ("Open &LUT"), this, SLOT (openLut ()));
+      menuFile->addAction (tr ("&Save LUT"), this, SLOT (saveLut ()));
+      menuFile->addSeparator ();
+      menuFile->addAction (tr ("&Quit"), qApp, SLOT (quit ()));
+      QMenu * menuView = bar->addMenu (tr ("&View"));
       menuView->addAction (m_editor_dock->toggleViewAction ());
 
       connect (m_editor, SIGNAL (computed (const QVector<QColor> &)),
                this,     SLOT   (setLut   (const QVector<QColor> &)));
 
-      setImage (image, scale);
-      setLut (lut);
+      this->setLut (m_editor->table ());
     }
 
     QR3d::~QR3d ()
@@ -75,14 +76,14 @@ namespace Aa
 
     void QR3d::openImage ()
     {
-      static const QString title  = tr("");
-      static const QString dir    = "/home/prof/aassif/data/import";
-      static const QString filter = tr("Images (*.b8 DICOMDIR)");
+      QString title  = tr ("");
+      QString dir    = "/home/prof/aassif/data/import";
+      QString filter = tr ("Images (*.b8 *.dcm DICOMDIR)");
       QString path = QFileDialog::getOpenFileName (this, title, dir, filter);
       if (! path.isEmpty ()) setImage (path);
     }
 
-    void QR3d::setImage (R3d::Image * image, const dvec3 & scale)
+    void QR3d::setImage (R3d::Image * image)
     {
       if (m_image != NULL)
       {
@@ -90,36 +91,48 @@ namespace Aa
         m_image = NULL;
       }
 
-      if (image != NULL)
-      {
-        m_image = image;
-        const dvec3 & d = m_image->box ().dim ();
-        m_image->setBox (dbox3::Center (scale * d));
-      }
+      m_image = image;
 
       m_renderer->setImage (m_image);
       m_renderer->updateGL ();
     }
 
-    void QR3d::setImage (const std::string & path, const dvec3 & scale)
-    {
-      R3d::Image * image = R3d::ImageLoadB8 (path);
-      setImage (image, scale);
-    }
-
     void QR3d::setImage (const QString & path, const dvec3 & scale)
     {
-      setImage (path.toStdString (), scale);
+      R3d::Image * image = R3d::ImageLoadB8 (path.toStdString (), scale);
+      setImage (image);
     }
 
     void QR3d::openLut ()
     {
+      QString title  = tr ("");
+      QString dir    = "/home/prof/aassif/data";
+      QString filter = tr ("LUT (*.qlut)");
+      QString path = QFileDialog::getOpenFileName (this, title, dir, filter);
+      if (! path.isEmpty ()) setLut (path);
+    }
+
+    void QR3d::saveLut ()
+    {
+      QString title  = tr ("");
+      QString dir    = "/home/prof/aassif/data";
+      QString filter = tr ("LUT (*.qlut)");
+      QString path = QFileDialog::getSaveFileName (this, title, dir, filter);
+      if (! path.isEmpty ())
+      {
+        QDomDocument doc;
+        doc.appendChild (m_editor->dom (doc));
+
+        QFile file (path);
+        file.open (QFile::WriteOnly);
+        QTextStream text (&file);
+
+        doc.save (text, 2);
+      }
     }
 
     void QR3d::setLut (R3d::Lut * lut)
     {
-      //cout << "void setLut (R3d::Lut *);" << endl;
-
       if (m_lut != NULL)
       {
         delete m_lut;
@@ -135,8 +148,6 @@ namespace Aa
 
     void QR3d::setLut (const QVector<QColor> & table)
     {
-      //cout << "void setLut (const QVector<QColor> &);" << endl;
-
       GLubyte t [256][4];
       for (int i = 0; i < 256; ++i)
       {
@@ -150,18 +161,32 @@ namespace Aa
       setLut (lut);
     }
 
-    void QR3d::setLut (const std::string & path)
+#if 0
+    void QR3d::setLut (const QString & path)
     {
-      //cout << "void setLut (const std::string &);" << endl;
-      std::ifstream ifs (path.c_str ());
+      QFile file (path);
+      file.open (QFile::ReadOnly);
+      QTextStream text (&file);
       QColor table [256];
       for (int i = 0; i < 256; ++i)
       {
-        int r, g, b, a;
-        ifs >> r >> g >> b >> a;
+        AaUInt r, g, b, a;
+        text >> r >> g >> b >> a;
         table [i] = QColor (r, g, b, a);
       }
       m_editor->import (table);
+    }
+#endif
+
+    void QR3d::setLut (const QString & path)
+    {
+      QFile file (path);
+      file.open (QFile::ReadOnly);
+
+      QDomDocument doc;
+      doc.setContent (&file);
+
+      m_editor->init (doc.firstChildElement ("lut"));
     }
 
   } // namespace R3d

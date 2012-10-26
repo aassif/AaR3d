@@ -90,8 +90,7 @@ namespace Aa
         Aa::GL::Program * m_program;
 
       public:
-        SlicerViewCubeGLSLv1 (Aa::GL::Program *,
-                              const std::string & source);
+        SlicerViewCubeGLSLv1 (Aa::GL::Program *);
         virtual ~SlicerViewCubeGLSLv1 ();
         virtual void glDraw (GLfloat step);
     };
@@ -103,9 +102,7 @@ namespace Aa
         GLuint            m_table_tex2d;
 
       public:
-        SlicerViewCubeGLSLv2 (Aa::GL::Program *,
-                              const std::string & source_vertex,
-                              const std::string & source_geometry);
+        SlicerViewCubeGLSLv2 (Aa::GL::Program *);
         virtual ~SlicerViewCubeGLSLv2 ();
         virtual void glDraw (GLfloat step);
     };

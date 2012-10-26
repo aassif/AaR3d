@@ -92,7 +92,9 @@ namespace Aa
                         (f & 0x80) ? d[dx*dy + dx + 1][0] : 0);
     }
 
-    void ImageLoadB8 (Image * image, const string & filename)
+    void ImageLoadB8 (Image        * image,
+                      const string & filename,
+                      const vec3   & scale)
       throw (Aa::FileNotFound, Aa::ParseError)
     {
       cout << "ImageLoadB8 (\"" << filename << "\");" << endl;
@@ -109,13 +111,14 @@ namespace Aa
       image->resize (vec<AaUInt> (dx, dy, dz));
       // Read data.
       if (! f.read ((char *) image->begin (), dx * dy * dz)) throw Aa::ParseError ("dat");
+      image->setBox (dbox3::Center (vec (dx * scale [0], dy * scale [1], dz * scale [2])));
     }
 
-    Image * ImageLoadB8 (const string & filename)
+    Image * ImageLoadB8 (const string & filename, const vec3 & scale)
       throw (Aa::FileNotFound, Aa::ParseError)
     {
       Image * image = new Image (uvec3 (0u));
-      try {ImageLoadB8 (image, filename);} catch (...) {delete image; throw;}
+      try {ImageLoadB8 (image, filename, scale);} catch (...) {delete image; throw;}
       return image;
     }
   } // namespace R3d

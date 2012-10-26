@@ -8,17 +8,22 @@ namespace Aa
   namespace R3d
   {
 
-    // GL::Program::ReadSource ("PassThru.VertexShader.glsl");
-    // GL::Program::ReadSource ("McSlicing.GeometryShader.glsl");
-    // GL::Program::ReadSource ("PostClassification.FragmentShader.glsl");
-
+#if 0
     PostClassification::PostClassification (const std::string & vertex,
                                             const std::string & geometry,
                                             const std::string & fragment) :
       ImageRenderer3dGLSL (vertex, geometry, fragment),
       m_lut_tex1d ()
     {
-      cout << "PostClassification (Powered by GLSL!)\n";
+      m_lut_tex1d [0] = 0;
+      m_lut_tex1d [1] = 0;
+    }
+#endif
+
+    PostClassification::PostClassification (const std::string & fragment) :
+      ImageRenderer3dGLSL (fragment),
+      m_lut_tex1d ()
+    {
       m_lut_tex1d [0] = 0;
       m_lut_tex1d [1] = 0;
     }

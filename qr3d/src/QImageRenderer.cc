@@ -9,6 +9,7 @@
 //#include <QDockWidget>
 #include <QApplication>
 #include <QKeyEvent>
+#include <QFile>
 //#include <QFileDialog>
 //#include <QGLViewer/qglviewer.h>
 //#include "QLutEditor.h"
@@ -16,24 +17,30 @@
 
 using namespace std;
 using namespace Aa;
-using namespace Aa::Math;
+//using namespace Aa::Math;
 
 namespace Aa
 {
   namespace R3d
   {
 
+    inline string resource (const QString & name)
+    {
+      QFile file (name);
+      file.open (QFile::ReadOnly);
+      QByteArray bytes = file.readAll ();
+      return bytes.data ();
+    }
+
 ////////////////////////////////////////////////////////////////////////////////
 // Aa::R3d::QImageRenderer /////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-    QImageRenderer::QImageRenderer (const R3d::Image * image,
-                                    const R3d::Lut   * lut,
-                                    QWidget          * parent) :
+    QImageRenderer::QImageRenderer (QWidget * parent) :
       QGLViewer (parent),
       m_fast (false),
-      m_image (image),
-      m_lut (lut),
+      m_image (NULL),
+      m_lut (NULL),
       m_renderer (NULL),
       m_fbo (NULL),
       m_timer (this)
@@ -61,6 +68,20 @@ namespace Aa
       m_fast = f;
     }
 
+    R3d::ImageRenderer3dGLSL * QImageRenderer::Factory (RendererType type)
+    {
+      switch (type)
+      {
+        case RENDERER_TEXTURE             : return new R3d::ImageRenderer3dGLSL;
+        case RENDERER_POST_CLASSIFICATION : return new R3d::PostClassification;
+        case RENDERER_PRE_INTEGRATION     : return new R3d::PreIntegration;
+        case RENDERER_BLINN               : return new R3d::Blinn;
+        case RENDERER_RAINBOW             : return new R3d::Rainbow;
+        case RENDERER_MIP                 : return new R3d::MIP (GL_MAX);
+        default                           : return NULL;
+      }
+    }
+
     void QImageRenderer::setRenderer (RendererType type)
     {
       if (m_renderer != NULL)
@@ -69,45 +90,7 @@ namespace Aa
         m_renderer = NULL;
       }
 
-      string vertex   = GL::Program::ReadSource ("shaders/PassThru.VertexShader.glsl");
-      string geometry = GL::Program::ReadSource ("shaders/McSlicing.GeometryShader.glsl");
-      string fragment;
-
-      switch (type)
-      {
-        case RENDERER_TEXTURE :
-          fragment = GL::Program::ReadSource ("shaders/Texture3d.FragmentShader.glsl");
-          m_renderer = new R3d::ImageRenderer3dGLSL (vertex, geometry, fragment);
-          break;
-
-        case RENDERER_POST_CLASSIFICATION:
-          fragment = GL::Program::ReadSource ("shaders/PostClassification.FragmentShader.glsl");
-          m_renderer = new R3d::PostClassification (vertex, geometry, fragment);
-          break;
-
-        case RENDERER_PRE_INTEGRATION:
-          fragment = GL::Program::ReadSource ("shaders/PreIntegration.FragmentShader.glsl");
-          m_renderer = new R3d::PreIntegration (vertex, geometry, fragment);
-          break;
-
-        case RENDERER_BLINN:
-          fragment = GL::Program::ReadSource ("shaders/Blinn.FragmentShader.glsl");
-          m_renderer = new R3d::Blinn (vertex, geometry, fragment);
-          break;
-
-        case RENDERER_RAINBOW:
-          fragment = GL::Program::ReadSource ("shaders/Rainbow.FragmentShader.glsl");
-          m_renderer = new R3d::Rainbow (vertex, geometry, fragment);
-          break;
-
-        case RENDERER_MIP:
-          fragment = GL::Program::ReadSource ("shaders/Texture3d.FragmentShader.glsl");
-          m_renderer = new R3d::MIP (vertex, geometry, fragment, GL_MAX);
-          break;
-
-        default:
-          break;
-      }
+      m_renderer = QImageRenderer::Factory (type);
 
       if (m_renderer != NULL)
       {
@@ -119,6 +102,7 @@ namespace Aa
     void QImageRenderer::setImage (const R3d::Image * image)
     {
       m_image = image;
+
       if (image != NULL)
       {
         // Camera.
@@ -141,6 +125,7 @@ namespace Aa
     void QImageRenderer::setLut (const R3d::Lut * lut)
     {
       m_lut = lut;
+
       if (m_renderer != NULL)
       {
         m_renderer->setLut (lut);
@@ -159,6 +144,31 @@ namespace Aa
       cout << glGetString (GL_RENDERER) << endl;
       cout << glGetString (GL_VERSION) << endl;
       cout << glGetString (GL_EXTENSIONS) << endl;
+
+      static const char * SHADERS [][2] =
+      {
+        {"/AaR3d/PassThru.vertex",             ":/glsl/PassThru.VertexShader.glsl"},
+
+        {"/AaR3d/McSlicing.geometry",          ":/glsl/McSlicing.GeometryShader.glsl"},
+
+        {"/AaR3d/Texture3d",                   ":/glsl/Texture3d.glsl"},
+        {"/AaR3d/Texture3d.fragment",          ":/glsl/Texture3d.FragmentShader.glsl"},
+
+        {"/AaR3d/PostClassification",          ":/glsl/PostClassification.glsl"},
+        {"/AaR3d/PostClassification.fragment", ":/glsl/PostClassification.FragmentShader.glsl"},
+
+        {"/AaR3d/PreIntegration",              ":/glsl/PreIntegration.glsl"},
+        {"/AaR3d/PreIntegration.fragment",     ":/glsl/PreIntegration.FragmentShader.glsl"},
+
+        {"/AaR3d/Blinn",                       ":/glsl/Blinn.glsl"},
+        {"/AaR3d/Blinn.fragment",              ":/glsl/Blinn.FragmentShader.glsl"},
+
+        {"/AaR3d/Rainbow",                     ":/glsl/Rainbow.glsl"},
+        {"/AaR3d/Rainbow.fragment",            ":/glsl/Rainbow.FragmentShader.glsl"}
+      };
+
+      for (AaUInt i = 0; i < 12; ++i)
+        GL::Program::SetString (SHADERS [i][0], resource (SHADERS [i][1]));
 
       // Renderer.
       this->setRenderer (RENDERER_PRE_INTEGRATION);

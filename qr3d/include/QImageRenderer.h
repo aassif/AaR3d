@@ -50,8 +50,11 @@ namespace Aa
         QGLFramebufferObject     * m_fbo;
         QTimer                     m_timer;
 
+      private:
+        static R3d::ImageRenderer3dGLSL * Factory (RendererType);
+
       public:
-        QImageRenderer (const R3d::Image *, const R3d::Lut *, QWidget * parent = NULL);
+        QImageRenderer (QWidget * parent = NULL);
         virtual ~QImageRenderer ();
 
       protected:

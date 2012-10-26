@@ -8,6 +8,7 @@ namespace Aa
   namespace R3d
   {
 
+#if 0
     Blinn::Blinn (const std::string & vertex,
                   const std::string & geometry,
                   const std::string & fragment) :
@@ -15,7 +16,14 @@ namespace Aa
       m_shininess (8.0),
       m_delta (vec (0.001f, 0.001f, 0.001f))
     {
-      cout << "Blinn (Powered by GLSL!)\n";
+    }
+#endif
+
+    Blinn::Blinn (const std::string & fragment) :
+      PostClassification (fragment),
+      m_shininess (8.0),
+      m_delta (vec (0.001f, 0.001f, 0.001f))
+    {
     }
 
     Blinn::~Blinn ()

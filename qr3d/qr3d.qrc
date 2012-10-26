@@ -1,0 +1,17 @@
+<RCC>
+    <qresource prefix="/">
+        <file>../glsl/Blinn.FragmentShader.glsl</file>
+        <file>../glsl/Blinn.glsl</file>
+        <file>../glsl/McSlicing.GeometryShader.glsl</file>
+        <file>../glsl/McSlicing.VertexShader.glsl</file>
+        <file>../glsl/PassThru.VertexShader.glsl</file>
+        <file>../glsl/PostClassification.FragmentShader.glsl</file>
+        <file>../glsl/PostClassification.glsl</file>
+        <file>../glsl/PreIntegration.FragmentShader.glsl</file>
+        <file>../glsl/PreIntegration.glsl</file>
+        <file>../glsl/Rainbow.FragmentShader.glsl</file>
+        <file>../glsl/Rainbow.glsl</file>
+        <file>../glsl/Texture3d.FragmentShader.glsl</file>
+        <file>../glsl/Texture3d.glsl</file>
+    </qresource>
+</RCC>

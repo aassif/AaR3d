@@ -174,9 +174,7 @@ namespace Aa
     void ImageRenderer2d::setLut (const Lut * lut)
     {
       if (lut == NULL) return;
-      const unsigned char * l1 = lut->data ();
-      unsigned char * l2 = m_lut;
-      for (unsigned short k = 256; k--; l1 += 4)
+      for (AaUInt k = 0; k < 256; ++k)
       {
 #ifdef MODE_MIP
         *(l2++) = l1 [0];
@@ -184,11 +182,12 @@ namespace Aa
         *(l2++) = l1 [2];
         *(l2++) = 255;
 #else
-        float alpha = l1 [3] / 255.0;
-        *(l2++) = (unsigned char) rint (alpha * l1 [0]);
-        *(l2++) = (unsigned char) rint (alpha * l1 [1]);
-        *(l2++) = (unsigned char) rint (alpha * l1 [2]);
-        *(l2++) = (unsigned char) rint (alpha * 255);
+        const Lut::Entry & e = (*lut) [k];
+        float alpha = e [3] / 255.0;
+        m_lut [4 * k + 0] = (AaUInt8) rint (alpha * e [0]);
+        m_lut [4 * k + 1] = (AaUInt8) rint (alpha * e [1]);
+        m_lut [4 * k + 2] = (AaUInt8) rint (alpha * e [2]);
+        m_lut [4 * k + 3] = (AaUInt8) rint (alpha * 255);
 #endif
       }
     }

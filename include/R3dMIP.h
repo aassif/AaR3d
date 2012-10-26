@@ -18,10 +18,13 @@ namespace Aa
         virtual void glPostDraw (bool);
 
       public:
+#if 0
         MIP (const std::string & vertex,
              const std::string & geometry,
              const std::string & fragment,
              GLenum mode = GL_MAX);
+#endif
+        MIP (GLenum mode = GL_MAX);
         virtual ~MIP ();
     };
   } // namespace R3d

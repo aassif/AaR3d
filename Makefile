@@ -32,7 +32,7 @@ OBJ=              $(SRC:%.cc=%.o)
 ALL=              make.depend lib/libAaR3d.a lib/libAaR3d.so
 
 all:                    $(ALL)
-			make -i -C bin
+#			make -i -C bin
 
 lib/libAaR3d.a:		$(OBJ)
 			ar rcs lib/libAaR3d.a $(OBJ)
