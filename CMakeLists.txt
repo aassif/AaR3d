@@ -10,94 +10,118 @@ cmake_minimum_required(VERSION 2.8)
 project(AaR3d C CXX)
 set(CMAKE_CXX_FLAGS "/EHa")
 
+if(CMAKE_GENERATOR MATCHES ".* Win64")
+    add_definitions(-DAA_R3D_X64_LIBRARY)
+
+    set(ARCHITECTURE_DIR x64)
+
+    set(CMAKE_RELEASE_POSTFIX -x64)
+    
+    if(WIN32)
+        set(CMAKE_DEBUG_POSTFIX -x64d)
+    endif(WIN32)
+
+    if(APPLE)
+        set(CMAKE_DEBUG_POSTFIX -x64_debug)
+    endif(APPLE)
+else(CMAKE_GENERATOR MATCHES ".* Win64")
+    set(ARCHITECTURE_DIR .)
+
+    if(WIN32)
+        set(CMAKE_DEBUG_POSTFIX d)
+    endif(WIN32)
+
+    if(APPLE)
+        set(CMAKE_DEBUG_POSTFIX _debug)
+    endif(APPLE)
+endif(CMAKE_GENERATOR MATCHES ".* Win64")
+
 # Module directory.
-set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/../cmake-modules)
-STRING(REGEX REPLACE "\\\\" "/" CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH})
+set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/../cmake-modules")
+string(REGEX REPLACE "\\\\" "/" CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}")
 
 # OpenGL dependency.
 find_package(OpenGL REQUIRED) # GLEW
 
 # GLEW dependency.
-set(GLEW_DIR ${PROJECT_SOURCE_DIR}/../glew-1.7.0)
+set(GLEW_DIR "${PROJECT_SOURCE_DIR}/../glew")
 find_package(GLEW REQUIRED) # AaOpenGL
 
 # AaToolkit dependency
-set(AATOOLKIT_DIR ${PROJECT_SOURCE_DIR}/../aassif-toolkit)
+set(AATOOLKIT_DIR "${PROJECT_SOURCE_DIR}/../aassif-toolkit")
 find_package(AaToolkit REQUIRED)
 find_package(AaToolkit-static REQUIRED)
 
 # AaOpenGL dependency
-set(AAOPENGL_DIR ${PROJECT_SOURCE_DIR}/../aassif-opengl)
+set(AAOPENGL_DIR "${PROJECT_SOURCE_DIR}/../aassif-opengl")
 find_package(AaOpenGL REQUIRED)
 find_package(AaOpenGL-static REQUIRED)
 
 # AaMesh dependency
-set(AAMESH_DIR ${PROJECT_SOURCE_DIR}/../aassif-mesh)
+set(AAMESH_DIR "${PROJECT_SOURCE_DIR}/../aassif-mesh")
 find_package(AaMesh REQUIRED)
 
 # Include directoires.
 include_directories(
-  include
-  ${AAMESH_INCLUDE_DIR}
-  ${OPENGL_INCLUDE_DIR}
-  ${GLEW_INCLUDE_DIR}
-  ${AATOOLKIT_INCLUDE_DIR}
-  ${AAOPENGL_INCLUDE_DIR}
+    include
+    ${AAMESH_INCLUDE_DIR}
+    ${OPENGL_INCLUDE_DIR}
+    ${GLEW_INCLUDE_DIR}
+    ${AATOOLKIT_INCLUDE_DIR}
+    ${AAOPENGL_INCLUDE_DIR}
 )
 
 # Include files.
-FILE(GLOB PROJECT_HDR "include/*.h" )
+FILE(GLOB HEADER_FILES include/*.h)
 
 # Source files.
-FILE(GLOB PROJECT_SRC "src/*.cc" )
+FILE(GLOB SOURCE_FILES src/*.cc)
 
 # Target generation.
 add_library(AaR3d
-  SHARED
-  ${PROJECT_HDR}
-  ${PROJECT_SRC}
+    SHARED
+    ${HEADER_FILES}
+    ${SOURCE_FILES}
 )
 
 # Output paths.
 set_target_properties(
-  AaR3d
-  PROPERTIES
-  RUNTIME_OUTPUT_DIRECTORY_DEBUG   ${PROJECT_SOURCE_DIR}/bin/debug
-  RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR}/bin/release
-  ARCHIVE_OUTPUT_DIRECTORY_DEBUG   ${PROJECT_SOURCE_DIR}/lib/debug
-  ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR}/lib/release
-  COMPILE_DEFINITIONS AA_R3D_BUILD_SHARED
-  DEBUG_POSTFIX d
+    AaR3d
+    PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY_DEBUG   "${PROJECT_SOURCE_DIR}/bin/debug/${ARCHITECTURE_DIR}"
+    RUNTIME_OUTPUT_DIRECTORY_RELEASE "${PROJECT_SOURCE_DIR}/bin/release/${ARCHITECTURE_DIR}"
+    ARCHIVE_OUTPUT_DIRECTORY_DEBUG   "${PROJECT_SOURCE_DIR}/lib/debug/${ARCHITECTURE_DIR}"
+    ARCHIVE_OUTPUT_DIRECTORY_RELEASE "${PROJECT_SOURCE_DIR}/lib/release/${ARCHITECTURE_DIR}"
+    COMPILE_DEFINITIONS AA_R3D_BUILD_SHARED
 )
 
 # Target dependencies.
 target_link_libraries(AaR3d
-  ${OPENGL_LIBRARY}
-  ${GLEW_LIBRARY}
-  ${AATOOLKIT_LIBRARY}
-  ${AAOPENGL_LIBRARY}
+    ${OPENGL_LIBRARY}
+    ${GLEW_LIBRARY}
+    ${AATOOLKIT_LIBRARY}
+    ${AAOPENGL_LIBRARY}
 )
 
 # Target generation.
 add_library(AaR3d-static
-  STATIC
-  ${PROJECT_HDR}
-  ${PROJECT_SRC}
+    STATIC
+    ${HEADER_FILES}
+    ${SOURCE_FILES}
 )
 
 # Output paths.
 set_target_properties(
-  AaR3d-static
-  PROPERTIES
-  ARCHIVE_OUTPUT_DIRECTORY_DEBUG   ${PROJECT_SOURCE_DIR}/lib/debug
-  ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR}/lib/release
-  DEBUG_POSTFIX d
+    AaR3d-static
+    PROPERTIES
+    ARCHIVE_OUTPUT_DIRECTORY_DEBUG   "${PROJECT_SOURCE_DIR}/lib/debug/${ARCHITECTURE_DIR}"
+    ARCHIVE_OUTPUT_DIRECTORY_RELEASE "${PROJECT_SOURCE_DIR}/lib/release/${ARCHITECTURE_DIR}"
 )
 
 # Target dependencies.
 target_link_libraries(AaR3d-static
-  ${OPENGL_LIBRARY}
-  ${GLEW_LIBRARY}
-  ${AATOOLKIT_STATIC_LIBRARY}
-  ${AAOPENGL_STATIC_LIBRARY}
+    ${OPENGL_LIBRARY}
+    ${GLEW_LIBRARY}
+    ${AATOOLKIT_STATIC_LIBRARY}
+    ${AAOPENGL_STATIC_LIBRARY}
 )
