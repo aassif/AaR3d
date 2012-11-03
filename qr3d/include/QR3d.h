@@ -16,6 +16,7 @@
 //#include <QFileDialog>
 //#include <QGLViewer/qglviewer.h>
 #include "QTransferFunction.h"
+#include "QTransferTable.h"
 #include "QImageRenderer.h"
 
 namespace Aa
@@ -29,14 +30,19 @@ namespace Aa
 
       private:
         QImageRenderer    * m_renderer;
-        QTransferFunction * m_editor;
-        QDockWidget       * m_editor_dock;
+        QTransferFunction * m_transfer_function;
+        QTransferTable    * m_transfer_table;
+        QTabWidget        * m_transfer_tabs;
+        QDockWidget       * m_dock;
         R3d::Image        * m_image;
         R3d::Lut          * m_lut;
 
       public:
         QR3d ();
         virtual ~QR3d ();
+
+      private slots:
+        void transfer_tabs_changed (int);
 
       public slots:
         void openImage ();

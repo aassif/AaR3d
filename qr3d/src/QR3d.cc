@@ -24,18 +24,25 @@ namespace Aa
 
     QR3d::QR3d () :
       m_renderer (NULL),
-      m_editor (NULL),
-      m_editor_dock (NULL),
+      m_transfer_function (NULL),
+      m_dock (NULL),
       m_image (NULL),
       m_lut (NULL)
     {
       m_renderer = new QImageRenderer;
       setCentralWidget (m_renderer);
 
-      m_editor = new QTransferFunction;
-      m_editor_dock = new QDockWidget (tr ("QTransferFunction"));
-      m_editor_dock->setWidget (m_editor);
-      addDockWidget (Qt::LeftDockWidgetArea, m_editor_dock);
+      m_transfer_function = new QTransferFunction;
+
+      m_transfer_table = new QTransferTable;
+
+      m_transfer_tabs = new QTabWidget;
+      m_transfer_tabs->addTab (m_transfer_function, tr ("Transfer function"));
+      m_transfer_tabs->addTab (m_transfer_table,    tr ("Transfer table"));
+
+      m_dock = new QDockWidget (tr ("QTransferFunction"));
+      m_dock->setWidget (m_transfer_tabs);
+      addDockWidget (Qt::LeftDockWidgetArea, m_dock);
 
       QMenuBar * bar = menuBar ();
       QMenu * menuFile = bar->addMenu (tr ("&File"));
@@ -45,12 +52,18 @@ namespace Aa
       menuFile->addSeparator ();
       menuFile->addAction (tr ("&Quit"), qApp, SLOT (quit ()));
       QMenu * menuView = bar->addMenu (tr ("&View"));
-      menuView->addAction (m_editor_dock->toggleViewAction ());
+      menuView->addAction (m_dock->toggleViewAction ());
 
-      connect (m_editor, SIGNAL (computed (const QVector<QColor> &)),
-               this,     SLOT   (setLut   (const QVector<QColor> &)));
+      connect (m_transfer_tabs, SIGNAL (currentChanged        (int)),
+               this,            SLOT   (transfer_tabs_changed (int)));
 
-      this->setLut (m_editor->table ());
+      connect (m_transfer_function, SIGNAL (computed (const QVector<QColor> &)),
+               this,                SLOT   (setLut   (const QVector<QColor> &)));
+
+      connect (m_transfer_table, SIGNAL (computed (const QVector<QColor> &)),
+               this,             SLOT   (setLut   (const QVector<QColor> &)));
+
+      this->setLut (m_transfer_function->table ());
     }
 
     QR3d::~QR3d ()
@@ -72,6 +85,15 @@ namespace Aa
       }
 
       //cout << "<<< " << __PRETTY_FUNCTION__ << endl;
+    }
+
+    void QR3d::transfer_tabs_changed (int index)
+    {
+      switch (index)
+      {
+        case 0: this->setLut (m_transfer_function->table ()); break;
+        case 1: this->setLut (m_transfer_table   ->table ()); break;
+      }
     }
 
     void QR3d::openImage ()
@@ -121,7 +143,7 @@ namespace Aa
       if (! path.isEmpty ())
       {
         QDomDocument doc;
-        doc.appendChild (m_editor->dom (doc));
+        doc.appendChild (m_transfer_function->dom (doc));
 
         QFile file (path);
         file.open (QFile::WriteOnly);
@@ -186,7 +208,7 @@ namespace Aa
       QDomDocument doc;
       doc.setContent (&file);
 
-      m_editor->init (doc.firstChildElement ("lut"));
+      m_transfer_function->init (doc.firstChildElement ("lut"));
     }
 
   } // namespace R3d
