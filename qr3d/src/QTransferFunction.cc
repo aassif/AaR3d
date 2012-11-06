@@ -484,7 +484,7 @@ namespace Aa
 
     void QTransferFunction::resizeEvent (QResizeEvent *)
     {
-      static const int MARGIN = 40;
+      static const int MARGIN = QTransferKnob::RADIUS * 4;
       this->fitInView (-MARGIN, -MARGIN, 256 + MARGIN, 256 + MARGIN, Qt::KeepAspectRatio);
     }
 
