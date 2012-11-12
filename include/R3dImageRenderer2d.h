@@ -16,7 +16,7 @@ namespace Aa
         GLuint *     m_img_textures;
         GLdouble     m_img_scales [2];
         GLubyte      m_lut [1024];
-        dbox3        m_box;
+        box3         m_box;
      
       public:
         ImageRenderer2d (const Image * = NULL, const Lut * = NULL);

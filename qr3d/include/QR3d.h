@@ -47,7 +47,7 @@ namespace Aa
       public slots:
         void openImage ();
         void setImage (R3d::Image *);
-        void setImage (const QString & path, const dvec3 & scale = dvec3 (1));
+        void setImage (const QString & path, const vec3 & scale = vec3 (1));
 
         void openLut ();
         void saveLut ();

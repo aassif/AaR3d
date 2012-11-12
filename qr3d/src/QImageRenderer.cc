@@ -106,9 +106,9 @@ namespace Aa
       if (image != NULL)
       {
         // Camera.
-        const dbox3 & box = image->box ();
-        const dvec3 & pos = box.pos ();
-        const dvec3 & dim = box.dim ();
+        const box3 & box = image->box ();
+        const vec3 & pos = box.pos ();
+        const vec3 & dim = box.dim ();
         setSceneBoundingBox (qglviewer::Vec (pos[0],          pos[1],          pos[2]),
                              qglviewer::Vec (pos[0] + dim[0], pos[1] + dim[1], pos[2] + dim[2]));
 

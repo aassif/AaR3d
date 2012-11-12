@@ -39,7 +39,7 @@ namespace Aa
       m_image = Im<3, Mono8> (d);
       //m_dxdy = m_dx * m_dy;
       //m_dxdydz = m_dxdy * m_dz;
-      m_box = dbox3::Center (dvec3 (d));
+      m_box = box3::Center (d);
       //m_data = new unsigned char [m_dxdydz];
       //cout << "<-- Image::resize (" << dx << ", "<< dy << ", " << dz << ");" << endl;
     }
@@ -51,8 +51,8 @@ namespace Aa
     //unsigned long Image::dxdy  () const {return m_dxdy;}
     //unsigned long Image::dxdydz () const {return m_dxdydz;}
 
-    void Image::setBox (const dbox3 & b) {m_box = b;}
-    const dbox3 & Image::box () const {return m_box;}
+    void Image::setBox (const box3 & b) {m_box = b;}
+    const box3 & Image::box () const {return m_box;}
     //void Image::translate (const Math::vR3 & v) {m_box.translate (v);}
 
     Mono8::Pixel * Image::begin () {return m_image.begin ();}
@@ -111,7 +111,7 @@ namespace Aa
       image->resize (vec<AaUInt> (dx, dy, dz));
       // Read data.
       if (! f.read ((char *) image->begin (), dx * dy * dz)) throw Aa::ParseError ("dat");
-      image->setBox (dbox3::Center (vec (dx * scale [0], dy * scale [1], dz * scale [2])));
+      image->setBox (box3::Center (vec (dx * scale [0], dy * scale [1], dz * scale [2])));
     }
 
     Image * ImageLoadB8 (const string & filename, const vec3 & scale)
