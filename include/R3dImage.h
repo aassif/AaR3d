@@ -78,7 +78,7 @@ namespace Aa
 #else
       protected:
         Im<3, Mono8> m_image;
-        dbox3        m_box;
+        box3         m_box;
 #endif
 
       public:
@@ -93,8 +93,8 @@ namespace Aa
         unsigned int dy () const;
         unsigned int dz () const;
         // Bounding box.
-        void setBox (const dbox3 &);
-        const dbox3 & box () const;
+        void setBox (const box3 &);
+        const box3 & box () const;
         // Iterators.
         /***/ Mono8::Pixel * begin ();
         const Mono8::Pixel * begin () const;

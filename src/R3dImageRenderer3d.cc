@@ -83,7 +83,7 @@ namespace Aa
       //cout << "<-- ImageRenderer3d::setImg (this = " << this << ", img = " << img << ");" << endl;
     }
 
-    void ImageRenderer3d::setImg (const dbox3 & box, GLuint tex3d, const dvec3 & scale)
+    void ImageRenderer3d::setImg (const box3 & box, GLuint tex3d, const vec3 & scale)
     {
       m_box         = box;
       m_image_tex3d = tex3d;

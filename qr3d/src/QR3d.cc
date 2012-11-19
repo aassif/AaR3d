@@ -119,7 +119,7 @@ namespace Aa
       m_renderer->updateGL ();
     }
 
-    void QR3d::setImage (const QString & path, const dvec3 & scale)
+    void QR3d::setImage (const QString & path, const vec3 & scale)
     {
       R3d::Image * image = R3d::ImageLoadB8 (path.toStdString (), scale);
       setImage (image);

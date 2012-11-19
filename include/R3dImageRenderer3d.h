@@ -12,9 +12,9 @@ namespace Aa
     {
       protected:
         Slicer * m_slicer;
-        dbox3    m_box;
+        box3     m_box;
         GLuint   m_image_tex3d;
-        dvec3    m_image_scale;
+        vec3     m_image_scale;
         GLfloat  m_steps [2];
 
       protected:
@@ -25,7 +25,7 @@ namespace Aa
         ImageRenderer3d ();
         virtual ~ImageRenderer3d ();
         virtual void setImg (const Image * = NULL);
-        virtual void setImg (const dbox3 &, GLuint tex3d, const dvec3 & scale);
+        virtual void setImg (const box3 &, GLuint tex3d, const vec3 & scale);
         virtual void setLut (const Lut * = NULL);
         virtual void glDraw (bool = false);
         // Step.
