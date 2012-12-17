@@ -53,7 +53,7 @@ namespace Aa
 
       ImageRenderer3dGLSL::glPreDraw (motion);
 
-      // Blending ON.
+      // Pre-multiplied blending.
       glBlendFunc (GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
       // Texture #1 = lut1d.
@@ -70,7 +70,13 @@ namespace Aa
     {
       //cout << "--> " << __PRETTY_FUNCTION__ << endl;
 
+      // Blending.
       glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+      // Texture #1 = lut1d.
+      glActiveTexture (GL_TEXTURE1);
+      glBindTexture (GL_TEXTURE_1D, 0);
+
       ImageRenderer3dGLSL::glPostDraw (motion);
 
       //cout << "<-- " << __PRETTY_FUNCTION__ << endl;

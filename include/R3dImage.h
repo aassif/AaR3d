@@ -1,9 +1,11 @@
-#ifndef __AA_R3D_IMAGE__
-#define __AA_R3D_IMAGE__
+#ifndef AA_R3D_IMAGE__H
+#define AA_R3D_IMAGE__H
 
-#include <string>
+#include <GL/glew.h>
+//#include <string>
 #include <AaMath>
 #include <AaImage>
+#include <AaGL>
 #include "AaR3d.h"
 
 // Image.
@@ -102,6 +104,8 @@ namespace Aa
         const Mono8::Pixel * end () const;
         // Potential.
         double eval (const dvec3 &) const;
+        // OpenGL texture.
+        GLuint glTex3d () const throw (Aa::GL::MissingExtension);
     };
 
     // Loading.
@@ -128,5 +132,5 @@ namespace Aa
   } // namespace R3d
 } // namespace Aa
 
-#endif // __AA_R3D_IMAGE__
+#endif // AA_R3D_IMAGE__H
 

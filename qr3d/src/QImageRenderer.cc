@@ -40,6 +40,7 @@ namespace Aa
       QGLViewer (parent),
       m_fast (false),
       m_image (NULL),
+      m_texture (0),
       m_lut (NULL),
       m_renderer (NULL),
       m_fbo (NULL),
@@ -94,17 +95,26 @@ namespace Aa
 
       if (m_renderer != NULL)
       {
-        m_renderer->setImg (m_image);
+        m_renderer->setImage (m_texture);
         m_renderer->setLut (m_lut);
       }
     }
 
     void QImageRenderer::setImage (const R3d::Image * image)
     {
+      if (m_image != NULL)
+      {
+        glDeleteTextures (1, &m_texture);
+        m_texture = 0;
+      }
+
       m_image = image;
 
       if (image != NULL)
       {
+        // Texture.
+        m_texture = image->glTex3d ();
+
         // Camera.
         const box3 & box = image->box ();
         const vec3 & pos = box.pos ();
@@ -117,7 +127,7 @@ namespace Aa
 
       if (m_renderer != NULL)
       {
-        m_renderer->setImg (image);
+        m_renderer->setImage (m_texture);
         updateGL ();
       }
     }
@@ -192,7 +202,7 @@ namespace Aa
 
     void QImageRenderer::draw ()
     {
-      if (m_renderer != NULL && m_fbo != NULL)
+      if (m_image != NULL && m_renderer != NULL && m_fbo != NULL)
       {
         m_fbo->bind ();
         glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -200,7 +210,14 @@ namespace Aa
         if (m_fast || m_timer.isActive ())
           this->fastDraw ();
         else
+        {
+          glPushMatrix ();
+          const box3 & box = m_image->box ();
+          GL::Translate (box.pos ());
+          GL::Scale     (box.dim ());
           m_renderer->glDraw (false);
+          glPopMatrix ();
+        }
 
         m_fbo->release ();
         QRect r = QRect (QPoint (0, 0), m_fbo->size ());
@@ -210,11 +227,25 @@ namespace Aa
 
     void QImageRenderer::fastDraw ()
     {
-      if (m_renderer != NULL)
+      if (m_image != NULL && m_renderer != NULL && m_fbo != NULL)
       {
+        m_fbo->bind ();
+        glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
         m_timer.stop ();
+
+        glPushMatrix ();
+        const box3 & box = m_image->box ();
+        GL::Translate (box.pos ());
+        GL::Scale     (box.dim ());
         m_renderer->glDraw (true);
+        glPopMatrix ();
+
         m_timer.start ();
+
+        m_fbo->release ();
+        QRect r = QRect (QPoint (0, 0), m_fbo->size ());
+        QGLFramebufferObject::blitFramebuffer (0, r, m_fbo, r);
       }
     }
 

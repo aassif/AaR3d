@@ -117,17 +117,17 @@ namespace Aa
       m_img_textures (NULL),
       m_lut ()
     {
-      this->setImg (img);
+      this->setImage (img);
       this->setLut (lut);
     }
 
     ImageRenderer2d::~ImageRenderer2d ()
     {
-      this->setImg (NULL);
+      this->setImage (NULL);
       this->setLut (NULL);
     }
 
-    void ImageRenderer2d::setImg (const Image * image)
+    void ImageRenderer2d::setImage (const Image * image)
     {
       if (m_img_textures != NULL)
       {

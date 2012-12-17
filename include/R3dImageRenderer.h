@@ -38,8 +38,8 @@ namespace Aa
       public:
         ImageRenderer ();
         virtual ~ImageRenderer ();
-        void setWindow (GLfloat min, GLfloat max);
-        virtual void setImg (const Image *) = 0;
+        void setRange (GLfloat min, GLfloat max);
+        virtual void setImage (const Image *) = 0;
         virtual void setLut (const Lut *) = 0;
         virtual void glDraw (bool = false) = 0;
     };

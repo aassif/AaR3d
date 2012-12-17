@@ -46,7 +46,7 @@ namespace Aa
     {
     }
 
-    void ImageRenderer::setWindow (GLfloat min, GLfloat max)
+    void ImageRenderer::setRange (GLfloat min, GLfloat max)
     {
       m_min = min;
       m_max = max;

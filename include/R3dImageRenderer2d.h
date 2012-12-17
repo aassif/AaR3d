@@ -21,7 +21,7 @@ namespace Aa
       public:
         ImageRenderer2d (const Image * = NULL, const Lut * = NULL);
         virtual ~ImageRenderer2d ();
-        virtual void setImg (const Image * = NULL);
+        virtual void setImage (const Image * = NULL);
         virtual void setLut (const Lut * = NULL);
         virtual void glDraw (bool = false);
     };

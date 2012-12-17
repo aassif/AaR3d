@@ -7,26 +7,13 @@ namespace Aa
 {
   namespace R3d
   {
-#if 0
-    ImageRenderer3dGLSL::ImageRenderer3dGLSL (const std::string & vertex,
-                                              const std::string & geometry,
-                                              const std::string & fragment) :
-      ImageRenderer3d (),
-      m_program (),
-      m_min (0.0f),
-      m_max (1.0f)
-    {
-      m_slicer = new SlicerViewCubeGLSLv2 (&m_program, vertex, geometry);
-      m_program.attach (GL_FRAGMENT_SHADER, GL::Program::String (fragment));
-      m_program.link ();
-      //m_program.validate ();
-    }
-#endif
-
     ImageRenderer3dGLSL::ImageRenderer3dGLSL (const std::string & fragment) :
       ImageRenderer3d (),
       m_program ()
     {
+      if (! GLEW_ARB_shading_language_include)
+        throw GL::MissingExtension ("GL_ARB_shading_language_include");
+
       m_slicer = new SlicerViewCubeGLSLv2 (&m_program);
       m_program.attach (GL_FRAGMENT_SHADER, GL::Program::String (fragment));
       m_program.link ();
@@ -43,11 +30,13 @@ namespace Aa
 
       ImageRenderer3d::glPreDraw (motion);
 
+      // Blending ON.
+      glEnable (GL_BLEND);
+
       m_program.use ();
-      m_program.set<GLint>         ("image_tex3d", 0);
-      m_program.set<GLfloat, 4, 4> ("image_scale", Scale (m_image_scale));
-      m_program.set<GLfloat>       ("image_min",   m_min);
-      m_program.set<GLfloat>       ("image_max",   m_max);
+      m_program.set<GLint>   ("image_tex3d", 0);
+      m_program.set<GLfloat> ("image_min",   m_min);
+      m_program.set<GLfloat> ("image_max",   m_max);
 
       //cout << "<-- " << __PRETTY_FUNCTION__ << endl;
     }
@@ -57,6 +46,7 @@ namespace Aa
       //cout << "--> " << __PRETTY_FUNCTION__ << endl;
 
       glUseProgram (0);
+      //glDisable (GL_BLEND);
       ImageRenderer3d::glPostDraw (motion);
 
       //cout << "<-- " << __PRETTY_FUNCTION__ << endl;
