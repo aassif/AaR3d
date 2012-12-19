@@ -116,12 +116,11 @@ namespace Aa
         m_texture = image->glTex3d ();
 
         // Camera.
-        const box3 & box = image->box ();
-        const vec3 & pos = box.pos ();
-        const vec3 & dim = box.dim ();
-        setSceneBoundingBox (qglviewer::Vec (pos[0],          pos[1],          pos[2]),
-                             qglviewer::Vec (pos[0] + dim[0], pos[1] + dim[1], pos[2] + dim[2]));
-
+        vec3 p = image->position ();
+        vec3 d = image->scale () * image->dims ();
+        vec3 c = p + 0.5f * d;
+        setSceneCenter (qglviewer::Vec (c[0], c[1], c[2]));
+        setSceneRadius (0.5f * d.length ());
         showEntireScene ();
       }
 
@@ -212,9 +211,7 @@ namespace Aa
         else
         {
           glPushMatrix ();
-          const box3 & box = m_image->box ();
-          GL::Translate (box.pos ());
-          GL::Scale     (box.dim ());
+          GL::MultMatrix (m_image->transform ());
           m_renderer->glDraw (false);
           glPopMatrix ();
         }
@@ -235,9 +232,7 @@ namespace Aa
         m_timer.stop ();
 
         glPushMatrix ();
-        const box3 & box = m_image->box ();
-        GL::Translate (box.pos ());
-        GL::Scale     (box.dim ());
+        GL::MultMatrix (m_image->transform ());
         m_renderer->glDraw (true);
         glPopMatrix ();
 

@@ -150,7 +150,6 @@ namespace Aa
         glGenTextures (d1z, m_img_textures);
         m_img_scales [0] = (double) d1x / d2x;
         m_img_scales [1] = (double) d1y / d2y;
-        m_box = image->box ();
 
         glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
         const unsigned char * b = (const unsigned char *) image->begin ();
@@ -211,12 +210,6 @@ namespace Aa
 
       // Then we switch back to the previous matrix mode.
       glMatrixMode (GL_MODELVIEW); // matrixMode
-
-      // We use this transfromation so that normalized coordinates
-      // map to real world coordinates of the bounding box ...
-      glPushMatrix ();
-      GL::Translate (m_box.pos ());
-      GL::Scale     (m_box.dim ());
 
       // Lighting OFF.
       glDisable (GL_LIGHTING);
@@ -320,7 +313,6 @@ namespace Aa
       glMatrixMode (GL_TEXTURE);
       glPopMatrix ();
       glMatrixMode (GL_MODELVIEW);
-      glPopMatrix ();
       glDisable (GL_TEXTURE_2D);
       glDisable (GL_BLEND);
       //glDisable (GL_ALPHA_TEST);

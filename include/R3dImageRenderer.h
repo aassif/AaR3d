@@ -18,12 +18,12 @@ namespace Aa
         {
           public:
             bool  active;
-            dvec3 point;
-            dvec3 normal;
+            vec3 point;
+            vec3 normal;
 
           public:
-            ClippingPlane (const dvec3 & p, const dvec3 & n);
-            bool test (const dvec3 &) const;
+            ClippingPlane (const vec3 & p, const vec3 & n);
+            bool test (const vec3 &) const;
         };
 
       public:

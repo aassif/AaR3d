@@ -80,28 +80,45 @@ namespace Aa
 #else
       protected:
         Im<3, Mono8> m_image;
-        box3         m_box;
+        vec3         m_scale;
+        vec3         m_position;
+        mat3         m_orientation;
 #endif
 
       public:
         // Constructor.
-        Image (const uvec3 &);
+        Image (const uvec3 & dims,
+               const vec3 & scale       = vec3 (1.0f),
+               const vec3 & position    = vec3 (0.0f),
+               const mat3 & orientation = mat3 ());
         // Destructor.
         virtual ~Image ();
         // Reallocation.
         void resize (const uvec3 &);
         // Dimensions.
-        unsigned int dx () const;
-        unsigned int dy () const;
-        unsigned int dz () const;
+        uvec3  dims () const {return m_image.dims ();}
+        AaUInt dx   () const {return m_image.dim (0);}
+        AaUInt dy   () const {return m_image.dim (1);}
+        AaUInt dz   () const {return m_image.dim (2);}
+        // Scale.
+        void setScale (const vec3 &);
+        const vec3 & scale () const {return m_scale;}
+        // Position.
+        void setPosition (const vec3 &);
+        const vec3 & position () const {return m_position;}
+        // Orientation.
+        void setOrientation (const mat3 &);
+        const mat3 & orientation () const {return m_orientation;}
         // Bounding box.
-        void setBox (const box3 &);
-        const box3 & box () const;
+        //void setBox (const box3 &);
+        //const box3 & box () const {return m_box;}
+        // Transform.
+        mat4 transform () const;
         // Iterators.
         /***/ Mono8::Pixel * begin ();
         const Mono8::Pixel * begin () const;
-        /***/ Mono8::Pixel * end ();
-        const Mono8::Pixel * end () const;
+        /***/ Mono8::Pixel * end   ();
+        const Mono8::Pixel * end   () const;
         // Potential.
         double eval (const dvec3 &) const;
         // OpenGL texture.
