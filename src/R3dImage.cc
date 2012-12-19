@@ -59,7 +59,7 @@ namespace Aa
     {
       return Translation (m_position)
            * mat4 (m_orientation)
-           * Scale (m_scale * m_image.dims ());
+           * Scale (m_scale);
     }
 
     Mono8::Pixel * Image::begin () {return m_image.begin ();}
