@@ -19,41 +19,48 @@ namespace Aa
 // Aa::R3d::Image //////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-    Image::Image (const uvec3 & d) :
-      //m_dxdy (1), m_dxdydz (1),
-      //m_data (new unsigned char [1])
-      m_image (vec (0u, 0u, 0u)),
-      m_box ()
+    Image::Image (const uvec3 & dims,
+                  const  vec3 & scale,
+                  const  vec3 & position,
+                  const  mat3 & orientation) :
+      m_image (uvec3 (0u)),
+      m_scale (scale),
+      m_position (position),
+      m_orientation (orientation)
     {
-      this->resize (d);
+      this->resize (dims);
     }
 
     Image::~Image ()
     {
-      //delete[] m_data;
     }
 
-    void Image::resize (const uvec3 & d)
+    void Image::resize (const uvec3 & dims)
     {
-      //cout << "--> Image::resize (" << dx << ", "<< dy << ", " << dz << ");" << endl;
-      m_image = Im<3, Mono8> (d);
-      //m_dxdy = m_dx * m_dy;
-      //m_dxdydz = m_dxdy * m_dz;
-      m_box = box3::Center (d);
-      //m_data = new unsigned char [m_dxdydz];
-      //cout << "<-- Image::resize (" << dx << ", "<< dy << ", " << dz << ");" << endl;
+      m_image = Im<3, Mono8> (dims);
     }
 
-    unsigned int Image::dx () const {return m_image.dim (0);}
-    unsigned int Image::dy () const {return m_image.dim (1);}
-    unsigned int Image::dz () const {return m_image.dim (2);}
+    void Image::setScale (const vec3 & scale)
+    {
+      m_scale = scale;
+    }
 
-    //unsigned long Image::dxdy  () const {return m_dxdy;}
-    //unsigned long Image::dxdydz () const {return m_dxdydz;}
+    void Image::setPosition (const vec3 & position)
+    {
+      m_position = position;
+    }
 
-    void Image::setBox (const box3 & b) {m_box = b;}
-    const box3 & Image::box () const {return m_box;}
-    //void Image::translate (const Math::vR3 & v) {m_box.translate (v);}
+    void Image::setOrientation (const mat3 & orientation)
+    {
+      m_orientation = orientation;
+    }
+
+    mat4 Image::transform () const
+    {
+      return Translation (m_position)
+           * mat4 (m_orientation)
+           * Scale (m_scale);
+    }
 
     Mono8::Pixel * Image::begin () {return m_image.begin ();}
     Mono8::Pixel * Image::end   () {return m_image.end   ();}
@@ -72,7 +79,7 @@ namespace Aa
       double z = (p[2] * dz) - 0.5, w = floor (z); int int_w = (int) w;
 
       // 8 bits for 8 corners.
-      unsigned char f = 0xFF;
+      AaUInt8 f = 0xFF;
       if (int_u + 1 <   0) f = 0x00; else if (int_u     <   0) f &= (0x02 | 0x08 | 0x20 | 0x80);
       if (int_u     >= dx) f = 0x00; else if (int_u + 1 >= dx) f &= (0x01 | 0x04 | 0x10 | 0x40);
       if (int_v + 1 <   0) f = 0x00; else if (int_v     <   0) f &= (0x04 | 0x08 | 0x40 | 0x80);
@@ -92,6 +99,31 @@ namespace Aa
                         (f & 0x80) ? d[dx*dy + dx + 1][0] : 0);
     }
 
+    GLuint Image::glTex3d () const
+      throw (Aa::GL::MissingExtension)
+    {
+      GLuint id = 0;
+      glGenTextures (1, &id);
+      glBindTexture (GL_TEXTURE_3D, id);
+      glTexParameteri (GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+      glTexParameteri (GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+      glTexParameteri (GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+      glTexParameteri (GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+      glTexParameteri (GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+      glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
+
+      if (! GLEW_ARB_texture_non_power_of_two)
+        throw GL::MissingExtension ("GL_ARB_texture_non_power_of_two");
+
+      glTexImage3D (GL_TEXTURE_3D, 0,
+                    GL_R8, this->dx (), this->dy (), this->dz (), 0,
+                    GL_RED, GL_UNSIGNED_BYTE, this->begin ());
+
+      glGenerateMipmap (GL_TEXTURE_3D);
+
+      return id;
+    }
+
     void ImageLoadB8 (Image        * image,
                       const string & filename,
                       const vec3   & scale)
@@ -101,17 +133,19 @@ namespace Aa
       ifstream f (filename.c_str (), ios::in | ios::binary);
       if (! f.is_open ()) throw FileNotFound (filename);
       // Read dimensions.
-      unsigned short dx = 0;
+      AaUInt16 dx = 0;
       if (! f.read ((char *) &dx, sizeof (dx))) throw Aa::ParseError ("dx");
-      unsigned short dy = 0;
+      AaUInt16 dy = 0;
       if (! f.read ((char *) &dy, sizeof (dy))) throw Aa::ParseError ("dy");
-      unsigned short dz = 0;
+      AaUInt16 dz = 0;
       if (! f.read ((char *) &dz, sizeof (dz))) throw Aa::ParseError ("dz");
       // Resize buffer.
+      image->setScale (scale);
+      image->setPosition (vec3 ());
+      image->setOrientation (mat3 ());
       image->resize (vec<AaUInt> (dx, dy, dz));
       // Read data.
       if (! f.read ((char *) image->begin (), dx * dy * dz)) throw Aa::ParseError ("dat");
-      image->setBox (box3::Center (vec (dx * scale [0], dy * scale [1], dz * scale [2])));
     }
 
     Image * ImageLoadB8 (const string & filename, const vec3 & scale)

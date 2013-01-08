@@ -18,14 +18,14 @@ namespace Aa
 // ImageRenderer::ClippingPlane ////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-    ImageRenderer::ClippingPlane::ClippingPlane (const dvec3 & p, const dvec3 & n) :
+    ImageRenderer::ClippingPlane::ClippingPlane (const vec3 & p, const vec3 & n) :
       active (true),
       point (p),
       normal (n)
     {
     }
 
-    bool ImageRenderer::ClippingPlane::test (const dvec3 & p) const
+    bool ImageRenderer::ClippingPlane::test (const vec3 & p) const
     {
       return DotProd (p - point, normal) >= 0;
     }
@@ -46,7 +46,7 @@ namespace Aa
     {
     }
 
-    void ImageRenderer::setWindow (GLfloat min, GLfloat max)
+    void ImageRenderer::setRange (GLfloat min, GLfloat max)
     {
       m_min = min;
       m_max = max;

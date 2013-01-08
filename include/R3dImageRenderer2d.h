@@ -16,12 +16,11 @@ namespace Aa
         GLuint *     m_img_textures;
         GLdouble     m_img_scales [2];
         GLubyte      m_lut [1024];
-        box3         m_box;
      
       public:
         ImageRenderer2d (const Image * = NULL, const Lut * = NULL);
         virtual ~ImageRenderer2d ();
-        virtual void setImg (const Image * = NULL);
+        virtual void setImage (const Image * = NULL);
         virtual void setLut (const Lut * = NULL);
         virtual void glDraw (bool = false);
     };

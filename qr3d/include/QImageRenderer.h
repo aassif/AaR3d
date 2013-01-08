@@ -45,6 +45,7 @@ namespace Aa
       private:
         bool                       m_fast;
         const R3d::Image         * m_image;
+        GLuint                     m_texture;
         const R3d::Lut           * m_lut;
         R3d::ImageRenderer3dGLSL * m_renderer;
         QGLFramebufferObject     * m_fbo;

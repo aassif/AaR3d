@@ -36,7 +36,7 @@ namespace Aa
 
       glCullFace (GL_FRONT);
       glColor3f (0.0f, 0.0f, 0.0f);
-      GL::Primitives::Box (m_box);
+      GL::Primitives::Box ();
       glCullFace (GL_BACK);
 
       ImageRenderer3dGLSL::glPreDraw (motion);

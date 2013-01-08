@@ -18,12 +18,12 @@ namespace Aa
         {
           public:
             bool  active;
-            dvec3 point;
-            dvec3 normal;
+            vec3 point;
+            vec3 normal;
 
           public:
-            ClippingPlane (const dvec3 & p, const dvec3 & n);
-            bool test (const dvec3 &) const;
+            ClippingPlane (const vec3 & p, const vec3 & n);
+            bool test (const vec3 &) const;
         };
 
       public:
@@ -38,8 +38,8 @@ namespace Aa
       public:
         ImageRenderer ();
         virtual ~ImageRenderer ();
-        void setWindow (GLfloat min, GLfloat max);
-        virtual void setImg (const Image *) = 0;
+        void setRange (GLfloat min, GLfloat max);
+        virtual void setImage (const Image *) = 0;
         virtual void setLut (const Lut *) = 0;
         virtual void glDraw (bool = false) = 0;
     };
