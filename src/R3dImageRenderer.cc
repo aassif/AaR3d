@@ -1,7 +1,6 @@
 #include "R3dImageRenderer.h"
 
 using namespace std;
-using namespace Aa::Math;
 
 #ifdef DEBUG
 #define ASSERT(x) assert (x)

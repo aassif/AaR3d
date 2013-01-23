@@ -102,18 +102,18 @@ namespace Aa
     GLuint Image::glTex3d () const
       throw (Aa::GL::MissingExtension)
     {
+      if (! GLEW_ARB_texture_non_power_of_two)
+        throw GL::MissingExtension ("GL_ARB_texture_non_power_of_two");
+
       GLuint id = 0;
       glGenTextures (1, &id);
       glBindTexture (GL_TEXTURE_3D, id);
       glTexParameteri (GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
       glTexParameteri (GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
       glTexParameteri (GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-      glTexParameteri (GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+      glTexParameteri (GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
       glTexParameteri (GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
       glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
-
-      if (! GLEW_ARB_texture_non_power_of_two)
-        throw GL::MissingExtension ("GL_ARB_texture_non_power_of_two");
 
       glTexImage3D (GL_TEXTURE_3D, 0,
                     GL_R8, this->dx (), this->dy (), this->dz (), 0,

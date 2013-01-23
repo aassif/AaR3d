@@ -3,7 +3,6 @@
 #include "R3dImageRenderer3d.h"
 
 using namespace std;
-using namespace Aa::Math;
 
 namespace Aa
 {

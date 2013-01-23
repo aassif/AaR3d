@@ -17,7 +17,6 @@ else {
 
 OBJECTS_DIR = obj
 SOURCES += \
-    ../../toolkit/src/AaException.cc \
     ../../opengl/src/AaGLSL.cc \
     ../../opengl/src/AaScene.cc \
     ../../opengl/src/AaPrimitives.cc \
@@ -42,7 +41,8 @@ SOURCES += \
 
 MOC_DIR = moc
 HEADERS += \
-    ../../toolkit/include/bits/AaException.h \
+    ../../toolkit/include/bits/AaToolkit.h \
+    ../../toolkit/include/bits/AaException.hh \
     ../../toolkit/include/bits/AaMatrix.hh \
     ../../toolkit/include/bits/AaVector.hh \
     ../../opengl/include/bits/AaGLSL.h \

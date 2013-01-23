@@ -211,7 +211,7 @@ namespace Aa
         else
         {
           glPushMatrix ();
-          GL::MultMatrix (m_image->transform ());
+          GL::MultMatrix (m_image->transform () * Scale (m_image->dims ()));
           m_renderer->glDraw (false);
           glPopMatrix ();
         }
@@ -232,7 +232,7 @@ namespace Aa
         m_timer.stop ();
 
         glPushMatrix ();
-        GL::MultMatrix (m_image->transform ());
+        GL::MultMatrix (m_image->transform () * Scale (m_image->dims ()));
         m_renderer->glDraw (true);
         glPopMatrix ();
 

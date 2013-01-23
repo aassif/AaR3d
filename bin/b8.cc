@@ -24,7 +24,7 @@ namespace Aa
 {
   namespace CmdLine
   {
-    template<> string StringParser::TypeId<DataType> () {return "8|12be|12le|16be|16le";}
+    AA_DECLARE_TYPEID (DataType, "8|12be|12le|16be|16le")
   }
 }
 
