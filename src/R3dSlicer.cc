@@ -5,7 +5,6 @@
 #include "R3dSlicer.h"
 
 using namespace std;
-using namespace Aa::Math;
 
 #ifdef DEBUG
 #define ASSERT(x) assert (x)

@@ -2,7 +2,6 @@
 #include "R3dMIP.h"
 
 using namespace std;
-using namespace Aa::Math;
 
 namespace Aa
 {

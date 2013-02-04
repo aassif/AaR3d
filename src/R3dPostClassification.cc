@@ -1,7 +1,6 @@
 #include "R3dPostClassification.h"
 
 using namespace std;
-using namespace Aa::Math;
 
 namespace Aa
 {

@@ -3,7 +3,7 @@
 
 #include <GL/glew.h>
 //#include <string>
-#include <AaMath>
+#include <AaBox>
 #include <AaImage>
 #include <AaGL>
 #include "AaR3d.h"

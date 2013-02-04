@@ -3,7 +3,6 @@
 #include "R3dPreIntegration.h"
 
 using namespace std;
-using namespace Aa::Math;
 
 namespace Aa
 {

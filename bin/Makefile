@@ -18,7 +18,7 @@ L_GLU=          -lGL -lGLU $(L_X11) # -lglut
 
 P_AaToolkit=    $(HOME)/wrk/toolkit
 I_AaToolkit=    -I$(P_AaToolkit)/include
-L_AaToolkit=    -L$(P_AaToolkit)/lib -lAaToolkit
+#L_AaToolkit=    -L$(P_AaToolkit)/lib -lAaToolkit
 
 # AaFFmpeg #####################################################################
 
@@ -41,7 +41,7 @@ L_GLEW=         -L$(P_GLEW)/lib -lGLEW -lpthread $(L_GLU)
 
 P_AaGL=         $(HOME)/wrk/opengl
 I_AaGL=         -I$(P_AaGL)/include    $(I_GLEW) $(I_AaToolkit)
-L_AaGL=         -L$(P_AaGL)/lib -lAaGL $(L_GLEW) $(L_AaToolkit)
+L_AaGL=         -L$(P_AaGL)/lib -lAaGL $(L_GLEW) #$(L_AaToolkit)
 
 # AaR3d ########################################################################
 

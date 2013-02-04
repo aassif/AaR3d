@@ -1,7 +1,6 @@
 #include "R3dImageRenderer3dGLSL.h"
 
 using namespace std;
-using namespace Aa::Math;
 
 namespace Aa
 {
@@ -31,7 +30,7 @@ namespace Aa
       ImageRenderer3d::glPreDraw (motion);
 
       // Blending ON.
-      glEnable (GL_BLEND);
+      //glEnable (GL_BLEND);
 
       m_program.use ();
       m_program.set<GLint>   ("image_tex3d", 0);

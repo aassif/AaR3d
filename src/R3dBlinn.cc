@@ -1,7 +1,6 @@
 #include "R3dBlinn.h"
 
 using namespace std;
-using namespace Aa::Math;
 
 namespace Aa
 {
