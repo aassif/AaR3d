@@ -8,6 +8,9 @@ cmake_minimum_required(VERSION 2.8)
 
 # Project name.
 project(AaR3d C CXX)
+
+include("$ENV{DEVEL_PATH}/cmake/cmake-paths.txt")
+
 set(CMAKE_CXX_FLAGS "/EHa")
 
 if(CMAKE_GENERATOR MATCHES ".* Win64")
@@ -36,29 +39,20 @@ else(CMAKE_GENERATOR MATCHES ".* Win64")
     endif(APPLE)
 endif(CMAKE_GENERATOR MATCHES ".* Win64")
 
-# Module directory.
-set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/../cmake-modules")
-string(REGEX REPLACE "\\\\" "/" CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}")
-
 # OpenGL dependency.
 find_package(OpenGL REQUIRED) # GLEW
 
 # GLEW dependency.
-set(GLEW_DIR "${PROJECT_SOURCE_DIR}/../glew")
 find_package(GLEW REQUIRED) # AaOpenGL
 
 # AaToolkit dependency
-set(AATOOLKIT_DIR "${PROJECT_SOURCE_DIR}/../aassif-toolkit")
 find_package(AaToolkit REQUIRED)
-find_package(AaToolkit-static REQUIRED)
 
 # AaOpenGL dependency
-set(AAOPENGL_DIR "${PROJECT_SOURCE_DIR}/../aassif-opengl")
 find_package(AaOpenGL REQUIRED)
 find_package(AaOpenGL-static REQUIRED)
 
 # AaMesh dependency
-set(AAMESH_DIR "${PROJECT_SOURCE_DIR}/../aassif-mesh")
 find_package(AaMesh REQUIRED)
 
 # Include directoires.
@@ -99,7 +93,6 @@ set_target_properties(
 target_link_libraries(AaR3d
     ${OPENGL_LIBRARY}
     ${GLEW_LIBRARY}
-    ${AATOOLKIT_LIBRARY}
     ${AAOPENGL_LIBRARY}
 )
 
@@ -122,6 +115,5 @@ set_target_properties(
 target_link_libraries(AaR3d-static
     ${OPENGL_LIBRARY}
     ${GLEW_LIBRARY}
-    ${AATOOLKIT_STATIC_LIBRARY}
     ${AAOPENGL_STATIC_LIBRARY}
 )
