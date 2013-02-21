@@ -1,7 +1,6 @@
 #ifndef R3D_IMAGE_RENDERER_3D_GLSL__H
 #define R3D_IMAGE_RENDERER_3D_GLSL__H
 
-#include <AaGLSL>
 #include "R3dImageRenderer3d.h"
 
 namespace Aa
@@ -15,17 +14,11 @@ namespace Aa
         GL::Program m_program;
         
       protected:
-        virtual void glPreDraw  (bool);
-        virtual void glPostDraw (bool);
+        virtual void glPreDraw  (const GL::CoreContext &);
+        virtual void glPostDraw (const GL::CoreContext &);
 
       public:
-#if 0
-        ImageRenderer3dGLSL (const std::string & vertex   = "/AaR3d/PassThru.fragment",
-                             const std::string & geometry = "/AaR3d/McSlicing.fragment",
-                             const std::string & fragment = "/AaR3d/Texture3d.fragment");
-#endif
-
-        ImageRenderer3dGLSL (const std::string & fragment = "/AaR3d/Texture3d.fragment");
+        ImageRenderer3dGLSL (const std::string & fragment = "/Aa/R3d/Texture.fragment");
         virtual ~ImageRenderer3dGLSL ();
     };
   } // namespace R3d

@@ -1,34 +1,35 @@
-#version 420 compatibility
+#version 330 core
 
-#extension GL_EXT_gpu_shader4 : enable
-#extension GL_EXT_geometry_shader4 : enable
+#extension GL_ARB_shading_language_include : require
+
+#include "/Aa/Core"
 
 layout (points) in;
 layout (triangle_strip, max_vertices = 6) out;
 
-uniform isampler2D mc_slicing_table;
-uniform float      mc_slicing_vertex_depths [8];
-uniform vec2       mc_slicing_edge_depths [12];
+uniform isampler2D aa_r3d_slicer_table;
+uniform float      aa_r3d_slicer_vertex_depths [8];
+uniform vec2       aa_r3d_slicer_edge_depths [12];
 
-out     vec4       mc_slicing_coords;
+out     vec4       aa_r3d_position;
 
-int mc_slicing_key (float z)
+int aa_r3d_slicer_key (float z)
 {
   int k = 0;
   for (int i = 0; i < 8; ++i)
-    if (mc_slicing_vertex_depths [i] < z) k |= (1 << i);
+    if (aa_r3d_slicer_vertex_depths [i] < z) k |= (1 << i);
   return k;
 }
 
-int mc_slicing_edge (int y, int x)
+int aa_r3d_slicer_edge (int y, int x)
 {
-  return texelFetch (mc_slicing_table, ivec2 (x, y), 0) [0];
+  return texelFetch (aa_r3d_slicer_table, ivec2 (x, y), 0) [0];
 }
 
-vec4 mc_slicing_vertex_aux (float z, int e)
+vec4 aa_r3d_slicer_vertex_aux (float z, int e)
 {
-  float z0 = mc_slicing_edge_depths[e][0];
-  float z1 = mc_slicing_edge_depths[e][1];
+  float z0 = aa_r3d_slicer_edge_depths[e][0];
+  float z1 = aa_r3d_slicer_edge_depths[e][1];
 
   float r = (z - z0) / (z1 - z0);
 
@@ -50,33 +51,33 @@ vec4 mc_slicing_vertex_aux (float z, int e)
   }
 }
 
-bool mc_slicing_vertex (float z, int k, int j)
+bool aa_r3d_slicer_vertex (float z, int k, int j)
 {
-  int e = mc_slicing_edge (k, j);
+  int e = aa_r3d_slicer_edge (k, j);
   if (e == -1) return false;
 
-  mc_slicing_coords = mc_slicing_vertex_aux (z, e);
-  gl_Position = gl_ModelViewProjectionMatrix * mc_slicing_coords;
+  aa_r3d_position = aa_r3d_slicer_vertex_aux (z, e);
+  gl_Position     = aa_gl_projection * aa_gl_modelview * aa_r3d_position;
   EmitVertex ();
 
   return true;
 }
 
-void mc_slicing (float z)
+void aa_r3d_slicer (float z)
 {
   // Compute key.
-  int k = mc_slicing_key (z);
+  int k = aa_r3d_slicer_key (z);
 
   // And maybe more...
   for (int j = 0; j < 6; ++j)
-    if (! mc_slicing_vertex (z, k, j)) break;
+    if (! aa_r3d_slicer_vertex (z, k, j)) break;
 
   EndPrimitive ();
 }
 
 void main ()
 {
-  for (int i = 0; i < gl_VerticesIn; ++i)
-    mc_slicing (gl_PositionIn[i][0]);
+  for (int i = 0; i < gl_in.length (); ++i)
+    aa_r3d_slicer (gl_in[i].gl_Position[0]);
 }
 

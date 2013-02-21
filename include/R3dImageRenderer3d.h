@@ -1,5 +1,5 @@
-#ifndef __AA_R3D_IMAGE_RENDERER_3D__
-#define __AA_R3D_IMAGE_RENDERER_3D__
+#ifndef AA_R3D_IMAGE_RENDERER_3D__H
+#define AA_R3D_IMAGE_RENDERER_3D__H
 
 #include "R3dSlicer.h"
 #include "R3dImageRenderer.h"
@@ -17,8 +17,8 @@ namespace Aa
         GLfloat  m_steps [2];
 
       protected:
-        virtual void glPreDraw  (bool);
-        virtual void glPostDraw (bool);
+        virtual void glPreDraw  (const GL::CoreContext &);
+        virtual void glPostDraw (const GL::CoreContext &);
 
       public:
         ImageRenderer3d ();
@@ -26,7 +26,7 @@ namespace Aa
         virtual void setImage (const Image * = NULL);
         virtual void setImage (GLuint tex3d, bool shared = true);
         virtual void setLut (const Lut * = NULL);
-        virtual void glDraw (bool = false);
+        virtual void glDraw (const GL::CoreContext &);
         // Step.
         double step (bool motion) const;
         void setStep (bool motion, double);
@@ -34,5 +34,5 @@ namespace Aa
   } // namespace R3d
 } // namespace Aa
 
-#endif // __AA_R3D_IMAGE_RENDERER_3D__
+#endif // AA_R3D_IMAGE_RENDERER_3D__H
 

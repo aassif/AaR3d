@@ -46,26 +46,26 @@ namespace Aa
       //cout << "<-- ImageRenderer3d::setLut (this = " << this << ", lut = " << lut << ");" << endl;
     }
 
-    void PostClassification::glPreDraw (bool motion)
+    void PostClassification::glPreDraw (const GL::CoreContext & context)
     {
       //cout << "--> " << __PRETTY_FUNCTION__ << endl;
 
-      ImageRenderer3dGLSL::glPreDraw (motion);
+      ImageRenderer3dGLSL::glPreDraw (context);
 
       // Pre-multiplied blending.
       glBlendFunc (GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
       // Texture #1 = lut1d.
       glActiveTexture (GL_TEXTURE1);
-      glBindTexture (GL_TEXTURE_1D, m_lut_tex1d [motion ? 1 : 0]);
-      m_program.set<GLint> ("lut1d", 1);
+      glBindTexture (GL_TEXTURE_1D, m_lut_tex1d [context.is_moving () ? 1 : 0]);
+      m_program.set<GLint> ("aa_r3d_lut1d", 1);
 
       //glActiveTexture (GL_TEXTURE0);
 
       //cout << "<-- " << __PRETTY_FUNCTION__ << endl;
     }
 
-    void PostClassification::glPostDraw (bool motion)
+    void PostClassification::glPostDraw (const GL::CoreContext & context)
     {
       //cout << "--> " << __PRETTY_FUNCTION__ << endl;
 
@@ -76,7 +76,7 @@ namespace Aa
       glActiveTexture (GL_TEXTURE1);
       glBindTexture (GL_TEXTURE_1D, 0);
 
-      ImageRenderer3dGLSL::glPostDraw (motion);
+      ImageRenderer3dGLSL::glPostDraw (context);
 
       //cout << "<-- " << __PRETTY_FUNCTION__ << endl;
     }

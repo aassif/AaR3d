@@ -32,7 +32,7 @@ SOURCES += \
     ../src/R3dImageRenderer2d.cc \
     ../src/R3dImageRenderer.cc \
     ../src/R3dImage.cc \
-    ../src/R3dBlinn.cc \
+    ../src/R3dPhong.cc \
     src/QR3d.cc \
     src/QTransferFunction.cc \
     src/QTransferTable.cc \
@@ -61,7 +61,7 @@ HEADERS += \
     ../include/R3dImageRenderer2d.h \
     ../include/R3dImageRenderer.h \
     ../include/R3dImage.h \
-    ../include/R3dBlinn.h \
+    ../include/R3dPhong.h \
     include/QR3d.h \
     include/QTransferFunction.h \
     include/QTransferTable.h \
@@ -103,16 +103,15 @@ TRANSLATIONS = qr3d_fr.ts
 DEFINES += GLEW_STATIC
 
 OTHER_FILES += \
-    ../glsl/Texture3d.glsl \
-    ../glsl/Texture3d.FragmentShader.glsl \
+    ../glsl/Texture.glsl \
+    ../glsl/Texture.FragmentShader.glsl \
     ../glsl/Rainbow.glsl \
     ../glsl/Rainbow.FragmentShader.glsl \
     ../glsl/PreIntegration.glsl \
     ../glsl/PreIntegration.FragmentShader.glsl \
     ../glsl/PostClassification.glsl \
     ../glsl/PostClassification.FragmentShader.glsl \
-    ../glsl/PassThru.VertexShader.glsl \
     ../glsl/McSlicing.VertexShader.glsl \
     ../glsl/McSlicing.GeometryShader.glsl \
-    ../glsl/Blinn.glsl \
-    ../glsl/Blinn.FragmentShader.glsl
+    ../glsl/Phong.glsl \
+    ../glsl/Phong.FragmentShader.glsl

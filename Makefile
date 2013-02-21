@@ -11,7 +11,7 @@ GCC=              $(GCC_RELEASE)
 P_AaToolkit=      $(HOME)/wrk/toolkit
 I_AaToolkit=      -I$(P_AaToolkit)/include
 
-P_GLEW=           $(HOME)/3rdPartyLibs/glew-1.7.0
+P_GLEW=           $(HOME)/3rdPartyLibs/glew-1.9.0
 I_GLEW=           -I$(P_GLEW)/include
 #L_GLEW=           $(L_GLU) -L$(P_GLEW)/lib -lglew
 

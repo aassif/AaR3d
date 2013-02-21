@@ -17,7 +17,7 @@ namespace Aa
       public:
         Slicer ();
         virtual ~Slicer ();
-        virtual void glDraw (GLfloat step) = 0;
+        virtual void glDraw (const mat4 & modelview, GLfloat step) = 0;
     };
 
     class SlicerObjectX : public Slicer
@@ -28,7 +28,7 @@ namespace Aa
       public:
         SlicerObjectX (GLfloat dx);
         virtual ~SlicerObjectX ();
-        virtual void glDraw (GLfloat step);
+        virtual void glDraw (const mat4 & modelview, GLfloat step);
     };
 
     class SlicerObjectY : public Slicer
@@ -39,7 +39,7 @@ namespace Aa
       public:
         SlicerObjectY (GLfloat dy);
         virtual ~SlicerObjectY ();
-        virtual void glDraw (GLfloat step);
+        virtual void glDraw (const mat4 & modelview, GLfloat step);
     };
 
     class SlicerObjectZ : public Slicer
@@ -50,7 +50,7 @@ namespace Aa
       public:
         SlicerObjectZ (GLfloat dz);
         virtual ~SlicerObjectZ ();
-        virtual void glDraw (GLfloat step);
+        virtual void glDraw (const mat4 & modelview, GLfloat step);
     };
 
     class SlicerViewNaive : public Slicer
@@ -58,7 +58,7 @@ namespace Aa
       public:
         SlicerViewNaive ();
         virtual ~SlicerViewNaive ();
-        virtual void glDraw (GLfloat step);
+        virtual void glDraw (const mat4 & modelview, GLfloat step);
     };
 
     class SlicerViewTetra : public Slicer
@@ -70,7 +70,7 @@ namespace Aa
       public:
         SlicerViewTetra ();
         virtual ~SlicerViewTetra ();
-        virtual void glDraw (GLfloat step);
+        virtual void glDraw (const mat4 & modelview, GLfloat step);
     };
 
     class SlicerViewCube : public Slicer
@@ -81,7 +81,7 @@ namespace Aa
       public:
         SlicerViewCube ();
         virtual ~SlicerViewCube ();
-        virtual void glDraw (GLfloat step);
+        virtual void glDraw (const mat4 & modelview, GLfloat step);
     };
 
     class SlicerViewCubeGLSLv1 : public SlicerViewCube
@@ -92,7 +92,7 @@ namespace Aa
       public:
         SlicerViewCubeGLSLv1 (Aa::GL::Program *);
         virtual ~SlicerViewCubeGLSLv1 ();
-        virtual void glDraw (GLfloat step);
+        virtual void glDraw (const mat4 & modelview, GLfloat step);
     };
 
     class SlicerViewCubeGLSLv2 : public SlicerViewCube
@@ -104,7 +104,7 @@ namespace Aa
       public:
         SlicerViewCubeGLSLv2 (Aa::GL::Program *);
         virtual ~SlicerViewCubeGLSLv2 ();
-        virtual void glDraw (GLfloat step);
+        virtual void glDraw (const mat4 & modelview, GLfloat step);
     };
 
 #if 0

@@ -1,7 +1,7 @@
 #ifndef AA_R3D_IMAGE_RENDERER__H
 #define AA_R3D_IMAGE_RENDERER__H
 
-#include <AaScene>
+#include <AaCoreContext>
 #include "R3dLut.h"
 #include "R3dImage.h"
 
@@ -11,13 +11,13 @@ namespace Aa
   {
     // ImageRenderer.
 
-    class ImageRenderer : public Aa::GL::Plugin
+    class ImageRenderer
     {
       public:
         class ClippingPlane
         {
           public:
-            bool  active;
+            bool active;
             vec3 point;
             vec3 normal;
 
@@ -32,8 +32,8 @@ namespace Aa
         GLfloat m_max;
 
       protected:
-        virtual void glPreDraw (bool) = 0;
-        virtual void glPostDraw (bool) = 0;
+        virtual void glPreDraw  (const GL::CoreContext &) = 0;
+        virtual void glPostDraw (const GL::CoreContext &) = 0;
 
       public:
         ImageRenderer ();
@@ -41,7 +41,7 @@ namespace Aa
         void setRange (GLfloat min, GLfloat max);
         virtual void setImage (const Image *) = 0;
         virtual void setLut (const Lut *) = 0;
-        virtual void glDraw (bool = false) = 0;
+        virtual void glDraw (const GL::CoreContext &) = 0;
     };
   } // namespace R3d
 } // namespace Aa

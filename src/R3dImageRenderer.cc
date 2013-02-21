@@ -1,13 +1,5 @@
 #include "R3dImageRenderer.h"
 
-using namespace std;
-
-#ifdef DEBUG
-#define ASSERT(x) assert (x)
-#else
-#define ASSERT(x)
-#endif
-
 namespace Aa
 {
   namespace R3d
@@ -34,7 +26,6 @@ namespace Aa
 ////////////////////////////////////////////////////////////////////////////////
 
     ImageRenderer::ImageRenderer () :
-      Aa::GL::Plugin (),
       planes (),
       m_min (0.0f),
       m_max (1.0f)

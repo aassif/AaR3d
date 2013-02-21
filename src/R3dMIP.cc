@@ -8,19 +8,8 @@ namespace Aa
   namespace R3d
   {
 
-#if 0
-    MIP::MIP (const std::string & vertex,
-              const std::string & geometry,
-              const std::string & fragment,
-              GLenum mode) :
-      ImageRenderer3dGLSL (vertex, geometry, fragment),
-      m_mode (mode)
-    {
-    }
-#endif
-
     MIP::MIP (GLenum mode) :
-      ImageRenderer3dGLSL ("/AaR3d/Texture3d.fragment"),
+      ImageRenderer3dGLSL ("/Aa/R3d/Texture.fragment"),
       m_mode (mode)
     {
     }
@@ -29,27 +18,29 @@ namespace Aa
     {
     }
 
-    void MIP::glPreDraw (bool motion)
+    void MIP::glPreDraw (const GL::CoreContext & context)
     {
       //cout << "--> " << __PRETTY_FUNCTION__ << endl;
 
       glCullFace (GL_FRONT);
       glColor3f (0.0f, 0.0f, 0.0f);
+      glLoadIdentity ();
+      GL::MultMatrix (context.modelview ());
       GL::Primitives::Box ();
       glCullFace (GL_BACK);
 
-      ImageRenderer3dGLSL::glPreDraw (motion);
+      ImageRenderer3dGLSL::glPreDraw (context);
       glBlendEquation (m_mode);
 
       //cout << "<-- " << __PRETTY_FUNCTION__ << endl;
     }
 
-    void MIP::glPostDraw (bool motion)
+    void MIP::glPostDraw (const GL::CoreContext & context)
     {
       //cout << "--> " << __PRETTY_FUNCTION__ << endl;
 
       glBlendEquation (GL_FUNC_ADD);
-      ImageRenderer3dGLSL::glPostDraw (motion);
+      ImageRenderer3dGLSL::glPostDraw (context);
 
       //cout << "<-- " << __PRETTY_FUNCTION__ << endl;
     }

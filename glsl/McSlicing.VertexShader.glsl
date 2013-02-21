@@ -1,17 +1,20 @@
-#version 130
+#version 330 core
+
 #extension GL_EXT_gpu_shader4 : enable
 
-uniform float mc_slicing_z;
-uniform vec2  mc_slicing_edge_depths [12];
+uniform float aa_r3d_slicer_z;
+uniform vec2  aa_r3d_slicer_edge_depths [12];
 
-out     vec4  mc_slicing_coords;
+layout (location = 0) in int aa_r3d_slicer_edge;
 
-vec4 mc_slicing_vertex (int k)
+out vec4 aa_r3d_position;
+
+vec4 aa_r3d_slicer_vertex (int k)
 {
-  float z0 = mc_slicing_edge_depths[k][0];
-  float z1 = mc_slicing_edge_depths[k][1];
+  float z0 = aa_r3d_slicer_edge_depths[k][0];
+  float z1 = aa_r3d_slicer_edge_depths[k][1];
 
-  float r = (mc_slicing_z - z0) / (z1 - z0);
+  float r = (aa_r3d_slicer_z - z0) / (z1 - z0);
 
   switch (k)
   {
@@ -33,9 +36,6 @@ vec4 mc_slicing_vertex (int k)
 
 void main ()
 {
-  int edge = int (gl_Vertex [0]);
-  mc_slicing_coords = mc_slicing_vertex (edge);
-  //gl_TexCoord[0] = gl_TextureMatrix[0]          * mc_slicing_coords;
-  //gl_Position    = gl_ModelViewProjectionMatrix * mc_slicing_coords;
+  aa_r3d_position = aa_r3d_slicer_vertex (aa_r3d_slicer_edge);
 }
 

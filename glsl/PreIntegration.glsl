@@ -1,30 +1,30 @@
 #extension GL_ARB_shading_language_include : require
 
-#include "/AaR3d/Texture3d"
+#include "/Aa/R3d/Texture"
 
 // Transfer function.
-uniform sampler2D lut2d;
+uniform sampler2D aa_r3d_lut2d;
 
 // Distance between two slices.
-uniform float mc_slicing_step;
+uniform float aa_r3d_step;
 
 // Pre-integration.
-vec4 pre_integration (vec4 p)
+vec4 aa_r3d_pre_integration (vec4 p)
 {
   // Offset.
-  vec3 ray = (gl_ModelViewMatrix * p).xyz;
+  vec3 ray = (aa_gl_modelview * p).xyz;
 
   // Texture lookup.
-  vec3 r0 = ray * ((ray.z - 0.5 * mc_slicing_step) / ray.z);
-  vec4 p0 = gl_ModelViewMatrixInverse * vec4 (r0, 1);
-  float f0 = texture3d (p0);
+  vec3 r0 = ray * ((ray.z - 0.5 * aa_r3d_step) / ray.z);
+  vec4 p0 = aa_gl_modelview_inverse * vec4 (r0, 1);
+  float f0 = aa_r3d_texture (p0);
 
   // Texture lookup.
-  vec3 r1 = ray * ((ray.z + 0.5 * mc_slicing_step) / ray.z);
-  vec4 p1 = gl_ModelViewMatrixInverse * vec4 (r1, 1);
-  float f1 = texture3d (p1);
+  vec3 r1 = ray * ((ray.z + 0.5 * aa_r3d_step) / ray.z);
+  vec4 p1 = aa_gl_modelview_inverse * vec4 (r1, 1);
+  float f1 = aa_r3d_texture (p1);
 
   // Lut lookup.
-  return texture (lut2d, vec2 (f0, f1));
+  return texture (aa_r3d_lut2d, vec2 (f0, f1));
 }
 

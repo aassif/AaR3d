@@ -14,16 +14,10 @@ namespace Aa
         GLenum m_mode;
         
       protected:
-        virtual void glPreDraw  (bool);
-        virtual void glPostDraw (bool);
+        virtual void glPreDraw  (const GL::CoreContext &);
+        virtual void glPostDraw (const GL::CoreContext &);
 
       public:
-#if 0
-        MIP (const std::string & vertex,
-             const std::string & geometry,
-             const std::string & fragment,
-             GLenum mode = GL_MAX);
-#endif
         MIP (GLenum mode = GL_MAX);
         virtual ~MIP ();
     };

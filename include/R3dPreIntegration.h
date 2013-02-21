@@ -15,16 +15,11 @@ namespace Aa
         GLuint m_lut_tex2d [2];
         
       protected:
-        virtual void glPreDraw  (bool);
-        virtual void glPostDraw (bool);
+        virtual void glPreDraw  (const GL::CoreContext &);
+        virtual void glPostDraw (const GL::CoreContext &);
 
       public:
-#if 0
-        PreIntegration (const std::string & vertex,
-                        const std::string & geometry,
-                        const std::string & fragment);
-#endif
-        PreIntegration (const std::string & fragment = "/AaR3d/PreIntegration.fragment");
+        PreIntegration (const std::string & fragment = "/Aa/R3d/PreIntegration.fragment");
         virtual ~PreIntegration ();
         virtual void setLut (const Lut * = NULL);
     };

@@ -7,24 +7,21 @@ namespace Aa
 {
   namespace R3d
   {
+
     class AA_R3D_API Rainbow :
       public PostClassification
     {
       protected:
-        vec3  m_delta;
+        vec3 m_delta;
         
       protected:
-        virtual void glPreDraw (bool);
+        virtual void glPreDraw (const GL::CoreContext &);
 
       public:
-#if 0
-        Rainbow (const std::string & vertex,
-                 const std::string & geometry,
-                 const std::string & fragment);
-#endif
         Rainbow ();
         virtual ~Rainbow ();
     };
+
   } // namespace R3d
 } // namespace Aa
 

@@ -1,13 +1,12 @@
-#version 420
+#version 330 core
 
 #extension GL_ARB_shading_language_include : require
 
-#include "/AaR3d/PostClassification"
-
-in vec4 mc_slicing_coords;
+#include "/Aa/R3d/PostClassification"
+#include "/Aa/R3d/FragmentShader"
 
 void main ()
 {
-  gl_FragColor = post_classification (mc_slicing_coords);
+  aa_r3d_fragment_color = aa_r3d_post_classification (aa_r3d_position);
 }
 

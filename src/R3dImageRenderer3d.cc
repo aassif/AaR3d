@@ -71,21 +71,21 @@ namespace Aa
       m_steps [motion ? 1 : 0] = step;
     }
 
-    void ImageRenderer3d::glDraw (bool motion)
+    void ImageRenderer3d::glDraw (const GL::CoreContext & context)
     {
       //cout << "--> " << __PRETTY_FUNCTION__ << endl;
 
-      this->glPreDraw (motion);
+      this->glPreDraw (context);
 
       if (m_slicer != NULL)
-        m_slicer->glDraw (m_steps [motion ? 1 : 0]);
+        m_slicer->glDraw (context.modelview (), m_steps [context.is_moving () ? 1 : 0]);
 
-      this->glPostDraw (motion);
+      this->glPostDraw (context);
 
       //cout << "<-- " << __PRETTY_FUNCTION__ << endl;
     }
 
-    void ImageRenderer3d::glPreDraw (bool)
+    void ImageRenderer3d::glPreDraw (const GL::CoreContext &)
     {
       //cout << "--> " << __PRETTY_FUNCTION__ << endl;
 
@@ -94,7 +94,7 @@ namespace Aa
       glBindTexture (GL_TEXTURE_3D, m_tex3d);
 
       // Lighting OFF.
-      glDisable (GL_LIGHTING);
+      //glDisable (GL_LIGHTING);
       // Blending ON.
       glEnable (GL_BLEND);
       //glBlendFunc (GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
@@ -103,7 +103,7 @@ namespace Aa
       //cout << "<-- " << __PRETTY_FUNCTION__ << endl;
     }
 
-    void ImageRenderer3d::glPostDraw (bool)
+    void ImageRenderer3d::glPostDraw (const GL::CoreContext &)
     {
       //cout << "--> " << __PRETTY_FUNCTION__ << endl;
 

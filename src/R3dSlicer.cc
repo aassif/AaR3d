@@ -43,7 +43,7 @@ namespace Aa
     {
     }
 
-    void SlicerObjectX::glDraw (GLfloat step)
+    void SlicerObjectX::glDraw (const mat4 &, GLfloat step)
     {
       GLfloat s = step / m_dx;
       for (GLfloat x1 = 0.5f * fmod (1.0f, s), x2 = 1.0f - x1; x2 >= 0.0f; x1 += s, x2 -= s)
@@ -78,7 +78,7 @@ namespace Aa
     {
     }
 
-    void SlicerObjectY::glDraw (GLfloat step)
+    void SlicerObjectY::glDraw (const mat4 &, GLfloat step)
     {
       GLfloat s = step / m_dy;
       for (GLfloat y1 = 0.5f * fmod (1.0f, s), y2 = 1.0f - y1; y2 >= 0.0f; y1 += s, y2 -= s)
@@ -113,7 +113,7 @@ namespace Aa
     {
     }
 
-    void SlicerObjectZ::glDraw (GLfloat step)
+    void SlicerObjectZ::glDraw (const mat4 &, GLfloat step)
     {
       GLfloat s = step / m_dz;
       for (GLfloat z1 = 0.5f * fmod (1.0f, s), z2 = 1.0f - z1; z2 >= 0.0f; z1 += s, z2 -= s)
@@ -147,17 +147,25 @@ namespace Aa
     {
     }
 
-    void SlicerViewNaive::glDraw (GLfloat step)
+    void SlicerViewNaive::glDraw (const mat4 & modelview, GLfloat step)
     {
-      GLfloat m3d [16];
-      glGetFloatv (GL_MODELVIEW_MATRIX, m3d);
+      // Cube vertices.
+      static const vec4 V [8] =
+      {
+        vec (0.0f, 0.0f, 0.0f, 1.0f),
+        vec (1.0f, 0.0f, 0.0f, 1.0f),
+        vec (0.0f, 1.0f, 0.0f, 1.0f),
+        vec (1.0f, 1.0f, 0.0f, 1.0f),
+        vec (0.0f, 0.0f, 1.0f, 1.0f),
+        vec (1.0f, 0.0f, 1.0f, 1.0f),
+        vec (0.0f, 1.0f, 1.0f, 1.0f),
+        vec (1.0f, 1.0f, 1.0f, 1.0f)
+      };
 
       // Projected cube vertices.
       vec3 projVertices [8];
       for (int i = 0; i < 8; ++i)
-        projVertices [i] = vec ((i & 1 ? m3d [0] : 0) + (i & 2 ? m3d [4] : 0) + (i & 4 ? m3d [ 8] : 0) + m3d [12],
-                                (i & 1 ? m3d [1] : 0) + (i & 2 ? m3d [5] : 0) + (i & 4 ? m3d [ 9] : 0) + m3d [13],
-                                (i & 1 ? m3d [2] : 0) + (i & 2 ? m3d [6] : 0) + (i & 4 ? m3d [10] : 0) + m3d [14]);
+        projVertices [i] = modelview * V[i];
 
       // Maximum and minimum depths.
       GLfloat zMin = projVertices [0][2], zMax = zMin;
@@ -382,28 +390,27 @@ namespace Aa
       glEnd ();
     }
 
-    void SlicerViewTetra::glDraw (GLfloat step)
+    void SlicerViewTetra::glDraw (const mat4 & m, GLfloat step)
     {
-      GLfloat m3d [16];
-      glGetFloatv (GL_MODELVIEW_MATRIX, m3d);
-
       // Cube vertices.
-      static const vec3 V [8] =
+      static const vec4 V [8] =
       {
-        vec (0.0f, 0.0f, 0.0f),
-        vec (1.0f, 0.0f, 0.0f),
-        vec (0.0f, 1.0f, 0.0f),
-        vec (1.0f, 1.0f, 0.0f),
-        vec (0.0f, 0.0f, 1.0f),
-        vec (1.0f, 0.0f, 1.0f),
-        vec (0.0f, 1.0f, 1.0f),
-        vec (1.0f, 1.0f, 1.0f)
+        vec (0.0f, 0.0f, 0.0f, 1.0f),
+        vec (1.0f, 0.0f, 0.0f, 1.0f),
+        vec (0.0f, 1.0f, 0.0f, 1.0f),
+        vec (1.0f, 1.0f, 0.0f, 1.0f),
+        vec (0.0f, 0.0f, 1.0f, 1.0f),
+        vec (1.0f, 0.0f, 1.0f, 1.0f),
+        vec (0.0f, 1.0f, 1.0f, 1.0f),
+        vec (1.0f, 1.0f, 1.0f, 1.0f)
       };
+
+      vec4 m2 = vec (m[0][2], m[1][2], m[2][2], m[3][2]);
 
       // Projected cube vertices.
       GLfloat Z [8];
       for (int i = 0; i < 8; ++i)
-        Z [i] = (i & 1 ? m3d [2] : 0) + (i & 2 ? m3d [6] : 0) + (i & 4 ? m3d [10] : 0) + m3d [14];
+        Z [i] = DotProd (m2, V [i]);
 
       // Maximum and minimum depths.
       GLfloat zMin = Z [0], zMax = zMin;
@@ -709,15 +716,27 @@ namespace Aa
     {
     }
 
-    void SlicerViewCube::glDraw (GLfloat step)
+    void SlicerViewCube::glDraw (const mat4 & m, GLfloat step)
     {
-      GLdouble m3d [16];
-      glGetDoublev (GL_MODELVIEW_MATRIX, m3d);
+      // Cube vertices.
+      static const vec4 V [8] =
+      {
+        vec (0.0f, 0.0f, 0.0f, 1.0f),
+        vec (1.0f, 0.0f, 0.0f, 1.0f),
+        vec (0.0f, 1.0f, 0.0f, 1.0f),
+        vec (1.0f, 1.0f, 0.0f, 1.0f),
+        vec (0.0f, 0.0f, 1.0f, 1.0f),
+        vec (1.0f, 0.0f, 1.0f, 1.0f),
+        vec (0.0f, 1.0f, 1.0f, 1.0f),
+        vec (1.0f, 1.0f, 1.0f, 1.0f)
+      };
+
+      vec4 m2 = vec (m[0][2], m[1][2], m[2][2], m[3][2]);
 
       // Bounding box depth per vertex.
       GLfloat vZ [8]; // cube depths.
       for (int i = 0; i < 8; ++i)
-        vZ [i] = (i & 1 ? m3d [2] : 0) + (i & 2 ? m3d [6] : 0) + (i & 4 ? m3d [10] : 0) + m3d [14];
+        vZ [i] = DotProd (m2, V[i]);
 
       // Maximum and minimum depths.
       GLfloat zMin = vZ [0], zMax = zMin;
@@ -813,24 +832,34 @@ namespace Aa
       SlicerViewCube (),
       m_program (program)
     {
-      m_program->attach (GL_VERTEX_SHADER, GL::Program::String ("/AaR3d/McSlicing.vertex"));
+      m_program->attach (GL_VERTEX_SHADER, GL::Program::String ("/Aa/R3d/McSlicing.vertex"));
     }
 
     SlicerViewCubeGLSLv1::~SlicerViewCubeGLSLv1 ()
     {
     }
 
-    void SlicerViewCubeGLSLv1::glDraw (GLfloat dz)
+    void SlicerViewCubeGLSLv1::glDraw (const mat4 & m, GLfloat dz)
     {
-      GLfloat m3d [16];
-      glGetFloatv (GL_MODELVIEW_MATRIX, m3d);
+      // Cube vertices.
+      static const vec4 V [8] =
+      {
+        vec (0.0f, 0.0f, 0.0f, 1.0f),
+        vec (1.0f, 0.0f, 0.0f, 1.0f),
+        vec (0.0f, 1.0f, 0.0f, 1.0f),
+        vec (1.0f, 1.0f, 0.0f, 1.0f),
+        vec (0.0f, 0.0f, 1.0f, 1.0f),
+        vec (1.0f, 0.0f, 1.0f, 1.0f),
+        vec (0.0f, 1.0f, 1.0f, 1.0f),
+        vec (1.0f, 1.0f, 1.0f, 1.0f)
+      };
+
+      vec4 m2 = vec (m[0][2], m[1][2], m[2][2], m[3][2]);
 
       // Bounding box depth per vertex.
       GLfloat vertex_depths [8]; // cube depths.
       for (int i = 0; i < 8; ++i)
-        vertex_depths [i] = (i & 1 ? m3d [ 2] : 0)
-                          + (i & 2 ? m3d [ 6] : 0)
-                          + (i & 4 ? m3d [10] : 0) + m3d [14];
+        vertex_depths [i] = DotProd (m2, V[i]);
 
       // Maximum and minimum depths.
       GLfloat zMin = vertex_depths [0], zMax = zMin;
@@ -856,15 +885,15 @@ namespace Aa
         edge_depths [i][1] = vertex_depths [EDGES [i][1]];
       }
 
-      m_program->set<GLfloat, 2> ("mc_slicing_edge_depths", 12, edge_depths);
+      m_program->set<GLfloat, 2> ("aa_r3d_slicer_edge_depths", 12, edge_depths);
 
-      GLint mc_slicing_z = m_program->location ("mc_slicing_z");
-      if (mc_slicing_z == -1) {cerr << "mc_slicing_z" << endl; throw 1;}
+      GLint aa_r3d_slicer_z = m_program->location ("aa_r3d_slicer_z");
+      if (aa_r3d_slicer_z == -1) {cerr << "aa_r3d_slicer_z" << endl; throw 1;}
 
       // Back-to-Front.
       for (GLfloat z = zMin + 0.5 * fmod (zMax - zMin, dz); z <= zMax; z += dz)
         {
-          glUniform1fARB (mc_slicing_z, z);
+          glUniform1fARB (aa_r3d_slicer_z, z);
 
           // This bitfield tells us which vertices of the bounding box
           // have already been passed by the "clipping" plane.
@@ -898,8 +927,8 @@ namespace Aa
       m_program (program),
       m_table_tex2d (0)
     {
-      m_program->attach (GL_VERTEX_SHADER,   GL::Program::String ("/AaR3d/PassThru.vertex"));
-      m_program->attach (GL_GEOMETRY_SHADER, GL::Program::String ("/AaR3d/McSlicing.geometry"));
+      m_program->attach (GL_VERTEX_SHADER,   GL::Program::String ("/Aa/PassThru.vertex"));
+      m_program->attach (GL_GEOMETRY_SHADER, GL::Program::String ("/Aa/R3d/McSlicing.geometry"));
 
 #if 0
       GLuint id = m_program->id ();
@@ -922,17 +951,27 @@ namespace Aa
     {
     }
 
-    void SlicerViewCubeGLSLv2::glDraw (GLfloat dz)
+    void SlicerViewCubeGLSLv2::glDraw (const mat4 & m, GLfloat dz)
     {
-      GLfloat m3d [16];
-      glGetFloatv (GL_MODELVIEW_MATRIX, m3d);
+      // Cube vertices.
+      static const vec4 V [8] =
+      {
+        vec (0.0f, 0.0f, 0.0f, 1.0f),
+        vec (1.0f, 0.0f, 0.0f, 1.0f),
+        vec (0.0f, 1.0f, 0.0f, 1.0f),
+        vec (1.0f, 1.0f, 0.0f, 1.0f),
+        vec (0.0f, 0.0f, 1.0f, 1.0f),
+        vec (1.0f, 0.0f, 1.0f, 1.0f),
+        vec (0.0f, 1.0f, 1.0f, 1.0f),
+        vec (1.0f, 1.0f, 1.0f, 1.0f)
+      };
+
+      vec4 m2 = vec (m[0][2], m[1][2], m[2][2], m[3][2]);
 
       // Bounding box depth per vertex.
       GLfloat vertex_depths [8]; // cube depths.
       for (int i = 0; i < 8; ++i)
-        vertex_depths [i] = (i & 1 ? m3d [ 2] : 0)
-                          + (i & 2 ? m3d [ 6] : 0)
-                          + (i & 4 ? m3d [10] : 0) + m3d [14];
+        vertex_depths [i] = DotProd (m2, V[i]);
 
       // Maximum and minimum depths.
       GLfloat zMin = vertex_depths [0], zMax = zMin;
@@ -964,9 +1003,9 @@ namespace Aa
 
       glActiveTexture (GL_TEXTURE0);
 
-      m_program->set<GLint>      ("mc_slicing_table",         3);
-      m_program->set<GLfloat>    ("mc_slicing_vertex_depths", 8, vertex_depths);
-      m_program->set<GLfloat, 2> ("mc_slicing_edge_depths",  12, edge_depths);
+      m_program->set<GLint>      ("aa_r3d_slicer_table",         3);
+      m_program->set<GLfloat>    ("aa_r3d_slicer_vertex_depths", 8, vertex_depths);
+      m_program->set<GLfloat, 2> ("aa_r3d_slicer_edge_depths",  12, edge_depths);
 
       // Back-to-Front.
       glBegin (GL_POINTS);

@@ -7,7 +7,7 @@ namespace Aa
 {
   namespace R3d
   {
-    class AA_R3D_API Blinn :
+    class AA_R3D_API Phong :
       public PostClassification
     {
       protected:
@@ -15,16 +15,11 @@ namespace Aa
         vec3  m_delta;
         
       protected:
-        virtual void glPreDraw (bool);
+        virtual void glPreDraw (const GL::CoreContext &);
 
       public:
-#if 0
-        Blinn (const std::string & vertex,
-               const std::string & geometry,
-               const std::string & fragment);
-#endif
-        Blinn (const std::string & fragment = "/AaR3d/Blinn.fragment");
-        virtual ~Blinn ();
+        Phong (const std::string & fragment = "/Aa/R3d/Phong.fragment");
+        virtual ~Phong ();
         float shininess () const {return m_shininess;}
         void setShininess (float f) {m_shininess = f;}
     };

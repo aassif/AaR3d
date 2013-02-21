@@ -18,7 +18,7 @@
 //#include "QLutEditor.h"
 #include "R3dPostClassification.h"
 #include "R3dPreIntegration.h"
-#include "R3dBlinn.h"
+#include "R3dPhong.h"
 #include "R3dMIP.h"
 #include "R3dRainbow.h"
 
@@ -37,7 +37,7 @@ namespace Aa
           RENDERER_TEXTURE,
           RENDERER_POST_CLASSIFICATION,
           RENDERER_PRE_INTEGRATION,
-          RENDERER_BLINN,
+          RENDERER_PHONG,
           RENDERER_RAINBOW,
           RENDERER_MIP
         };
