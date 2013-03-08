@@ -19,6 +19,10 @@ P_AaGL=           $(HOME)/wrk/opengl
 I_AaGL=           -I$(P_AaGL)/include    $(I_GLEW)
 #L_AaGL=           -L$(P_AaGL)/lib -lAaGL $(L_GLEW)
 
+P_AaMesh=           $(HOME)/wrk/mesh
+I_AaMesh=           -I$(P_AaMesh)/include
+#L_AaMesh=           -L$(P_AaMesh)/lib -lAaMesh
+
 V_AaR3d=          AaR3d-0.0.2
 S_AaR3d=          src
 H_AaR3d=          include
@@ -41,7 +45,7 @@ lib/libAaR3d.so:	$(OBJ)
 			g++ -shared $(OBJ) -o lib/libAaR3d.so
 
 %.o:                    %.cc
-			$(GCC) -c $(I_AaR3d) $(I_AaGL) $(I_AaToolkit) $< -o $@
+			$(GCC) -c $(I_AaR3d) $(I_AaMesh) $(I_AaGL) $(I_AaToolkit) $< -o $@
 
 # Ménage #
 
@@ -56,10 +60,10 @@ archive:                clean
 # Dépendances #
 
 dep:
-			g++ -MM $(I_AaR3d) $(I_AaGL) $(I_AaToolkit) $(SRC) >make.depend
+			g++ -MM $(I_AaR3d) $(I_AaMesh) $(I_AaGL) $(I_AaToolkit) $(SRC) >make.depend
 
 make.depend:            $(HDR) $(SRC)
-			g++ -MM $(I_AaR3d) $(I_AaGL) $(I_AaToolkit) $(SRC) >make.depend
+			g++ -MM $(I_AaR3d) $(I_AaMesh) $(I_AaGL) $(I_AaToolkit) $(SRC) >make.depend
 
 include make.depend
 

@@ -1008,11 +1008,20 @@ namespace Aa
       m_program->set<GLfloat, 2> ("aa_r3d_slicer_edge_depths",  12, edge_depths);
 
       // Back-to-Front.
-      glBegin (GL_POINTS);
+      std::vector<GLfloat> points;
       GLfloat z0 = zMin + 0.5 * fmod (zMax - zMin, dz);
       for (GLfloat z = z0; z <= zMax; z += dz)
-        glVertexAttrib1f (0, z);
-      glEnd ();
+        points.push_back (z);
+
+      GLuint vbo = 0;
+      glGenBuffers (1, &vbo);
+      glBindBuffer (GL_ARRAY_BUFFER, vbo);
+      glBufferData (GL_ARRAY_BUFFER, sizeof (GLfloat) * points.size (), &(points[0]), GL_STREAM_DRAW);
+      glEnableVertexAttribArray (0);
+      glVertexAttribPointer (0, 1, GL_FLOAT, GL_FALSE, 0, NULL);
+      glDrawArrays (GL_POINTS, 0, points.size ());
+      glDisableVertexAttribArray (0);
+      glDeleteBuffers (1, &vbo);
     }
 
 #if 0

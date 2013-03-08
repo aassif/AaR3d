@@ -159,13 +159,16 @@ namespace Aa
       cout << glGetString (GL_VERSION) << endl;
       cout << glGetString (GL_EXTENSIONS) << endl;
 
-      static const char * SHADERS [][2] =
+      static const char * SHADERS [18][2] =
       {
+        {"/Aa/PassThru.vertex",                 ":/glsl/PassThru.VertexShader.glsl"},
+
         {"/Aa/Core",                            ":/glsl/Core.glsl"},
         {"/Aa/Core/VertexIn",                   ":/glsl/core/VertexIn.glsl"},
         {"/Aa/Core/VertexOut",                  ":/glsl/core/VertexOut.glsl"},
+        {"/Aa/Core.vertex",                     ":/glsl/Core.VertexShader.glsl"},
 
-        {"/Aa/PassThru.vertex",                 ":/glsl/PassThru.VertexShader.glsl"},
+        {"/Aa/FillColor.fragment",              ":/glsl/FillColor.FragmentShader.glsl"},
 
         {"/Aa/R3d/FragmentShader",              ":/glsl/FragmentShader.glsl"},
 
@@ -187,7 +190,7 @@ namespace Aa
         {"/Aa/R3d/Rainbow.fragment",            ":/glsl/Rainbow.FragmentShader.glsl"}
       };
 
-      for (AaUInt i = 0; i < 16; ++i)
+      for (AaUInt i = 0; i < 18; ++i)
         GL::Program::SetString (SHADERS [i][0], qresource_to_string (SHADERS [i][1]));
 
 #if 0

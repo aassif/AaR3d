@@ -75,6 +75,7 @@ RESOURCES = qr3d.qrc
 INCLUDEPATH += \
     ../../toolkit/include \
     ../../opengl/include \
+    ../../mesh/include \
     ../include \
     include \
     $${GLEW}/include \

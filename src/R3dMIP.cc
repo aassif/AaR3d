@@ -8,9 +8,20 @@ namespace Aa
   namespace R3d
   {
 
+    vec4 MIP::FillColor (GLenum mode)
+    {
+      switch (mode)
+      {
+        case GL_MIN : return vec<float> (1, 1, 1);
+        case GL_MAX : return vec<float> (0, 0, 0);
+        default     : return vec<float> (1, 0, 0);
+      }
+    }
+
     MIP::MIP (GLenum mode) :
       ImageRenderer3dGLSL ("/Aa/R3d/Texture.fragment"),
-      m_mode (mode)
+      m_mode (mode),
+      m_box (MIP::FillColor (mode))
     {
     }
 
@@ -23,10 +34,7 @@ namespace Aa
       //cout << "--> " << __PRETTY_FUNCTION__ << endl;
 
       glCullFace (GL_FRONT);
-      glColor3f (0.0f, 0.0f, 0.0f);
-      glLoadIdentity ();
-      GL::MultMatrix (context.modelview ());
-      GL::Primitives::Box ();
+      m_box.glDraw (context);
       glCullFace (GL_BACK);
 
       ImageRenderer3dGLSL::glPreDraw (context);

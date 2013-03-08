@@ -4,6 +4,8 @@
         <file alias="glsl/core/VertexIn.glsl">../../opengl/glsl/core/VertexIn.glsl</file>
         <file alias="glsl/core/VertexOut.glsl">../../opengl/glsl/core/VertexOut.glsl</file>
         <file alias="glsl/PassThru.VertexShader.glsl">../../opengl/glsl/PassThru.VertexShader.glsl</file>
+        <file alias="glsl/Core.VertexShader.glsl">../../opengl/glsl/Core.VertexShader.glsl</file>
+        <file alias="glsl/FillColor.FragmentShader.glsl">../../opengl/glsl/FillColor.FragmentShader.glsl</file>
         <file>../glsl/FragmentShader.glsl</file>
         <file>../glsl/Phong.FragmentShader.glsl</file>
         <file>../glsl/Phong.glsl</file>
