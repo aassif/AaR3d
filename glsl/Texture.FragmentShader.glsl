@@ -3,7 +3,7 @@
 #extension GL_ARB_shading_language_include : require
 
 #include "/Aa/R3d/Texture"
-#include "/Aa/R3d/FragmentShader"
+#include "/Aa/R3d/Fragment"
 
 void main ()
 {

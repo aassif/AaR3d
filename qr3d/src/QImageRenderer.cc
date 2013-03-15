@@ -164,36 +164,36 @@ namespace Aa
         {"/Aa/PassThru.vertex",                 ":/glsl/PassThru.VertexShader.glsl"},
 
         {"/Aa/Core",                            ":/glsl/Core.glsl"},
-        {"/Aa/Core/VertexIn",                   ":/glsl/core/VertexIn.glsl"},
-        {"/Aa/Core/VertexOut",                  ":/glsl/core/VertexOut.glsl"},
+        {"/Aa/Core/Vertex",                     ":/glsl/core/Vertex.glsl"},
         {"/Aa/Core.vertex",                     ":/glsl/Core.VertexShader.glsl"},
 
         {"/Aa/FillColor.fragment",              ":/glsl/FillColor.FragmentShader.glsl"},
+        {"/Aa/Phong",                           ":/glsl/Phong.glsl"},
 
-        {"/Aa/R3d/FragmentShader",              ":/glsl/FragmentShader.glsl"},
+        {"/Aa/R3d/Fragment",                    ":/glsl/R3d/Fragment.glsl"},
 
-        {"/Aa/R3d/McSlicing.geometry",          ":/glsl/McSlicing.GeometryShader.glsl"},
+        {"/Aa/R3d/McSlicing.geometry",          ":/glsl/R3d/McSlicing.GeometryShader.glsl"},
 
-        {"/Aa/R3d/Texture",                     ":/glsl/Texture.glsl"},
-        {"/Aa/R3d/Texture.fragment",            ":/glsl/Texture.FragmentShader.glsl"},
+        {"/Aa/R3d/Texture",                     ":/glsl/R3d/Texture.glsl"},
+        {"/Aa/R3d/Texture.fragment",            ":/glsl/R3d/Texture.FragmentShader.glsl"},
 
-        {"/Aa/R3d/PostClassification",          ":/glsl/PostClassification.glsl"},
-        {"/Aa/R3d/PostClassification.fragment", ":/glsl/PostClassification.FragmentShader.glsl"},
+        {"/Aa/R3d/PostClassification",          ":/glsl/R3d/PostClassification.glsl"},
+        {"/Aa/R3d/PostClassification.fragment", ":/glsl/R3d/PostClassification.FragmentShader.glsl"},
 
-        {"/Aa/R3d/PreIntegration",              ":/glsl/PreIntegration.glsl"},
-        {"/Aa/R3d/PreIntegration.fragment",     ":/glsl/PreIntegration.FragmentShader.glsl"},
+        {"/Aa/R3d/PreIntegration",              ":/glsl/R3d/PreIntegration.glsl"},
+        {"/Aa/R3d/PreIntegration.fragment",     ":/glsl/R3d/PreIntegration.FragmentShader.glsl"},
 
-        {"/Aa/R3d/Phong",                       ":/glsl/Phong.glsl"},
-        {"/Aa/R3d/Phong.fragment",              ":/glsl/Phong.FragmentShader.glsl"},
+        {"/Aa/R3d/Phong",                       ":/glsl/R3d/Phong.glsl"},
+        {"/Aa/R3d/Phong.fragment",              ":/glsl/R3d/Phong.FragmentShader.glsl"},
 
-        {"/Aa/R3d/Rainbow",                     ":/glsl/Rainbow.glsl"},
-        {"/Aa/R3d/Rainbow.fragment",            ":/glsl/Rainbow.FragmentShader.glsl"}
+        {"/Aa/R3d/Rainbow",                     ":/glsl/R3d/Rainbow.glsl"},
+        {"/Aa/R3d/Rainbow.fragment",            ":/glsl/R3d/Rainbow.FragmentShader.glsl"}
       };
 
-      for (AaUInt i = 0; i < 18; ++i)
+      for (AaUInt i = 0; i < 19; ++i)
         GL::Program::SetString (SHADERS [i][0], qresource_to_string (SHADERS [i][1]));
 
-#if 0
+#if 1
       for (AaUInt i = 0; i < 16; ++i)
       {
         std::cout << "////////////////////////////////////////////////////////////////////////////////" << endl

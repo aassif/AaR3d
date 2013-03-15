@@ -21,8 +21,9 @@ namespace Aa
     void Phong::glPreDraw (const GL::CoreContext & context)
     {
       PostClassification::glPreDraw (context);
-      m_program.set<GLfloat> ("aa_r3d_phong_shininess", m_shininess);
-      m_program.set<GLfloat> ("aa_r3d_phong_delta",     m_delta);
+      m_program.set<GLfloat, 3, 3> ("aa_gl_normal_matrix",   GL::CoreContext::NormalMatrix (context.modelview ()));
+      m_program.set<GLfloat>       ("aa_phong_shininess",    m_shininess);
+      m_program.set<GLfloat>       ("aa_r3d_gradient_delta", m_delta);
     }
 
   } // namespace R3d

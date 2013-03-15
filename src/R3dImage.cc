@@ -68,6 +68,11 @@ namespace Aa
     const Mono8::Pixel * Image::begin () const {return m_image.begin ();}
     const Mono8::Pixel * Image::end   () const {return m_image.end   ();}
 
+    AaUInt8 Image::operator[] (const uvec3 & p) const
+    {
+      return m_image [p][0];
+    }
+
     double Image::eval (const dvec3 & p) const
     {
       int dx = this->dx ();

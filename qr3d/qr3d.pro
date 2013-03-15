@@ -1,6 +1,7 @@
 TEMPLATE = app
 TARGET = r3d
 QT *= xml opengl
+CONFIG += debug
 
 include (qr3d.pri)
 

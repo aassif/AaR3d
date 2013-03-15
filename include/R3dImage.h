@@ -119,6 +119,8 @@ namespace Aa
         const Mono8::Pixel * begin () const;
         /***/ Mono8::Pixel * end   ();
         const Mono8::Pixel * end   () const;
+        // Data.
+        AaUInt8 operator[] (const uvec3 &) const;
         // Potential.
         double eval (const dvec3 &) const;
         // OpenGL texture.

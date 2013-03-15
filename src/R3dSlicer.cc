@@ -832,7 +832,7 @@ namespace Aa
       SlicerViewCube (),
       m_program (program)
     {
-      m_program->attach (GL_VERTEX_SHADER, GL::Program::String ("/Aa/R3d/McSlicing.vertex"));
+      m_program->attach (GL_VERTEX_SHADER, "/Aa/R3d/McSlicing.vertex");
     }
 
     SlicerViewCubeGLSLv1::~SlicerViewCubeGLSLv1 ()
@@ -927,8 +927,8 @@ namespace Aa
       m_program (program),
       m_table_tex2d (0)
     {
-      m_program->attach (GL_VERTEX_SHADER,   GL::Program::String ("/Aa/PassThru.vertex"));
-      m_program->attach (GL_GEOMETRY_SHADER, GL::Program::String ("/Aa/R3d/McSlicing.geometry"));
+      m_program->attach (GL_VERTEX_SHADER,   "/Aa/PassThru.vertex");
+      m_program->attach (GL_GEOMETRY_SHADER, "/Aa/R3d/McSlicing.geometry");
 
 #if 0
       GLuint id = m_program->id ();

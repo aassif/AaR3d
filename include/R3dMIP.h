@@ -24,8 +24,8 @@ namespace Aa
             m_program (),
             m_vbo (NULL)
           {
-            m_program.attach (GL_VERTEX_SHADER,   GL::Program::String ("/Aa/Core.vertex"));
-            m_program.attach (GL_FRAGMENT_SHADER, GL::Program::String ("/Aa/FillColor.fragment"));
+            m_program.attach (GL_VERTEX_SHADER,   "/Aa/Core.vertex");
+            m_program.attach (GL_FRAGMENT_SHADER, "/Aa/FillColor.fragment");
             m_program.link ();
 
             Mesh::BasicMesh * m = Mesh::BasicCube::Create ();
