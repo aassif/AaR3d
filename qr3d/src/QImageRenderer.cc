@@ -190,10 +190,10 @@ namespace Aa
         {"/Aa/R3d/Rainbow.fragment",            ":/glsl/R3d/Rainbow.FragmentShader.glsl"}
       };
 
-      for (AaUInt i = 0; i < 19; ++i)
+      for (AaUInt i = 0; i < 18; ++i)
         GL::Program::SetString (SHADERS [i][0], qresource_to_string (SHADERS [i][1]));
 
-#if 1
+#if 0
       for (AaUInt i = 0; i < 16; ++i)
       {
         std::cout << "////////////////////////////////////////////////////////////////////////////////" << endl

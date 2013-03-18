@@ -137,31 +137,28 @@ namespace Aa
 
       if (image != NULL)
       {
-        const unsigned int d1x = image->dx ();
-        const unsigned int d1y = image->dy ();
-        const unsigned int d1z = image->dz ();
+        const uvec3 & d1 = image->dims ();
+        AaUInt d2x = (1 << (AaUInt) ceil (log2 (d1[0])));
+        AaUInt d2y = (1 << (AaUInt) ceil (log2 (d1[1])));
 
-        unsigned int d2x = (1 << (unsigned int) ceil (log2 (d1x)));
-        unsigned int d2y = (1 << (unsigned int) ceil (log2 (d1y)));
-
-        m_dz = d1z;
-        m_img_textures = new GLuint [d1z];
-        glGenTextures (d1z, m_img_textures);
-        m_img_scales [0] = (double) d1x / d2x;
-        m_img_scales [1] = (double) d1y / d2y;
+        m_dz = d1[2];
+        m_img_textures = new GLuint [m_dz];
+        glGenTextures (m_dz, m_img_textures);
+        m_img_scales [0] = (double) d1[0] / d2x;
+        m_img_scales [1] = (double) d1[1] / d2y;
 
         glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
-        const unsigned char * b = (const unsigned char *) image->begin ();
-        for (unsigned int z = 0; z < d1z; ++z, b += d1x * d1y)
+        const AaUInt8 * b = (const AaUInt8 *) image->begin ();
+        for (AaUInt z = 0; z < m_dz; ++z, b += d1[0] * d1[1])
         {
           glBindTexture (GL_TEXTURE_2D, m_img_textures [z]);
           glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
           glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
           glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
           glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-          const unsigned char * b2 = padImage2d (d1x, d1y, b, d2x, d2y);
+          const AaUInt8 * b2 = padImage2d (d1[0], d1[1], b, d2x, d2y);
           glTexImage2D (GL_TEXTURE_2D, 0,
-                        GL_COLOR_INDEX8_EXT, d1x, d1y, 0,
+                        GL_COLOR_INDEX8_EXT, d2x, d2y, 0,
                         GL_COLOR_INDEX, GL_UNSIGNED_BYTE, b2);
           //cout << "glTexImage2D : " << gluErrorString (glGetError ()) << endl;
           delete[] b2;
@@ -247,7 +244,7 @@ namespace Aa
       };
 
       // Bounding box faces.
-      static const unsigned char bbf [] =
+      static const AaUInt8 bbf [] =
       {
         0, 1, 3, 2, // Far
         0, 2, 6, 4, // Left
