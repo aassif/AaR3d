@@ -91,10 +91,8 @@ namespace Aa
 
       m_program.set<GLfloat, 4, 4> ("aa_gl_modelview_inverse", context.modelview ().inv ());
 
-      // Texture #1 = lut2d.
       glActiveTexture (GL_TEXTURE1);
       glBindTexture (GL_TEXTURE_2D, m_lut_tex2d [context.is_moving () ? 1 : 0]);
-      //glActiveTexture (GL_TEXTURE0);
       m_program.set<GLint>   ("aa_r3d_lut2d", 1);
       m_program.set<GLfloat> ("aa_r3d_step",  m_steps [context.is_moving () ? 1 : 0]);
 
@@ -105,7 +103,9 @@ namespace Aa
     {
       //cout << "--> " << __PRETTY_FUNCTION__ << endl;
 
-      glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+      glBlendFuncSeparate (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA,
+                           GL_ONE,       GL_ONE_MINUS_SRC_ALPHA);
+
       ImageRenderer3dGLSL::glPostDraw (context);
 
       //cout << "<-- " << __PRETTY_FUNCTION__ << endl;

@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = r3d
 QT *= xml opengl
-CONFIG += debug
+#CONFIG += debug
 
 include (qr3d.pri)
 
@@ -22,7 +22,6 @@ SOURCES += \
     ../../opengl/src/AaScene.cc \
     ../../opengl/src/AaPrimitives.cc \
     ../src/R3dSlicer.cc \
-    ../src/R3dRainbow.cc \
     ../src/R3dPreIntegration.cc \
     ../src/R3dPostClassification.cc \
     ../src/R3dPadding.cc \
@@ -34,6 +33,7 @@ SOURCES += \
     ../src/R3dImageRenderer.cc \
     ../src/R3dImage.cc \
     ../src/R3dPhong.cc \
+    ../src/R3dSurface.cc \
     src/QR3d.cc \
     src/QTransferFunction.cc \
     src/QTransferTable.cc \
@@ -51,7 +51,6 @@ HEADERS += \
     ../../opengl/include/bits/AaPrimitives.h \
     ../include/AaR3d.h \
     ../include/R3dSlicer.h \
-    ../include/R3dRainbow.h \
     ../include/R3dPreIntegration.h \
     ../include/R3dPostClassification.h \
     ../include/R3dPadding.h \
@@ -63,6 +62,7 @@ HEADERS += \
     ../include/R3dImageRenderer.h \
     ../include/R3dImage.h \
     ../include/R3dPhong.h \
+    ../include/R3dSurface.h \
     include/QR3d.h \
     include/QTransferFunction.h \
     include/QTransferTable.h \
