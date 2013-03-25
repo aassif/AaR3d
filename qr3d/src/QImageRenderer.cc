@@ -82,8 +82,9 @@ namespace Aa
         case RENDERER_POST_CLASSIFICATION : return new R3d::PostClassification;
         case RENDERER_PRE_INTEGRATION     : return new R3d::PreIntegration;
         case RENDERER_PHONG               : return new R3d::Phong;
-        case RENDERER_RAINBOW             : return new R3d::Rainbow;
+        case RENDERER_RAINBOW             : return new R3d::PostClassification ("/Aa/R3d/Rainbow.fragment");
         case RENDERER_MIP                 : return new R3d::MIP (GL_MAX);
+        case RENDERER_SURFACE             : return new R3d::Surface;
         default                           : return NULL;
       }
     }
@@ -159,7 +160,7 @@ namespace Aa
       cout << glGetString (GL_VERSION) << endl;
       cout << glGetString (GL_EXTENSIONS) << endl;
 
-      static const char * SHADERS [18][2] =
+      static const char * SHADERS [][2] =
       {
         {"/Aa/PassThru.vertex",                 ":/glsl/PassThru.VertexShader.glsl"},
 
@@ -183,14 +184,19 @@ namespace Aa
         {"/Aa/R3d/PreIntegration",              ":/glsl/R3d/PreIntegration.glsl"},
         {"/Aa/R3d/PreIntegration.fragment",     ":/glsl/R3d/PreIntegration.FragmentShader.glsl"},
 
+        {"/Aa/R3d/Gradient",                    ":/glsl/R3d/Gradient.glsl"},
+
+        {"/Aa/R3d/Rainbow",                     ":/glsl/R3d/Rainbow.glsl"},
+        {"/Aa/R3d/Rainbow.fragment",            ":/glsl/R3d/Rainbow.FragmentShader.glsl"},
+
         {"/Aa/R3d/Phong",                       ":/glsl/R3d/Phong.glsl"},
         {"/Aa/R3d/Phong.fragment",              ":/glsl/R3d/Phong.FragmentShader.glsl"},
 
-        {"/Aa/R3d/Rainbow",                     ":/glsl/R3d/Rainbow.glsl"},
-        {"/Aa/R3d/Rainbow.fragment",            ":/glsl/R3d/Rainbow.FragmentShader.glsl"}
+        {"/Aa/R3d/Surface",                     ":/glsl/R3d/Surface.glsl"},
+        {"/Aa/R3d/Surface.fragment",            ":/glsl/R3d/Surface.FragmentShader.glsl"}
       };
 
-      for (AaUInt i = 0; i < 18; ++i)
+      for (AaUInt i = 0; i < sizeof (SHADERS) / sizeof (SHADERS [0]); ++i)
         GL::Program::SetString (SHADERS [i][0], qresource_to_string (SHADERS [i][1]));
 
 #if 0
@@ -303,6 +309,7 @@ namespace Aa
         case Qt::Key_3: this->setRenderer (RENDERER_PHONG);               updateGL (); break;
         case Qt::Key_4: this->setRenderer (RENDERER_MIP);                 updateGL (); break;
         case Qt::Key_5: this->setRenderer (RENDERER_RAINBOW);             updateGL (); break;
+        case Qt::Key_6: this->setRenderer (RENDERER_SURFACE);             updateGL (); break;
 
         case Qt::Key_Escape:
           qApp->exit ();

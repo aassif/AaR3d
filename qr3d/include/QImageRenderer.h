@@ -20,7 +20,7 @@
 #include "R3dPreIntegration.h"
 #include "R3dPhong.h"
 #include "R3dMIP.h"
-#include "R3dRainbow.h"
+#include "R3dSurface.h"
 
 namespace Aa
 {
@@ -38,8 +38,9 @@ namespace Aa
           RENDERER_POST_CLASSIFICATION,
           RENDERER_PRE_INTEGRATION,
           RENDERER_PHONG,
+          RENDERER_MIP,
           RENDERER_RAINBOW,
-          RENDERER_MIP
+          RENDERER_SURFACE
         };
 
       private:

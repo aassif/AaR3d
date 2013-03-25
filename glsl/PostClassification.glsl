@@ -1,3 +1,6 @@
+#ifndef AA_R3D_POST_CLASSIFICATION
+#define AA_R3D_POST_CLASSIFICATION
+
 #extension GL_ARB_shading_language_include : require
 
 #include "/Aa/R3d/Texture"
@@ -11,4 +14,6 @@ vec4 aa_r3d_post_classification (vec4 p)
   float f = aa_r3d_texture (p);
   return texture (aa_r3d_lut1d, f);
 }
+
+#endif // AA_R3D_POST_CLASSIFICATION
 
