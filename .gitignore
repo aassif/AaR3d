@@ -4,7 +4,6 @@ Win32
 CMakeFiles
 *.dir
 CMakeCache.txt
-*.cmake
 ipch
 *vcx*
 *.opensdf
