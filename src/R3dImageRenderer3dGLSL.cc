@@ -10,9 +10,6 @@ namespace Aa
       ImageRenderer3d (),
       m_program ()
     {
-      if (! GLEW_ARB_shading_language_include)
-        throw GL::MissingExtension ("GL_ARB_shading_language_include");
-
       m_slicer = new SlicerViewCubeGLSLv2 (&m_program);
       m_program.attach (GL_FRAGMENT_SHADER, fragment);
       m_program.link ();
