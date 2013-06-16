@@ -1013,15 +1013,18 @@ namespace Aa
       for (GLfloat z = z0; z <= zMax; z += dz)
         points.push_back (z);
 
-      GLuint vbo = 0;
-      glGenBuffers (1, &vbo);
-      glBindBuffer (GL_ARRAY_BUFFER, vbo);
-      glBufferData (GL_ARRAY_BUFFER, sizeof (GLfloat) * points.size (), &(points[0]), GL_STREAM_DRAW);
-      glEnableVertexAttribArray (0);
-      glVertexAttribPointer (0, 1, GL_FLOAT, GL_FALSE, 0, NULL);
-      glDrawArrays (GL_POINTS, 0, points.size ());
-      glDisableVertexAttribArray (0);
-      glDeleteBuffers (1, &vbo);
+      if (! points.empty ())
+      {
+        GLuint vbo = 0;
+        glGenBuffers (1, &vbo);
+        glBindBuffer (GL_ARRAY_BUFFER, vbo);
+        glBufferData (GL_ARRAY_BUFFER, sizeof (GLfloat) * points.size (), &(points[0]), GL_STREAM_DRAW);
+        glEnableVertexAttribArray (0);
+        glVertexAttribPointer (0, 1, GL_FLOAT, GL_FALSE, 0, NULL);
+        glDrawArrays (GL_POINTS, 0, points.size ());
+        glDisableVertexAttribArray (0);
+        glDeleteBuffers (1, &vbo);
+      }
     }
 
 #if 0
