@@ -244,17 +244,10 @@ namespace Aa
 
           const qglviewer::Camera * camera = this->camera ();
           mat4 transform  = m_image->transform () * Scale (m_image->dims ());
-          //cout << "transform = " << transform << endl;
-          mat4 modelview  = GL::FixedFunction::ModelView  ();
-          //cout << "modelview = " << modelview << endl;
-          mat4 projection = GL::FixedFunction::Projection ();
-          //cout << "projection = " << projection << endl;
-          vec2 range      = vec<float> (camera->zNear (), camera->zFar ());
-          m_renderer->glDraw (GL::CoreContext (NULL,
-                                               modelview * transform,
-                                               projection,
-                                               range,
-                                               false));
+          glMatrixMode (GL_MODELVIEW);
+          GL::MultMatrix (transform);
+          vec2 range = vec<float> (camera->zNear (), camera->zFar ());
+          m_renderer->glDraw (GL::FixedFunction (range, false));
 
           m_fbo->release ();
           QRect r = QRect (QPoint (0, 0), m_fbo->size ());
@@ -276,14 +269,10 @@ namespace Aa
 
         const qglviewer::Camera * camera = this->camera ();
         mat4 transform  = m_image->transform () * Scale (m_image->dims ());
-        mat4 modelview  = GL::FixedFunction::ModelView  ();
-        mat4 projection = GL::FixedFunction::Projection ();
-        vec2 range      = vec<float> (camera->zNear (), camera->zFar ());
-        m_renderer->glDraw (GL::CoreContext (NULL,
-                                             modelview * transform,
-                                             projection,
-                                             range,
-                                             true));
+        glMatrixMode (GL_MODELVIEW);
+        GL::MultMatrix (transform);
+        vec2 range = vec<float> (camera->zNear (), camera->zFar ());
+        m_renderer->glDraw (GL::FixedFunction (range, true));
 
         m_fbo->release ();
         QRect r = QRect (QPoint (0, 0), m_fbo->size ());

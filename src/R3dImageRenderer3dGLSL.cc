@@ -8,11 +8,22 @@ namespace Aa
   {
     ImageRenderer3dGLSL::ImageRenderer3dGLSL (const std::string & fragment) :
       ImageRenderer3d (),
-      m_program ()
+      m_program (),
+      m_program_modelview (),
+      m_program_projection (),
+      m_program_tex3d (),
+      m_program_min (),
+      m_program_max ()
     {
       m_slicer = new SlicerViewCubeGLSLv2 (&m_program);
       m_program.attach (GL_FRAGMENT_SHADER, fragment);
       m_program.link ();
+
+      m_program_modelview  = m_program.location ("aa_gl_modelview");
+      m_program_projection = m_program.location ("aa_gl_projection");
+      m_program_tex3d      = m_program.location ("aa_r3d_tex3d");
+      m_program_min        = m_program.location ("aa_r3d_min");
+      m_program_max        = m_program.location ("aa_r3d_max");
     }
 
     ImageRenderer3dGLSL::~ImageRenderer3dGLSL ()
@@ -29,12 +40,11 @@ namespace Aa
       //glEnable (GL_BLEND);
 
       m_program.use ();
-      m_program.set<GLfloat, 4, 4> ("aa_gl_modelview",   context.modelview  ());
-      m_program.set<GLfloat, 4, 4> ("aa_gl_projection",  context.projection ());
-      //m_program.set<GLfloat, 2>    ("aa_gl_depth_range", context.depth_range ());
-      m_program.set<GLint>         ("aa_r3d_tex3d", 0);
-      m_program.set<GLfloat>       ("aa_r3d_min",   m_min);
-      m_program.set<GLfloat>       ("aa_r3d_max",   m_max);
+      m_program_modelview  (context.modelview  ());
+      m_program_projection (context.projection ());
+      m_program_tex3d      (0);
+      m_program_min        (m_min);
+      m_program_max        (m_max);
       //m_program.validate ();
 
       //cout << "<-- " << __PRETTY_FUNCTION__ << endl;

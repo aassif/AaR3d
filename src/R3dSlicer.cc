@@ -885,15 +885,14 @@ namespace Aa
         edge_depths [i][1] = vertex_depths [EDGES [i][1]];
       }
 
-      m_program->set<GLfloat, 2> ("aa_r3d_slicer_edge_depths", 12, edge_depths);
-
-      GLint aa_r3d_slicer_z = m_program->location ("aa_r3d_slicer_z");
-      if (aa_r3d_slicer_z == -1) {cerr << "aa_r3d_slicer_z" << endl; throw 1;}
+      GLint aa_r3d_slicer_z           = m_program->location ("aa_r3d_slicer_z");
+      GLint aa_r3d_slicer_edge_depths = m_program->location ("aa_r3d_slicer_edge_depths");
+      GL::SetUniform<GLfloat, 2> (aa_r3d_slicer_edge_depths, 12, edge_depths);
 
       // Back-to-Front.
       for (GLfloat z = zMin + 0.5 * fmod (zMax - zMin, dz); z <= zMax; z += dz)
         {
-          glUniform1fARB (aa_r3d_slicer_z, z);
+          glUniform1f (aa_r3d_slicer_z, z);
 
           // This bitfield tells us which vertices of the bounding box
           // have already been passed by the "clipping" plane.
@@ -1003,9 +1002,13 @@ namespace Aa
 
       glActiveTexture (GL_TEXTURE0);
 
-      m_program->set<GLint>      ("aa_r3d_slicer_table",         3);
-      m_program->set<GLfloat>    ("aa_r3d_slicer_vertex_depths", 8, vertex_depths);
-      m_program->set<GLfloat, 2> ("aa_r3d_slicer_edge_depths",  12, edge_depths);
+      GLint aa_r3d_slicer_table         = m_program->location ("aa_r3d_slicer_table");
+      GLint aa_r3d_slicer_vertex_depths = m_program->location ("aa_r3d_slicer_vertex_depths");
+      GLint aa_r3d_slicer_edge_depths   = m_program->location ("aa_r3d_slicer_edge_depths");
+
+      GL::SetUniform<GLint>      (aa_r3d_slicer_table,            3);
+      GL::SetUniform<GLfloat>    (aa_r3d_slicer_vertex_depths, 8, vertex_depths);
+      GL::SetUniform<GLfloat, 2> (aa_r3d_slicer_edge_depths,  12, edge_depths);
 
       // Back-to-Front.
       std::vector<GLfloat> points;
