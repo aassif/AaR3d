@@ -1,9 +1,0 @@
-bin
-moc
-obj
-rcc
-Makefile*
-object_script.*
-*.pri
-*.pro.user
-*~
