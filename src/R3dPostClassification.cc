@@ -45,7 +45,7 @@ namespace Aa
 
       glActiveTexture (GL_TEXTURE1);
       glBindTexture (GL_TEXTURE_1D, m_lut_tex1d [context.is_moving () ? 1 : 0]);
-      GL::Location<int> (m_program.location ("aa_r3d_lut1d")) (1);
+      GLSL::Location<int> (m_program.location ("aa_r3d_lut1d")) (1);
 
       //cout << "<-- " << __PRETTY_FUNCTION__ << endl;
     }

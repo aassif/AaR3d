@@ -61,14 +61,14 @@ namespace Aa
 
       ImageRenderer3dGLSL::glPreDraw (c);
 
-      GL::Location<mat4> (m_program.location ("aa_gl_modelview_inverse")) (c.modelview ().inv ());
-      GL::Location<mat3> (m_program.location ("aa_gl_normal_matrix"))     (GL::CoreContext::NormalMatrix (c.modelview ()));
+      GLSL::Location<mat4> (m_program.location ("aa_gl_modelview_inverse")) (c.modelview ().inv ());
+      GLSL::Location<mat3> (m_program.location ("aa_gl_normal_matrix"))     (GL::CoreContext::NormalMatrix (c.modelview ()));
 
       glActiveTexture (GL_TEXTURE1);
       glBindTexture (GL_TEXTURE_2D, m_lut_tex2d);
-      GL::Location<GLint>   (m_program.location ("aa_r3d_lut2d"))       (1);
-      GL::Location<GLfloat> (m_program.location ("aa_r3d_step"))        (m_steps [c.is_moving () ? 1 : 0]);
-      GL::Location<GLfloat> (m_program.location ("aa_phong_shininess")) (16);
+      GLSL::Location<GLint>   (m_program.location ("aa_r3d_lut2d"))       (1);
+      GLSL::Location<GLfloat> (m_program.location ("aa_r3d_step"))        (m_steps [c.is_moving () ? 1 : 0]);
+      GLSL::Location<GLfloat> (m_program.location ("aa_phong_shininess")) (16);
 
       //cout << "<-- " << __PRETTY_FUNCTION__ << endl;
     }

@@ -87,10 +87,10 @@ namespace Aa
     class SlicerViewCubeGLSLv1 : public SlicerViewCube
     {
       private:
-        Aa::GL::Program * m_program;
+        Aa::GLSL::Program * m_program;
 
       public:
-        SlicerViewCubeGLSLv1 (Aa::GL::Program *);
+        SlicerViewCubeGLSLv1 (Aa::GLSL::Program *);
         virtual ~SlicerViewCubeGLSLv1 ();
         virtual void glDraw (const mat4 & modelview, GLfloat step);
     };
@@ -98,11 +98,11 @@ namespace Aa
     class SlicerViewCubeGLSLv2 : public SlicerViewCube
     {
       private:
-        Aa::GL::Program * m_program;
-        GLuint            m_table_tex2d;
+        Aa::GLSL::Program * m_program;
+        GLuint              m_table_tex2d;
 
       public:
-        SlicerViewCubeGLSLv2 (Aa::GL::Program *);
+        SlicerViewCubeGLSLv2 (Aa::GLSL::Program *);
         virtual ~SlicerViewCubeGLSLv2 ();
         virtual void glDraw (const mat4 & modelview, GLfloat step);
     };

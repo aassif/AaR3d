@@ -89,12 +89,12 @@ namespace Aa
       // Blending ON.
       glBlendFunc (GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
-      GL::Location<mat4>  (m_program.location ("aa_gl_modelview_inverse")) (context.modelview ().inv ());
+      GLSL::Location<mat4>  (m_program.location ("aa_gl_modelview_inverse")) (context.modelview ().inv ());
 
       glActiveTexture (GL_TEXTURE1);
       glBindTexture (GL_TEXTURE_2D, m_lut_tex2d [context.is_moving () ? 1 : 0]);
-      GL::Location<int>   (m_program.location ("aa_r3d_lut2d")) (1);
-      GL::Location<float> (m_program.location ("aa_r3d_step"))  (m_steps [context.is_moving () ? 1 : 0]);
+      GLSL::Location<int>   (m_program.location ("aa_r3d_lut2d")) (1);
+      GLSL::Location<float> (m_program.location ("aa_r3d_step"))  (m_steps [context.is_moving () ? 1 : 0]);
 
       //cout << "<-- " << __PRETTY_FUNCTION__ << endl;
     }

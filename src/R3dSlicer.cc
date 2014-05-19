@@ -828,7 +828,7 @@ namespace Aa
 // Aa::R3d::SlicerViewCubeGLSLv1 ///////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-    SlicerViewCubeGLSLv1::SlicerViewCubeGLSLv1 (Aa::GL::Program * program) :
+    SlicerViewCubeGLSLv1::SlicerViewCubeGLSLv1 (Aa::GLSL::Program * program) :
       SlicerViewCube (),
       m_program (program)
     {
@@ -887,7 +887,7 @@ namespace Aa
 
       GLint aa_r3d_slicer_z           = m_program->location ("aa_r3d_slicer_z");
       GLint aa_r3d_slicer_edge_depths = m_program->location ("aa_r3d_slicer_edge_depths");
-      GL::SetUniform<GLfloat, 2> (aa_r3d_slicer_edge_depths, 12, edge_depths);
+      GLSL::SetUniform<GLfloat, 2> (aa_r3d_slicer_edge_depths, 12, edge_depths);
 
       // Back-to-Front.
       for (GLfloat z = zMin + 0.5 * fmod (zMax - zMin, dz); z <= zMax; z += dz)
@@ -921,7 +921,7 @@ namespace Aa
 // Aa::R3d::SlicerViewCubeGLSLv2 ///////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-    SlicerViewCubeGLSLv2::SlicerViewCubeGLSLv2 (Aa::GL::Program * program) :
+    SlicerViewCubeGLSLv2::SlicerViewCubeGLSLv2 (Aa::GLSL::Program * program) :
       SlicerViewCube (),
       m_program (program),
       m_table_tex2d (0)
@@ -1006,9 +1006,9 @@ namespace Aa
       GLint aa_r3d_slicer_vertex_depths = m_program->location ("aa_r3d_slicer_vertex_depths");
       GLint aa_r3d_slicer_edge_depths   = m_program->location ("aa_r3d_slicer_edge_depths");
 
-      GL::SetUniform<GLint>      (aa_r3d_slicer_table,            3);
-      GL::SetUniform<GLfloat>    (aa_r3d_slicer_vertex_depths, 8, vertex_depths);
-      GL::SetUniform<GLfloat, 2> (aa_r3d_slicer_edge_depths,  12, edge_depths);
+      GLSL::SetUniform<GLint>      (aa_r3d_slicer_table,            3);
+      GLSL::SetUniform<GLfloat>    (aa_r3d_slicer_vertex_depths, 8, vertex_depths);
+      GLSL::SetUniform<GLfloat, 2> (aa_r3d_slicer_edge_depths,  12, edge_depths);
 
       // Back-to-Front.
       std::vector<GLfloat> points;

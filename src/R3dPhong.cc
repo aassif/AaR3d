@@ -23,11 +23,11 @@ namespace Aa
     void Phong::glPreDraw (const GL::CoreContext & c)
     {
       PostClassification::glPreDraw (c);
-      GL::Location<mat3>  (m_program.location ("aa_gl_normal_matrix")) (GL::CoreContext::NormalMatrix (c.modelview ()));
-      GL::Location<float> (m_program.location ("aa_phong_ambient"))    (m_ambient);
-      GL::Location<float> (m_program.location ("aa_phong_diffuse"))    (m_diffuse);
-      GL::Location<float> (m_program.location ("aa_phong_specular"))   (m_specular);
-      GL::Location<float> (m_program.location ("aa_phong_shininess"))  (m_shininess);
+      GLSL::Location<mat3>  (m_program.location ("aa_gl_normal_matrix")) (GL::CoreContext::NormalMatrix (c.modelview ()));
+      GLSL::Location<float> (m_program.location ("aa_phong_ambient"))    (m_ambient);
+      GLSL::Location<float> (m_program.location ("aa_phong_diffuse"))    (m_diffuse);
+      GLSL::Location<float> (m_program.location ("aa_phong_specular"))   (m_specular);
+      GLSL::Location<float> (m_program.location ("aa_phong_shininess"))  (m_shininess);
     }
 
   } // namespace R3d

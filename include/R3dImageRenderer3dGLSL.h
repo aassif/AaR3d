@@ -11,12 +11,12 @@ namespace Aa
       public ImageRenderer3d
     {
       protected:
-        GL::Program         m_program;
-        GL::Location<mat4>  m_program_modelview;
-        GL::Location<mat4>  m_program_projection;
-        GL::Location<int>   m_program_tex3d;
-        GL::Location<float> m_program_min;
-        GL::Location<float> m_program_max;
+        GLSL::Program         m_program;
+        GLSL::Location<mat4>  m_program_modelview;
+        GLSL::Location<mat4>  m_program_projection;
+        GLSL::Location<int>   m_program_tex3d;
+        GLSL::Location<float> m_program_min;
+        GLSL::Location<float> m_program_max;
         
       protected:
         virtual void glPreDraw  (const GL::CoreContext &);
