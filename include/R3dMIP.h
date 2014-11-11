@@ -32,9 +32,9 @@ namespace Aa
 
           void glDraw (const GL::CoreContext & c)
           {
-            m_program.use ();
-            m_program.modelview  (c.modelview  ());
-            m_program.projection (c.projection ());
+            m_program.use (c);
+            //m_program.modelview  (c.modelview  ());
+            //m_program.projection (c.projection ());
             m_program.fill_color (m_color);
             m_vbo->draw ();
           }
