@@ -1,7 +1,12 @@
 #ifndef AA_R3D_IMAGE__H
 #define AA_R3D_IMAGE__H
 
-#include <GL/glew.h>
+#ifdef __APPLE__
+  #include <OpenGL/gl3.h>
+#else
+  #include <GL/glew.h>
+#endif
+
 //#include <string>
 #include <AaBox>
 #include <AaImage>

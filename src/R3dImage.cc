@@ -59,8 +59,12 @@ namespace Aa
     GLuint Image::glTex3d () const
       throw (Aa::GL::MissingExtension)
     {
+#ifdef __APPLE__
+      throw GL::MissingExtension ("GL_ARB_texture_non_power_of_two");
+#else
       if (! GLEW_ARB_texture_non_power_of_two)
         throw GL::MissingExtension ("GL_ARB_texture_non_power_of_two");
+#endif
 
       GLuint id = 0;
       glGenTextures (1, &id);
