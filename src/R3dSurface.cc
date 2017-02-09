@@ -62,7 +62,7 @@ namespace Aa
       ImageRenderer3dGLSL::glPreDraw (c);
 
       GLSL::Location<mat4> (m_program.location ("aa_gl_modelview_inverse")) (c.modelview ().inv ());
-      GLSL::Location<mat3> (m_program.location ("aa_gl_normal_matrix"))     (GL::CoreContext::NormalMatrix (c.modelview ()));
+      GLSL::Location<mat3> (m_program.location ("aa_gl_normal_matrix"))     (NormalMatrix (c.modelview ()));
 
       glActiveTexture (GL_TEXTURE1);
       glBindTexture (GL_TEXTURE_2D, m_lut_tex2d);
